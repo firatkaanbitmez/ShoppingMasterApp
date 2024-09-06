@@ -38,7 +38,6 @@ namespace ShoppingMasterApp.API.Controllers
             });
         }
 
-
         protected IActionResult HandleErrorResponse(string errorMessage, int statusCode = 400)
         {
             return StatusCode(statusCode, new ApiResponse<string>
@@ -52,7 +51,6 @@ namespace ShoppingMasterApp.API.Controllers
 
         protected IActionResult HandleExceptionResponse(Exception ex)
         {
-            // Loglama işlemi burada yapılabilir
             return StatusCode(500, new ApiResponse<string>
             {
                 Success = false,
@@ -63,7 +61,6 @@ namespace ShoppingMasterApp.API.Controllers
         }
     }
 
-    // ApiResponse sınıfı ile API yanıtlarını standart hale getiriyoruz
     public class ApiResponse<T>
     {
         public bool Success { get; set; }

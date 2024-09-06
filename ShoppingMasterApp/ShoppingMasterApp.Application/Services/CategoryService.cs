@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Order;
 using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Application.Interfaces;

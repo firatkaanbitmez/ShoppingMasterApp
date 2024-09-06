@@ -12,4 +12,5 @@ namespace ShoppingMasterApp.Application.DTOs
         public string Name { get; set; }
     }
 
+
 }

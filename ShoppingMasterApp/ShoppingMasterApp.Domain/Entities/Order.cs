@@ -4,7 +4,11 @@ namespace ShoppingMasterApp.Domain.Entities
 {
     public class Order : BaseEntity, IAggregateRoot
     {
-        public int ProductId { get; set; }
-        public int Quantity { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal TotalAmount { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
+
 }

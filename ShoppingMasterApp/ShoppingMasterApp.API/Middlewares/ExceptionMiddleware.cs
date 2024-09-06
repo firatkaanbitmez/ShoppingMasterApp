@@ -25,10 +25,7 @@ namespace ShoppingMasterApp.API.Middlewares
             }
             catch (Exception ex)
             {
-                // Loglama yaparak daha fazla bilgi alın
                 _logger.LogError($"Something went wrong: {ex.Message}, StackTrace: {ex.StackTrace}");
-
-                // Hata cevabını kullanıcıya döndür
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
@@ -41,7 +38,7 @@ namespace ShoppingMasterApp.API.Middlewares
             return context.Response.WriteAsync(new ErrorDetails
             {
                 StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error."
+                Message = "Internal Server Error. Please contact support."
             }.ToString());
         }
     }

@@ -12,11 +12,13 @@ namespace ShoppingMasterApp.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
+            _productRepository = productRepository;
             _mapper = mapper;
         }
 
@@ -34,16 +36,43 @@ namespace ShoppingMasterApp.Application.Services
 
         public async Task<OrderDto> CreateOrder(CreateOrderCommand command)
         {
-            var order = _mapper.Map<Order>(command);
+            var product = await _productRepository.GetByIdAsync(command.ProductId);
+            if (product == null)
+            {
+                throw new KeyNotFoundException("Product not found");
+            }
+
+            var order = new Order
+            {
+               
+            };
+                       
             await _orderRepository.AddAsync(order);
-            return _mapper.Map<OrderDto>(order);
+
+            var orderDto = _mapper.Map<OrderDto>(order);
+           
+            return orderDto;
         }
 
         public async Task<OrderDto> UpdateOrder(UpdateOrderCommand command)
         {
-            var order = _mapper.Map<Order>(command);
+            var order = await _orderRepository.GetByIdAsync(command.Id);
+            if (order == null)
+            {
+                throw new KeyNotFoundException("Order not found");
+            }
+
+            var product = await _productRepository.GetByIdAsync(command.ProductId);
+            if (product == null)
+            {
+                throw new KeyNotFoundException("Product not found");
+            }
+
+
             await _orderRepository.UpdateAsync(order);
-            return _mapper.Map<OrderDto>(order);
+
+            var orderDto = _mapper.Map<OrderDto>(order);
+            return orderDto;
         }
 
         public async Task<bool> DeleteOrder(int id)
@@ -56,5 +85,7 @@ namespace ShoppingMasterApp.Application.Services
             }
             return false;
         }
+
+      
     }
 }
