@@ -10,39 +10,30 @@ using ShoppingMasterApp.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
-// Database Context setup
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// AutoMapper registration
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-// Swagger services
-builder.Services.AddEndpointsApiExplorer(); // API için endpoint'leri keþfetmek
-builder.Services.AddSwaggerGen(); // Swagger arayüzünü ekliyoruz
+builder.Services.AddEndpointsApiExplorer(); 
+builder.Services.AddSwaggerGen(); 
 
-// Registering Services and Repositories for Dependency Injection
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
-// Registering Repositories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-// Build the app
 var app = builder.Build();
 
-// Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 
-    // Swagger middleware'i ekleyelim
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -52,13 +43,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Kendi Exception middleware'inizi burada kullanýyorsunuz
-//app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthorization();
-
-// Map controllers
 app.MapControllers();
-
-// Uygulamayý çalýþtýr
 app.Run();
