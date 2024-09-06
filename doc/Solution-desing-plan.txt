@@ -1,0 +1,85 @@
+ShoppingMasterApp
+│   ShoppingMasterApp.sln
+│
+├───ShoppingMasterApp.API
+│   ├───Controllers
+│   │   └───ProductController.cs
+│   │   └───CategoryController.cs
+│   │   └───OrderController.cs
+│   ├───appsettings.Development.json
+│   ├───appsettings.json
+│   ├───Program.cs
+│   └───ShoppingMasterApp.API.csproj
+│
+├───ShoppingMasterApp.Application
+│   ├───CQRS
+│   │   └───Commands
+│   │   │   └───Product
+│   │   │       └───CreateProductCommand.cs
+│   │   │       └───UpdateProductCommand.cs
+│   │   │       └───DeleteProductCommand.cs
+│   │   │   └───Category
+│   │   │       └───CreateCategoryCommand.cs
+│   │   │       └───UpdateCategoryCommand.cs
+│   │   │       └───DeleteCategoryCommand.cs
+│   │   │   └───Order
+│   │   │       └───CreateOrderCommand.cs
+│   │   │       └───UpdateOrderCommand.cs
+│   │   │       └───DeleteOrderCommand.cs
+│   │   └───Queries
+│   │       └───Product
+│   │           └───GetProductByIdQuery.cs
+│   │           └───GetAllProductsQuery.cs
+│   │       └───Category
+│   │           └───GetCategoryByIdQuery.cs
+│   │           └───GetAllCategoriesQuery.cs
+│   │       └───Order
+│   │           └───GetOrderByIdQuery.cs
+│   │           └───GetAllOrdersQuery.cs
+│   ├───Interfaces
+│   │   └───Services
+│   │       └───IProductService.cs
+│   │       └───ICategoryService.cs
+│   │       └───IOrderService.cs
+│   ├───Mappings
+│   │   └───AutoMapperProfile.cs
+│   └───Services
+│       └───ProductService.cs
+│       └───CategoryService.cs
+│       └───OrderService.cs
+│   └───ShoppingMasterApp.Application.csproj
+│
+├───ShoppingMasterApp.Domain
+│   ├───Entities
+│   │   └───Product.cs
+│   │   └───Category.cs
+│   │   └───Order.cs
+│   ├───Common
+│   │   └───BaseEntity.cs
+│   │   └───IAggregateRoot.cs
+│   ├───Interfaces
+│   │   └───Repositories
+│   │       └───IProductRepository.cs
+│   │       └───ICategoryRepository.cs
+│   │       └───IOrderRepository.cs
+│   ├───Exceptions
+│   │   └───ProductNotFoundException.cs
+│   │   └───CategoryNotFoundException.cs
+│   │   └───OrderNotFoundException.cs
+│   └───ShoppingMasterApp.Domain.csproj
+│
+├───ShoppingMasterApp.Infrastructure
+│   ├───Persistence
+│   │   └───ApplicationDbContext.cs
+│   │   └───DbContextFactory.cs
+│   ├───Repositories
+│   │   └───ProductRepository.cs
+│   │   └───CategoryRepository.cs
+│   │   └───OrderRepository.cs
+│   └───ShoppingMasterApp.Infrastructure.csproj
+│
+├───ShoppingMasterApp.Tests
+│   └───ProductTests.cs
+│   └───CategoryTests.cs
+│   └───OrderTests.cs
+│   └───ShoppingMasterApp.Tests.csproj

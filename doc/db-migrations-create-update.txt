@@ -1,0 +1,6 @@
+cd  ShoppingMasterApp.Infrastructure
+
+dotnet ef migrations add InitialCreate --startup-project ../ShoppingMasterApp.API --context ApplicationDbContext
+
+
+dotnet ef database update --startup-project ../ShoppingMasterApp.API --context ApplicationDbContext
