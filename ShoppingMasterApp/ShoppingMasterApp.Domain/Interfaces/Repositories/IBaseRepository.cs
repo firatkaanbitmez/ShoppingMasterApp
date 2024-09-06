@@ -1,4 +1,7 @@
-﻿namespace ShoppingMasterApp.Domain.Interfaces.Repositories
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {

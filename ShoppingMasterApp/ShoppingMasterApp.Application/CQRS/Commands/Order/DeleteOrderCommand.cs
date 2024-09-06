@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.Order
 {
-    internal class DeleteOrderCommand
+    public class DeleteOrderCommand
     {
+        public int Id { get; set; }
     }
+
 }

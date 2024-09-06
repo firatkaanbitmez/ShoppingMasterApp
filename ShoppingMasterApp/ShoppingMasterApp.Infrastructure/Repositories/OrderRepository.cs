@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using ShoppingMasterApp.Infrastructure.Persistence;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    internal class OrderRepository
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
+        public OrderRepository(ApplicationDbContext context) : base(context)
+        {
+        }
     }
 }

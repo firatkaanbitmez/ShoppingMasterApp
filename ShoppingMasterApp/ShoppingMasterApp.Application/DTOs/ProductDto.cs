@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingMasterApp.Application.CQRS.Commands.Category
+namespace ShoppingMasterApp.Application.DTOs
 {
-    public class UpdateProductCommand
+    public class ProductDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

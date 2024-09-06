@@ -1,85 +1,123 @@
-ShoppingMasterApp
-│   ShoppingMasterApp.sln
-│
-├───ShoppingMasterApp.API
-│   ├───Controllers
-│   │   └───ProductController.cs
-│   │   └───CategoryController.cs
-│   │   └───OrderController.cs
-│   ├───appsettings.Development.json
-│   ├───appsettings.json
-│   ├───Program.cs
-│   └───ShoppingMasterApp.API.csproj
-│
-├───ShoppingMasterApp.Application
-│   ├───CQRS
-│   │   └───Commands
-│   │   │   └───Product
-│   │   │       └───CreateProductCommand.cs
-│   │   │       └───UpdateProductCommand.cs
-│   │   │       └───DeleteProductCommand.cs
-│   │   │   └───Category
-│   │   │       └───CreateCategoryCommand.cs
-│   │   │       └───UpdateCategoryCommand.cs
-│   │   │       └───DeleteCategoryCommand.cs
-│   │   │   └───Order
-│   │   │       └───CreateOrderCommand.cs
-│   │   │       └───UpdateOrderCommand.cs
-│   │   │       └───DeleteOrderCommand.cs
-│   │   └───Queries
-│   │       └───Product
-│   │           └───GetProductByIdQuery.cs
-│   │           └───GetAllProductsQuery.cs
-│   │       └───Category
-│   │           └───GetCategoryByIdQuery.cs
-│   │           └───GetAllCategoriesQuery.cs
-│   │       └───Order
-│   │           └───GetOrderByIdQuery.cs
-│   │           └───GetAllOrdersQuery.cs
-│   ├───Interfaces
-│   │   └───Services
-│   │       └───IProductService.cs
-│   │       └───ICategoryService.cs
-│   │       └───IOrderService.cs
-│   ├───Mappings
-│   │   └───AutoMapperProfile.cs
-│   └───Services
-│       └───ProductService.cs
-│       └───CategoryService.cs
-│       └───OrderService.cs
-│   └───ShoppingMasterApp.Application.csproj
-│
-├───ShoppingMasterApp.Domain
-│   ├───Entities
-│   │   └───Product.cs
-│   │   └───Category.cs
-│   │   └───Order.cs
-│   ├───Common
-│   │   └───BaseEntity.cs
-│   │   └───IAggregateRoot.cs
-│   ├───Interfaces
-│   │   └───Repositories
-│   │       └───IProductRepository.cs
-│   │       └───ICategoryRepository.cs
-│   │       └───IOrderRepository.cs
-│   ├───Exceptions
-│   │   └───ProductNotFoundException.cs
-│   │   └───CategoryNotFoundException.cs
-│   │   └───OrderNotFoundException.cs
-│   └───ShoppingMasterApp.Domain.csproj
-│
-├───ShoppingMasterApp.Infrastructure
-│   ├───Persistence
-│   │   └───ApplicationDbContext.cs
-│   │   └───DbContextFactory.cs
-│   ├───Repositories
-│   │   └───ProductRepository.cs
-│   │   └───CategoryRepository.cs
-│   │   └───OrderRepository.cs
-│   └───ShoppingMasterApp.Infrastructure.csproj
-│
-├───ShoppingMasterApp.Tests
-│   └───ProductTests.cs
-│   └───CategoryTests.cs
-│   └───OrderTests.cs
-│   └───ShoppingMasterApp.Tests.csproj
+ShoppingMasterApp.sln
+|
++---ShoppingMasterApp.API
+|   |   appsettings.Development.json
+|   |   appsettings.json
+|   |   Program.cs
+|   |   Startup.cs
+|   |   ShoppingMasterApp.API.csproj
+|   |
+|   +---Controllers
+|   |       CategoryController.cs
+|   |       OrderController.cs
+|   |       ProductController.cs
+|   |
+|   +---Filters
+|   |       ValidationFilter.cs
+|   |
+|   \---Middlewares
+|           ExceptionMiddleware.cs
+|
++---ShoppingMasterApp.Application
+|   |   ShoppingMasterApp.Application.csproj
+|   |
+|   +---CQRS
+|   |   +---Commands
+|   |   |   +---Category
+|   |   |   |       CreateCategoryCommand.cs
+|   |   |   |       DeleteCategoryCommand.cs
+|   |   |   |       UpdateCategoryCommand.cs
+|   |   |   |
+|   |   |   +---Order
+|   |   |   |       CreateOrderCommand.cs
+|   |   |   |       DeleteOrderCommand.cs
+|   |   |   |       UpdateOrderCommand.cs
+|   |   |   |
+|   |   |   \---Product
+|   |   |           CreateProductCommand.cs
+|   |   |           DeleteProductCommand.cs
+|   |   |           UpdateProductCommand.cs
+|   |   |
+|   |   \---Queries
+|   |       +---Category
+|   |       |       GetAllCategoriesQuery.cs
+|   |       |       GetCategoryByIdQuery.cs
+|   |       |
+|   |       +---Order
+|   |       |       GetAllOrdersQuery.cs
+|   |       |       GetOrderByIdQuery.cs
+|   |       |
+|   |       \---Product
+|   |               GetAllProductsQuery.cs
+|   |               GetProductByIdQuery.cs
+|   |
+|   +---Validators
+|   |       CreateCategoryCommandValidator.cs
+|   |       CreateOrderCommandValidator.cs
+|   |       CreateProductCommandValidator.cs
+|   |
+|   +---Interfaces
+|   |       ICategoryService.cs
+|   |       IOrderService.cs
+|   |       IProductService.cs
+|   |
+|   +---Mappings
+|   |       AutoMapperProfile.cs
+|   |
+|   \---Services
+|           CategoryService.cs
+|           OrderService.cs
+|           ProductService.cs
+|
++---ShoppingMasterApp.Domain
+|   |   ShoppingMasterApp.Domain.csproj
+|   |
+|   +---Entities
+|   |       Category.cs
+|   |       Order.cs
+|   |       Product.cs
+|   |
+|   +---Common
+|   |       BaseEntity.cs
+|   |       IAggregateRoot.cs
+|   |
+|   +---Exceptions
+|   |       CategoryNotFoundException.cs
+|   |       OrderNotFoundException.cs
+|   |       ProductNotFoundException.cs
+|   |
+|   +---Interfaces
+|   |   \---Repositories
+|   |           IBaseRepository.cs
+|   |           ICategoryRepository.cs
+|   |           IOrderRepository.cs
+|   |           IProductRepository.cs
+|
++---ShoppingMasterApp.Infrastructure
+|   |   ShoppingMasterApp.Infrastructure.csproj
+|   |
+|   +---Persistence
+|   |       ApplicationDbContext.cs
+|   |       DbContextFactory.cs
+|   |
+|   \---Repositories
+|           BaseRepository.cs
+|           CategoryRepository.cs
+|           OrderRepository.cs
+|           ProductRepository.cs
+|
++---ShoppingMasterApp.Tests
+|   |   ShoppingMasterApp.Tests.csproj
+|   |
+|   \---UnitTests
+|           CategoryServiceTests.cs
+|           OrderServiceTests.cs
+|           ProductServiceTests.cs
+|
+\---ShoppingMasterApp.IntegrationTests
+    |   ShoppingMasterApp.IntegrationTests.csproj
+    |
+    \---IntegrationTests
+            CategoryIntegrationTests.cs
+            OrderIntegrationTests.cs
+            ProductIntegrationTests.cs

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingMasterApp.Infrastructure.Persistence
+namespace ShoppingMasterApp.Domain.Validators
 {
-    internal class DbContextFactory
+    internal class CreateProductCommandValidator
     {
     }
 }

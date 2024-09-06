@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingMasterApp.Application.CQRS.Queries.Order
+namespace ShoppingMasterApp.Domain.Validators
 {
-    public class GetOrderByIdQuery
+    internal class CreateOrderCommandValidator
     {
-        public int Id { get; set; }
     }
-
 }

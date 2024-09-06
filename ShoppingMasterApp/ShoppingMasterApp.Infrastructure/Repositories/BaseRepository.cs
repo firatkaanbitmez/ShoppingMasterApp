@@ -1,28 +1,48 @@
-﻿using ShoppingMasterApp.Domain.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using ShoppingMasterApp.Domain.Common;
+using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public abstract class BaseRepository<TEntity> where TEntity : BaseEntity
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        protected readonly ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext _context;
 
-        protected BaseRepository(ApplicationDbContext dbContext)
+        public BaseRepository(ApplicationDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            await _dbContext.Set<TEntity>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<T> AddAsync(T entity)
+        {
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task DeleteAsync(TEntity entity)
+        public async Task UpdateAsync(T entity)
         {
-            _dbContext.Set<TEntity>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

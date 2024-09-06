@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingMasterApp.Application.CQRS.Queries.Order
+namespace ShoppingMasterApp.Application.DTOs
 {
-    public class GetOrderByIdQuery
+    public class CategoryDto
     {
         public int Id { get; set; }
+        public string Name { get; set; }
     }
 
 }

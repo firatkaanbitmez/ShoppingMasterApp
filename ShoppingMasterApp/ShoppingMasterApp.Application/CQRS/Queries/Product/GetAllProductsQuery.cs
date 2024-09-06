@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Product
 {
-    internal class GetAllProductsQuery
-    {
-    }
+    public class GetAllProductsQuery { }
+
 }

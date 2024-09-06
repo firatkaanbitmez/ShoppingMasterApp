@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using ShoppingMasterApp.Infrastructure.Persistence;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    internal class CategoryRepository
+    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
+        public CategoryRepository(ApplicationDbContext context) : base(context)
+        {
+        }
     }
 }

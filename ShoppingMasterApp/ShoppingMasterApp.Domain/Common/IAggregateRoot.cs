@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Common
 {
-    internal class IAggregateRoot
+    // IAggregateRoot, işaretleme (marker) interface olarak kullanılır.
+    public interface IAggregateRoot
     {
     }
 }

@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.Order
 {
-    internal class UpdateCategoryCommand
+    public class UpdateCategoryCommand
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
+
 }
