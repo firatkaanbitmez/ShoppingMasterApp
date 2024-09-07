@@ -1,12 +1,10 @@
-﻿using System;
+﻿using MediatR;
+using ShoppingMasterApp.Application.DTOs;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Product
 {
-    public class GetProductsInStockQuery
+    public class GetProductsInStockQuery : IRequest<IEnumerable<ProductDto>>
     {
     }
 }

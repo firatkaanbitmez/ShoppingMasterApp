@@ -28,10 +28,12 @@ namespace ShoppingMasterApp.API.Controllers
         /// </summary>
         /// <param name="errorMessage">The error message to display</param>
         /// <param name="statusCode">Optional status code, defaults to 400 (BadRequest)</param>
+        /// <param name="errorDetails">Additional error details for better error visibility</param>
         /// <returns>Standardized error response</returns>
-        protected IActionResult ApiError(string errorMessage, int statusCode = 400)
+        protected IActionResult ApiError(string errorMessage, int statusCode = 400, object errorDetails = null)
         {
-            return StatusCode(statusCode, new ApiResponse<string>(statusCode: statusCode, isSuccess: false, errorMessage: errorMessage));
+            // Since we removed IWebHostEnvironment, no dev-safe message handling here.
+            return StatusCode(statusCode, new ApiResponse<object>(statusCode: statusCode, isSuccess: false, errorMessage: errorMessage, data: errorDetails));
         }
     }
 

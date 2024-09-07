@@ -35,11 +35,13 @@ namespace ShoppingMasterApp.API.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            return context.Response.WriteAsync(new ErrorDetails
+            var response = new ErrorDetails
             {
                 StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error. Please contact support."
-            }.ToString());
+                Message = "Internal Server Error"
+            };
+
+            return context.Response.WriteAsync(response.ToString());
         }
     }
 

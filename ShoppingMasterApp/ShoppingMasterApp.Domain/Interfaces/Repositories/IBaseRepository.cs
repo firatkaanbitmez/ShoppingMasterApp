@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
@@ -11,5 +13,4 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
         void Delete(T entity);
         Task SaveChangesAsync();
     }
-
 }

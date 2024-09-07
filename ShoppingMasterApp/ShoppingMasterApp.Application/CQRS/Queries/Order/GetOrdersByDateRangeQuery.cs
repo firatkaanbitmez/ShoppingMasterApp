@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using ShoppingMasterApp.Application.DTOs;
+using System;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Order
 {
-    public class GetOrdersByDateRangeQuery
+    public class GetOrdersByDateRangeQuery : IRequest<IEnumerable<OrderDto>>
     {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

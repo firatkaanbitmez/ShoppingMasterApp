@@ -24,6 +24,17 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryCommand command)
         {
+            if (id != command.Id)
+            {
+                return ApiError("Category ID mismatch.");
+            }
+
+            var category = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
+            if (category == null)
+            {
+                return ApiError("Category not found.");
+            }
+
             if (id != command.Id) return ApiError("Invalid Category ID.");
             var result = await _mediator.Send(command);
             return ApiResponse(result);
