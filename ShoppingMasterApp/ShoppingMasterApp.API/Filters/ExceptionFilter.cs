@@ -19,10 +19,10 @@ namespace ShoppingMasterApp.API.Filters
 
         public void OnException(ExceptionContext context)
         {
-            // Log the exception details
-            _logger.LogError(context.Exception, "Unhandled exception occurred.");
+            // Log full details of the exception
+            _logger.LogError(context.Exception, "Unhandled exception occurred: {Message}, StackTrace: {StackTrace}",
+                             context.Exception.Message, context.Exception.StackTrace);
 
-            // Determine the type of exception and set the response accordingly
             var response = context.Exception switch
             {
                 InvalidInputException => new ApiResponse<object>(statusCode: (int)HttpStatusCode.BadRequest, isSuccess: false, data: null, errorMessage: context.Exception.Message),
@@ -32,15 +32,14 @@ namespace ShoppingMasterApp.API.Filters
                 _ => new ApiResponse<object>(statusCode: (int)HttpStatusCode.InternalServerError, isSuccess: false, data: null, errorMessage: "An internal server error occurred.")
             };
 
-            // Set the context result to return a standardized error response
             context.Result = new JsonResult(response)
             {
                 StatusCode = response.StatusCode
             };
 
-            // Mark the exception as handled
             context.ExceptionHandled = true;
         }
+
 
     }
 }

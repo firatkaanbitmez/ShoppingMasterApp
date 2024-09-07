@@ -16,9 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<ValidationFilter>();  // Global validation filter
-    options.Filters.Add<LoggingFilter>();  // Global logging filter
-    options.Filters.Add<ExceptionFilter>(); // Global Exception filter
+    //options.Filters.Add<ValidationFilter>();  // Global validation filter
+    //options.Filters.Add<LoggingFilter>();  // Global logging filter
+    //options.Filters.Add<ExceptionFilter>(); // Global Exception filter
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -79,7 +79,7 @@ app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
-app.UseMiddleware<ExceptionMiddleware>(); // Custom Exception Handling
+//app.UseMiddleware<ExceptionMiddleware>(); // Custom Exception Handling
 
 app.MapControllers();
 app.Run();

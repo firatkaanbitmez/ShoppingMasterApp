@@ -577,7 +577,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.Entities.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<int>("ShippingId")
                                 .HasColumnType("int");
@@ -628,7 +628,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>
                 {
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "Address", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.Entities.Address", "Address", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");

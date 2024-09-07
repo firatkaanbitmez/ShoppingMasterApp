@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240907151115_InitialCreate")]
+    [Migration("20240907221624_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -580,7 +580,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.Entities.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<int>("ShippingId")
                                 .HasColumnType("int");
@@ -631,7 +631,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>
                 {
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "Address", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.Entities.Address", "Address", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");

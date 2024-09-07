@@ -27,13 +27,19 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse(message: "User created successfully");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserCommand command)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
         {
-            command.Id = id;
+            var user = await _userService.GetUserByIdAsync(command.Id); // ID body'den alınıyor
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
             await _userService.UpdateUserAsync(command);
-            return ApiResponse(message: "User updated successfully");
+            return Ok(new { message = "User updated successfully" });
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)

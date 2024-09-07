@@ -1,5 +1,5 @@
 ﻿using ShoppingMasterApp.Domain.Common;
-using ShoppingMasterApp.Domain.ValueObjects;
+using ShoppingMasterApp.Domain.ValueObjects; // Bu namespace'yi ekleyin
 
 namespace ShoppingMasterApp.Domain.Entities
 {
@@ -11,6 +11,6 @@ namespace ShoppingMasterApp.Domain.Entities
         public string PasswordHash { get; set; }
         public string Roles { get; set; }  // Admin, Customer, Vendor
         public ICollection<Order> Orders { get; set; }
-        public Address Address { get; set; }  // ValueObject for address
+        public Address Address { get; set; }  // ValueObject for address kullanılıyor
     }
 }
