@@ -1,4 +1,5 @@
-﻿using ShoppingMasterApp.Domain.Entities;
+﻿using ShoppingMasterApp.Application.CQRS.Commands.Cart;
+using ShoppingMasterApp.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.Interfaces.Services
@@ -6,9 +7,10 @@ namespace ShoppingMasterApp.Application.Interfaces.Services
     public interface ICartService
     {
         Task<Cart> GetUserCartAsync(int userId);
-        Task AddToCartAsync(Cart cart);
-        Task UpdateCartItemAsync(Cart cart);
-        Task RemoveFromCartAsync(Cart cart);
+        Task AddToCartAsync(AddToCartCommand command);
+        Task UpdateCartItemAsync(UpdateCartItemCommand command); 
+        Task RemoveFromCartAsync(RemoveFromCartCommand command); 
         Task ClearCartAsync(int cartId);
     }
+
 }

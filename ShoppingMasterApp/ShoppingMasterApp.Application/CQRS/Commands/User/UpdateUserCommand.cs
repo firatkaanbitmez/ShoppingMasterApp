@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.User
 {
-    public class UpdateUserProfileCommand
+    public class UpdateUserCommand
     {
         public int Id { get; set; }
+        public string FirstName { get; internal set; }
+        public string LastName { get; internal set; }
+        public string Email { get; internal set; }
     }
 }

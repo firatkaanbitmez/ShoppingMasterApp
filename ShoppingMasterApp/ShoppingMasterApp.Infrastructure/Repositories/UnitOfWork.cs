@@ -40,6 +40,23 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
         {
             _context.Dispose();
         }
+        public async Task CommitAsync()
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
+        }
+
     }
 
 

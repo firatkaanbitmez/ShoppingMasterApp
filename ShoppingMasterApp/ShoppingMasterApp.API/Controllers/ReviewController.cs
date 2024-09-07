@@ -1,53 +1,30 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Review;
-using ShoppingMasterApp.Application.CQRS.Queries.Review;
+using ShoppingMasterApp.Application.Interfaces.Services;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     public class ReviewController : BaseController
     {
-        private readonly IMediator _mediator;
+        private readonly IReviewService _reviewService;
 
-        public ReviewController(IMediator mediator)
+        public ReviewController(IReviewService reviewService)
         {
-            _mediator = mediator;
+            _reviewService = reviewService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddReview(AddReviewCommand command)
+        public async Task<IActionResult> AddReview([FromBody] AddReviewCommand command)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            await _reviewService.AddReviewAsync(command);
+            return ApiResponse(message: "Review added successfully");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReview(int id, UpdateReviewCommand command)
+        [HttpDelete("{reviewId}")]
+        public async Task<IActionResult> DeleteReview(int reviewId)
         {
-            if (id != command.Id) return ApiError("Invalid Review ID.");
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReview(int id)
-        {
-            var result = await _mediator.Send(new DeleteReviewCommand { Id = id });
-            return ApiResponse(result);
-        }
-
-        [HttpGet("product/{productId}")]
-        public async Task<IActionResult> GetReviewsByProductId(int productId)
-        {
-            var result = await _mediator.Send(new GetReviewByProductIdQuery { ProductId = productId });
-            return ApiResponse(result);
-        }
-
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetUserReviews(int userId)
-        {
-            var result = await _mediator.Send(new GetUserReviewsQuery { UserId = userId });
-            return ApiResponse(result);
+            await _reviewService.DeleteReviewAsync(reviewId);
+            return ApiResponse(message: "Review deleted successfully");
         }
     }
 }

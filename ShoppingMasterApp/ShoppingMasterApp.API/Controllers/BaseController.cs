@@ -6,41 +6,17 @@ namespace ShoppingMasterApp.API.Controllers
     [Route("api/[controller]")]
     public abstract class BaseController : ControllerBase
     {
-        /// <summary>
-        /// Standardized success response.
-        /// </summary>
-        /// <typeparam name="T">Type of the result</typeparam>
-        /// <param name="result">Result object to return</param>
-        /// <param name="statusCode">Optional status code, defaults to 200 (OK)</param>
-        /// <returns>Standardized success response</returns>
-        protected IActionResult ApiResponse<T>(T result, int statusCode = 200)
+        protected IActionResult ApiResponse(object result = null, bool isSuccess = true, string message = null)
         {
-            if (result == null)
-            {
-                return NotFound(new ApiResponse<T>(statusCode: 404, isSuccess: false, errorMessage: "Resource not found"));
-            }
-
-            return StatusCode(statusCode, new ApiResponse<T>(statusCode: statusCode, isSuccess: true, data: result));
+            return Ok(new ApiResponse<object>(statusCode: 200, isSuccess: isSuccess, data: result, errorMessage: message));
         }
 
-        /// <summary>
-        /// Standardized error response for validation or processing errors.
-        /// </summary>
-        /// <param name="errorMessage">The error message to display</param>
-        /// <param name="statusCode">Optional status code, defaults to 400 (BadRequest)</param>
-        /// <param name="errorDetails">Additional error details for better error visibility</param>
-        /// <returns>Standardized error response</returns>
-        protected IActionResult ApiError(string errorMessage, int statusCode = 400, object errorDetails = null)
+        protected IActionResult ApiError(string message, int statusCode = 400)
         {
-            // Since we removed IWebHostEnvironment, no dev-safe message handling here.
-            return StatusCode(statusCode, new ApiResponse<object>(statusCode: statusCode, isSuccess: false, errorMessage: errorMessage, data: errorDetails));
+            return StatusCode(statusCode, new ApiResponse<object>(statusCode: statusCode, isSuccess: false, data: null, errorMessage: message));
         }
+
     }
-
-    /// <summary>
-    /// Standard API response wrapper.
-    /// </summary>
-    /// <typeparam name="T">Type of the response data</typeparam>
     public class ApiResponse<T>
     {
         public int StatusCode { get; set; }
@@ -48,7 +24,7 @@ namespace ShoppingMasterApp.API.Controllers
         public T Data { get; set; }
         public string ErrorMessage { get; set; }
 
-        public ApiResponse(int statusCode, bool isSuccess, T data = default, string errorMessage = null)
+        public ApiResponse(int statusCode, bool isSuccess, T data = default(T), string errorMessage = null)
         {
             StatusCode = statusCode;
             IsSuccess = isSuccess;

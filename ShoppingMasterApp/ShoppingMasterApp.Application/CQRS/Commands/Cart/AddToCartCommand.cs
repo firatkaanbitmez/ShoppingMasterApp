@@ -1,5 +1,4 @@
-﻿using MediatR;
-using ShoppingMasterApp.Application.DTOs;
+﻿using ShoppingMasterApp.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.Cart
 {
-    public class AddToCartCommand : IRequest<CartDto>
+    public class AddToCartCommand 
     {
         public int ProductId { get; set; }
         public int Quantity { get; set; }

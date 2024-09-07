@@ -13,7 +13,6 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
     public class CartRepository : BaseRepository<Cart>, ICartRepository
     {
         private readonly ApplicationDbContext _context;
-
         public CartRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
@@ -25,4 +24,5 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
                                        .FirstOrDefaultAsync(c => c.UserId == userId);
         }
     }
+
 }

@@ -1,30 +1,30 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Discount;
+using ShoppingMasterApp.Application.Interfaces.Services;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     public class DiscountController : BaseController
     {
-        private readonly IMediator _mediator;
+        private readonly IDiscountService _discountService;
 
-        public DiscountController(IMediator mediator)
+        public DiscountController(IDiscountService discountService)
         {
-            _mediator = mediator;
+            _discountService = discountService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ApplyDiscount(ApplyDiscountCommand command)
+        [HttpPost("apply")]
+        public async Task<IActionResult> ApplyDiscount([FromBody] ApplyDiscountCommand command)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            await _discountService.ApplyDiscountAsync(command);
+            return ApiResponse(message: "Discount applied successfully");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveDiscount(int id)
         {
-            var result = await _mediator.Send(new RemoveDiscountCommand { Id = id });
-            return ApiResponse(result);
+            await _discountService.RemoveDiscountAsync(id);
+            return ApiResponse(message: "Discount removed successfully");
         }
     }
 }

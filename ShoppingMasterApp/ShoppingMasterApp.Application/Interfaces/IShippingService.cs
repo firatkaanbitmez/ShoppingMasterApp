@@ -1,12 +1,11 @@
-﻿using ShoppingMasterApp.Domain.Entities;
+﻿using ShoppingMasterApp.Application.CQRS.Commands.Shipping;
+using ShoppingMasterApp.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.Interfaces.Services
 {
     public interface IShippingService
     {
-        Task<Shipping> GetShippingByOrderIdAsync(int orderId);
-        Task CreateShippingAsync(Shipping shipping);
-        Task UpdateShippingAsync(Shipping shipping);
+      
     }
 }

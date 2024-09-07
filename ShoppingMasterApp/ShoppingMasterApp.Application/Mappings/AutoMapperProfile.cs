@@ -42,8 +42,8 @@ namespace ShoppingMasterApp.Application.Mappings
 
             // User Mappings
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<RegisterUserCommand, User>().ReverseMap();
-            CreateMap<UpdateUserProfileCommand, User>().ReverseMap();
+            CreateMap<CreateUserCommand, User>().ReverseMap();
+            CreateMap<UpdateUserCommand, User>().ReverseMap();
 
             // Payment Mappings
             CreateMap<Payment, PaymentDto>().ReverseMap();

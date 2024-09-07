@@ -9,6 +9,7 @@ namespace ShoppingMasterApp.Application.Interfaces
     {
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
         Task<OrderDto> GetOrderByIdAsync(int id);
+        Task<IEnumerable<OrderDto>> GetUserOrdersAsync(int userId); 
         Task CreateOrderAsync(CreateOrderCommand command);
         Task UpdateOrderAsync(UpdateOrderCommand command);
         Task DeleteOrderAsync(int id);

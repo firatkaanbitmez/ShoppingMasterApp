@@ -1,47 +1,45 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.User;
-using ShoppingMasterApp.Application.CQRS.Queries.User;
-using ShoppingMasterApp.Domain.Enums;
+using ShoppingMasterApp.Application.Interfaces.Services;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     public class UserController : BaseController
     {
-        private readonly IMediator _mediator;
+        private readonly IUserService _userService;
 
-        public UserController(IMediator mediator)
+        public UserController(IUserService userService)
         {
-            _mediator = mediator;
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser(RegisterUserCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserProfile(int id, UpdateUserProfileCommand command)
-        {
-            if (id != command.Id) return ApiError("Invalid User ID.");
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            _userService = userService;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
-            var result = await _mediator.Send(new GetUserByIdQuery { Id = id });
-            return ApiResponse(result);
+            var user = await _userService.GetUserByIdAsync(id);
+            return ApiResponse(user);
         }
 
-        [HttpGet("role/{role}")]
-        public async Task<IActionResult> GetUsersByRole(Roles roles)
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {
-            var result = await _mediator.Send(new GetUsersByRoleQuery { Roles = roles });
-            return ApiResponse(result);
+            await _userService.CreateUserAsync(command);
+            return ApiResponse(message: "User created successfully");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserCommand command)
+        {
+            command.Id = id;
+            await _userService.UpdateUserAsync(command);
+            return ApiResponse(message: "User updated successfully");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            await _userService.DeleteUserAsync(id);
+            return ApiResponse(message: "User deleted successfully");
         }
     }
 }

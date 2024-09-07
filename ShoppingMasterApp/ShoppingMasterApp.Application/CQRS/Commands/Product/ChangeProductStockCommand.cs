@@ -9,5 +9,6 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Product
     public class ChangeProductStockCommand
     {
         public int ProductId { get; set; }
+        public int Stock { get; internal set; }
     }
 }

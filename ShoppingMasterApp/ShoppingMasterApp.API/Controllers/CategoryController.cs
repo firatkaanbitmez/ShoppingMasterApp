@@ -1,64 +1,53 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Order;
-using ShoppingMasterApp.Application.CQRS.Queries.Category;
+using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     public class CategoryController : BaseController
     {
-        private readonly IMediator _mediator;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(IMediator mediator)
+        public CategoryController(ICategoryService categoryService)
         {
-            _mediator = mediator;
+            _categoryService = categoryService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategories()
+        {
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return ApiResponse(categories);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategory(int id)
+        {
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return ApiResponse(category);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            await _categoryService.CreateCategoryAsync(command);
+            return ApiResponse(message: "Category created successfully");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryCommand command)
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryCommand command)
         {
-            if (id != command.Id)
-            {
-                return ApiError("Category ID mismatch.");
-            }
-
-            var category = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
-            if (category == null)
-            {
-                return ApiError("Category not found.");
-            }
-
-            if (id != command.Id) return ApiError("Invalid Category ID.");
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            command.Id = id;
+            await _categoryService.UpdateCategoryAsync(command);
+            return ApiResponse(message: "Category updated successfully");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var result = await _mediator.Send(new DeleteCategoryCommand { Id = id });
-            return ApiResponse(result);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(int id)
-        {
-            var result = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
-            return ApiResponse(result);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
-        {
-            var result = await _mediator.Send(new GetAllCategoriesQuery());
-            return ApiResponse(result);
+            await _categoryService.DeleteCategoryAsync(id);
+            return ApiResponse(message: "Category deleted successfully");
         }
     }
 }

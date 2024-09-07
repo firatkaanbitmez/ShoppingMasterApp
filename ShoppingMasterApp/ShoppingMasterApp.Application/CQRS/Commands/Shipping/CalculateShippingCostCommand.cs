@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingMasterApp.Application.CQRS.Commands.User
+namespace ShoppingMasterApp.Application.CQRS.Commands.Shipping
 {
-    public class RegisterUserCommand
+    public class CalculateShippingCostCommand
     {
+       
     }
 }

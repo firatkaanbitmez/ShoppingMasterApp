@@ -1,6 +1,9 @@
-﻿using ShoppingMasterApp.Application.Interfaces.Services;
+﻿using ShoppingMasterApp.Application.CQRS.Commands.Review;
+using ShoppingMasterApp.Application.Interfaces.Services;
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public class ReviewService : IReviewService
 {
@@ -11,16 +14,34 @@ public class ReviewService : IReviewService
         _reviewRepository = reviewRepository;
     }
 
-    public async Task AddReviewAsync(Review review)
+    public async Task AddReviewAsync(AddReviewCommand command)
     {
+        if (command.Rating < 1 || command.Rating > 5)
+            throw new ArgumentException("Rating must be between 1 and 5.");
+
+        var review = new Review
+        {
+            Comment = command.Comment,
+            Rating = command.Rating,
+            ProductId = command.ProductId,
+            UserId = command.UserId
+        };
+
         await _reviewRepository.AddAsync(review);
         await _reviewRepository.SaveChangesAsync();
     }
 
-    public async Task UpdateReviewAsync(Review review)
+
+    public async Task UpdateReviewAsync(UpdateReviewCommand command)
     {
-        _reviewRepository.Update(review);
-        await _reviewRepository.SaveChangesAsync();
+        var existingReview = await _reviewRepository.GetByIdAsync(command.Id);
+        if (existingReview != null)
+        {
+            existingReview.Comment = command.Comment;
+            existingReview.Rating = command.Rating;
+            _reviewRepository.Update(existingReview);
+            await _reviewRepository.SaveChangesAsync();
+        }
     }
 
     public async Task DeleteReviewAsync(int reviewId)

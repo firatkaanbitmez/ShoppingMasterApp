@@ -8,5 +8,9 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Review
 {
     public class AddReviewCommand
     {
+        public int Rating { get; internal set; }
+        public string Comment { get; internal set; }
+        public int ProductId { get; internal set; }
+        public int UserId { get; internal set; }
     }
 }

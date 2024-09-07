@@ -12,9 +12,10 @@ namespace ShoppingMasterApp.Application.Validations
     {
         public CreateOrderValidator()
         {
-            RuleFor(o => o.ProductId).GreaterThan(0);
-            RuleFor(o => o.Quantity).GreaterThan(0);
+            RuleFor(x => x.ProductId).GreaterThan(0);
+            RuleFor(x => x.Quantity).GreaterThan(0);
         }
     }
+
 
 }

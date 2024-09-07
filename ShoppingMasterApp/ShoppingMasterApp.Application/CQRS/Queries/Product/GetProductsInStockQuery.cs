@@ -1,10 +1,9 @@
-﻿using MediatR;
-using ShoppingMasterApp.Application.DTOs;
+﻿using ShoppingMasterApp.Application.DTOs;
 using System.Collections.Generic;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Product
 {
-    public class GetProductsInStockQuery : IRequest<IEnumerable<ProductDto>>
+    public class GetProductsInStockQuery 
     {
     }
 }

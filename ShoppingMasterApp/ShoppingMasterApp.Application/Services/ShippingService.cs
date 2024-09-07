@@ -1,6 +1,8 @@
-﻿using ShoppingMasterApp.Application.Interfaces.Services;
+﻿using ShoppingMasterApp.Application.CQRS.Commands.Shipping;
+using ShoppingMasterApp.Application.Interfaces.Services;
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using ShoppingMasterApp.Domain.ValueObjects;
 
 public class ShippingService : IShippingService
 {
@@ -11,19 +13,7 @@ public class ShippingService : IShippingService
         _shippingRepository = shippingRepository;
     }
 
-    public async Task<Shipping> GetShippingByOrderIdAsync(int orderId)
-    {
-        return await _shippingRepository.GetShippingByOrderIdAsync(orderId);
-    }
+  
 
-    public async Task CreateShippingAsync(Shipping shipping)
-    {
-        await _shippingRepository.AddAsync(shipping);
-    }
 
-    public async Task UpdateShippingAsync(Shipping shipping)
-    {
-        _shippingRepository.Update(shipping);
-        await _shippingRepository.SaveChangesAsync();
-    }
 }

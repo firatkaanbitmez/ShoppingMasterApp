@@ -13,6 +13,12 @@ public class PaymentService : IPaymentService
 
     public async Task<Payment> ProcessPaymentAsync(Payment payment)
     {
+        if (payment.Amount.Amount <= 0) // Amount'ın decimal özelliğini kullanarak karşılaştırma yapıyoruz
+            throw new ArgumentException("Payment amount must be greater than zero.");
+
+        if (string.IsNullOrWhiteSpace(payment.PaymentDetails.CardNumber))
+            throw new ArgumentException("Card number is required.");
+
         await _paymentRepository.AddAsync(payment);
         return payment;
     }

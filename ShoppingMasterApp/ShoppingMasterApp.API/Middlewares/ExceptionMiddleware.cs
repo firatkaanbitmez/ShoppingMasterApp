@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using ShoppingMasterApp.Domain.Exceptions;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -33,16 +34,29 @@ namespace ShoppingMasterApp.API.Middlewares
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = new ErrorDetails
+            var response = exception switch
             {
-                StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error"
+                InvalidInputException => new ErrorDetails
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Invalid input provided."
+                },
+                UnauthorizedAccessException => new ErrorDetails
+                {
+                    StatusCode = (int)HttpStatusCode.Unauthorized,
+                    Message = "You are not authorized to access this resource."
+                },
+                _ => new ErrorDetails
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Message = "Internal Server Error."
+                }
             };
 
             return context.Response.WriteAsync(response.ToString());
         }
+
     }
 
     public class ErrorDetails

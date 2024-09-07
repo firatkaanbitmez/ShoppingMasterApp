@@ -1,52 +1,51 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Cart;
-using ShoppingMasterApp.Application.CQRS.Queries.Cart;
+using ShoppingMasterApp.Application.Interfaces.Services;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     public class CartController : BaseController
     {
-        private readonly IMediator _mediator;
+        private readonly ICartService _cartService;
 
-        public CartController(IMediator mediator)
+        public CartController(ICartService cartService)
         {
-            _mediator = mediator;
+            _cartService = cartService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddToCart(AddToCartCommand command)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetCart(int userId)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            var cart = await _cartService.GetUserCartAsync(userId);
+            return ApiResponse(cart);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCartItem(UpdateCartItemCommand command)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            await _cartService.AddToCartAsync(command);
+            return ApiResponse(message: "Product added to cart successfully");
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> RemoveFromCart(RemoveFromCartCommand command)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCart([FromBody] UpdateCartItemCommand command)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            await _cartService.UpdateCartItemAsync(command);
+            return ApiResponse(message: "Cart updated successfully");
         }
 
-        [HttpDelete("clear")]
-        public async Task<IActionResult> ClearCart(ClearCartCommand command)
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveFromCart([FromBody] RemoveFromCartCommand command)
         {
-            var result = await _mediator.Send(command);
-            return ApiResponse(result);
+            await _cartService.RemoveFromCartAsync(command);
+            return ApiResponse(message: "Item removed from cart successfully");
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetUserCart(int userId)
+        [HttpDelete("clear/{cartId}")]
+        public async Task<IActionResult> ClearCart(int cartId)
         {
-            var result = await _mediator.Send(new GetUserCartQuery { UserId = userId });
-            return ApiResponse(result);
+            await _cartService.ClearCartAsync(cartId);
+            return ApiResponse(message: "Cart cleared successfully");
         }
     }
 }

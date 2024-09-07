@@ -1,9 +1,8 @@
-﻿using MediatR;
-using ShoppingMasterApp.Application.DTOs;
+﻿using ShoppingMasterApp.Application.DTOs;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Cart
 {
-    public class GetCartItemsQuery : IRequest<CartDto>
+    public class GetCartItemsQuery 
     {
         public int UserId { get; set; }
     }

@@ -1,5 +1,4 @@
-﻿using MediatR;
-using ProductEntity = ShoppingMasterApp.Domain.Entities.Product;
+﻿using ProductEntity = ShoppingMasterApp.Domain.Entities.Product;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.Product
 {

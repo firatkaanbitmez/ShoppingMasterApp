@@ -32,6 +32,12 @@ namespace ShoppingMasterApp.Application.Services
             var order = await _orderRepository.GetByIdAsync(id);
             return _mapper.Map<OrderDto>(order);
         }
+        public async Task<IEnumerable<OrderDto>> GetUserOrdersAsync(int userId)
+        {
+            var orders = await _orderRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<OrderDto>>(orders.Where(o => o.UserId == userId));
+        }
+
 
         public async Task CreateOrderAsync(CreateOrderCommand command)
         {

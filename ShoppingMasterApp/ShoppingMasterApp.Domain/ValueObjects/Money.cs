@@ -2,25 +2,19 @@
 {
     public class Money
     {
-        public decimal Amount { get; }
-        public string Currency { get; }
+        public decimal Amount { get; private set; }
+        public string Currency { get; private set; }
 
         public Money(decimal amount, string currency)
         {
+            if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+            if (string.IsNullOrWhiteSpace(currency)) throw new ArgumentException("Currency cannot be empty");
+
             Amount = amount;
             Currency = currency;
         }
-
-        // Overload the multiplication operator to allow multiplying Money by an integer
-        public static Money operator *(Money money, int quantity)
-        {
-            return new Money(money.Amount * quantity, money.Currency);
-        }
-
-        // Override ToString for easier display
-        public override string ToString()
-        {
-            return $"{Amount} {Currency}";
-        }
     }
+
+
+
 }

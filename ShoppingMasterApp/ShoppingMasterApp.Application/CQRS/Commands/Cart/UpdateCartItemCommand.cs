@@ -1,9 +1,8 @@
-﻿using MediatR;
-using ShoppingMasterApp.Application.DTOs;
+﻿using ShoppingMasterApp.Application.DTOs;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.Cart
 {
-    public class UpdateCartItemCommand : IRequest<CartDto>
+    public class UpdateCartItemCommand 
     {
         public int ProductId { get; set; }
         public int Quantity { get; set; }

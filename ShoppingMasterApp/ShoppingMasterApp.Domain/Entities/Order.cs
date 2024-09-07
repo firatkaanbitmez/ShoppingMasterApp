@@ -1,4 +1,5 @@
 ﻿using ShoppingMasterApp.Domain.Common;
+using ShoppingMasterApp.Domain.ValueObjects;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
@@ -8,7 +9,7 @@ namespace ShoppingMasterApp.Domain.Entities
         public User User { get; set; }
         public DateTime OrderDate { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
-        public decimal TotalAmount => OrderItems.Sum(item => item.TotalPrice);  // Dynamic total amount
+        public Money TotalAmount { get; set; }  // Money Value Object
         public Payment Payment { get; set; }
         public Shipping Shipping { get; set; }
     }
