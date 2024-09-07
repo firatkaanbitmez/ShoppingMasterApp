@@ -1,19 +1,14 @@
 ﻿using ShoppingMasterApp.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ShoppingMasterApp.Domain.ValueObjects;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
-    public class Shipping : BaseEntity, IAggregateRoot
+    public class Shipping : BaseEntity
     {
         public int OrderId { get; set; }
         public Order Order { get; set; }
-        public string ShippingAddress { get; set; }
-        public string Status { get; set; }  // Hazırlanıyor, Kargoya verildi, Teslim edildi
+        public Address ShippingAddress { get; set; }  // ValueObject for address
+        public string Status { get; set; }  // Status like 'Shipped', 'In Process', 'Delivered'
         public DateTime ShippedDate { get; set; }
     }
-
 }

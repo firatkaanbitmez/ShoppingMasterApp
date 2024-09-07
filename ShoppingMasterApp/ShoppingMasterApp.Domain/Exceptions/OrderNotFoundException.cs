@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Exceptions
 {
-    internal class OrderNotFoundException
+    public class OrderNotFoundException : Exception
     {
+        public OrderNotFoundException(int id)
+            : base($"Order with id {id} not found.") { }
     }
 }

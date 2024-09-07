@@ -1,20 +1,20 @@
 ﻿using ShoppingMasterApp.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
-    public class OrderItem : BaseEntity, IAggregateRoot
+    public class OrderItem : BaseEntity
     {
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
+        public int ProductId { get; private set; }
+        public decimal UnitPrice { get; private set; }
+        public int Quantity { get; private set; }
+        public decimal TotalPrice => UnitPrice * Quantity;
+
+        public OrderItem(int productId, decimal unitPrice, int quantity)
+        {
+            ProductId = productId;
+            UnitPrice = unitPrice;
+            Quantity = quantity;
+        }
     }
 
 }

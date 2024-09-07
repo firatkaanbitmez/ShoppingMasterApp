@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
 namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
-    public interface IBaseRepository<TEntity> where TEntity : class
+    public interface IBaseRepository<T> where T : class
     {
-        Task<TEntity> GetByIdAsync(int id);
-        Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<TEntity> AddAsync(TEntity entity);
-        Task UpdateAsync(TEntity entity);
-        Task DeleteAsync(TEntity entity);
+        Task<T> GetByIdAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task AddAsync(T entity);
+        void Update(T entity);
+        void Delete(T entity);
+        Task SaveChangesAsync();
     }
+
 }

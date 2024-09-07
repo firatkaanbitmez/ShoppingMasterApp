@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Exceptions
 {
-    internal class CategoryNotFoundException
+    public class CategoryNotFoundException : Exception
     {
+        public CategoryNotFoundException(int id)
+            : base($"Category with id {id} not found.") { }
     }
 }

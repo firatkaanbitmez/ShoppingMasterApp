@@ -1,55 +1,69 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
-using ShoppingMasterApp.Application.Interfaces.Services;
+using ShoppingMasterApp.Application.CQRS.Queries.Product;
 
 namespace ShoppingMasterApp.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class ProductController : BaseController
     {
-        private readonly IProductService _productService;
+        private readonly IMediator _mediator;
 
-        public ProductController(IProductService productService)
+        public ProductController(IMediator mediator)
         {
-            _productService = productService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var result = await _productService.GetAllProductsAsync();
-            return HandleResponse(result);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int id)
-        {
-            var result = await _productService.GetProductByIdAsync(id);
-            return HandleResponse(result);
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
+        public async Task<IActionResult> CreateProduct(CreateProductCommand command)
         {
-            var result = await _productService.CreateProductAsync(command);
-            return HandleResponse(result);
+            var result = await _mediator.Send(command);
+            return ApiResponse(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommand command)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, UpdateProductCommand command)
         {
-            var result = await _productService.UpdateProductAsync(command);
-            return HandleResponse(result);
+            if (id != command.Id) return ApiError("Invalid Product ID.");
+            var result = await _mediator.Send(command);
+            return ApiResponse(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            await _productService.DeleteProductAsync(id);
-            return Ok();  // Bu durumda sadece başarılı bir işlem olduğunu belirten bir yanıt dönüyoruz
+            var result = await _mediator.Send(new DeleteProductCommand { Id = id });
+            return ApiResponse(result);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
+        {
+            var result = await _mediator.Send(new GetProductByIdQuery { Id = id });
+            return ApiResponse(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var result = await _mediator.Send(new GetAllProductsQuery());
+            return ApiResponse(result);
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetProductsByCategory(int categoryId)
+        {
+            var result = await _mediator.Send(new GetProductsByCategoryQuery { CategoryId = categoryId });
+            return ApiResponse(result);
+        }
+
+        [HttpPut("{id}/stock")]
+        public async Task<IActionResult> ChangeProductStock(int id, ChangeProductStockCommand command)
+        {
+            if (id != command.ProductId) return ApiError("Invalid Product ID.");
+            var result = await _mediator.Send(command);
+            return ApiResponse(result);
+        }
     }
 }

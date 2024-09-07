@@ -3,69 +3,55 @@
 namespace ShoppingMasterApp.API.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public abstract class BaseController : ControllerBase
     {
-        protected IActionResult HandleResponse<T>(T result)
+        /// <summary>
+        /// Standardized success response.
+        /// </summary>
+        /// <typeparam name="T">Type of the result</typeparam>
+        /// <param name="result">Result object to return</param>
+        /// <param name="statusCode">Optional status code, defaults to 200 (OK)</param>
+        /// <returns>Standardized success response</returns>
+        protected IActionResult ApiResponse<T>(T result, int statusCode = 200)
         {
-            if (result is bool boolResult && !boolResult)
-            {
-                return NotFound(new ApiResponse<T>
-                {
-                    Success = false,
-                    Message = "Record not found",
-                    StatusCode = 404,
-                    Data = result
-                });
-            }
-
             if (result == null)
             {
-                return NotFound(new ApiResponse<T>
-                {
-                    Success = false,
-                    Message = "No data found",
-                    StatusCode = 404,
-                    Data = result
-                });
+                return NotFound(new ApiResponse<T>(statusCode: 404, isSuccess: false, errorMessage: "Resource not found"));
             }
 
-            return Ok(new ApiResponse<T>
-            {
-                Success = true,
-                Message = "Request successful",
-                StatusCode = 200,
-                Data = result
-            });
+            return StatusCode(statusCode, new ApiResponse<T>(statusCode: statusCode, isSuccess: true, data: result));
         }
 
-        protected IActionResult HandleErrorResponse(string errorMessage, int statusCode = 400)
+        /// <summary>
+        /// Standardized error response for validation or processing errors.
+        /// </summary>
+        /// <param name="errorMessage">The error message to display</param>
+        /// <param name="statusCode">Optional status code, defaults to 400 (BadRequest)</param>
+        /// <returns>Standardized error response</returns>
+        protected IActionResult ApiError(string errorMessage, int statusCode = 400)
         {
-            return StatusCode(statusCode, new ApiResponse<string>
-            {
-                Success = false,
-                Message = errorMessage,
-                StatusCode = statusCode,
-                Data = null
-            });
-        }
-
-        protected IActionResult HandleExceptionResponse(Exception ex)
-        {
-            return StatusCode(500, new ApiResponse<string>
-            {
-                Success = false,
-                Message = $"An internal server error occurred: {ex.Message}",
-                StatusCode = 500,
-                Data = null
-            });
+            return StatusCode(statusCode, new ApiResponse<string>(statusCode: statusCode, isSuccess: false, errorMessage: errorMessage));
         }
     }
 
+    /// <summary>
+    /// Standard API response wrapper.
+    /// </summary>
+    /// <typeparam name="T">Type of the response data</typeparam>
     public class ApiResponse<T>
     {
-        public bool Success { get; set; }
-        public string Message { get; set; }
         public int StatusCode { get; set; }
+        public bool IsSuccess { get; set; }
         public T Data { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public ApiResponse(int statusCode, bool isSuccess, T data = default, string errorMessage = null)
+        {
+            StatusCode = statusCode;
+            IsSuccess = isSuccess;
+            Data = data;
+            ErrorMessage = errorMessage;
+        }
     }
 }

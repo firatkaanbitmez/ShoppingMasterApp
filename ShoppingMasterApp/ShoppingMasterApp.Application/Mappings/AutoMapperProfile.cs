@@ -16,17 +16,7 @@ namespace ShoppingMasterApp.Application.Mappings
     {
         public AutoMapperProfile()
         {
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<CreateCategoryCommand, Category>();
-            CreateMap<UpdateCategoryCommand, Category>();
-
-            CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<CreateProductCommand, Product>();
-            CreateMap<UpdateProductCommand, Product>();
-
-            CreateMap<Order, OrderDto>().ReverseMap();
-            CreateMap<CreateOrderCommand, Order>();
-            CreateMap<UpdateOrderCommand, Order>();
+           
         }
     }
 

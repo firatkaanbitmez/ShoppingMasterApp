@@ -10,13 +10,12 @@ namespace ShoppingMasterApp.API.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                context.Result = new BadRequestObjectResult(new ApiResponse<object>
-                {
-                    Success = false,
-                    Message = "Validation error",
-                    StatusCode = 400,
-                    Data = context.ModelState
-                });
+                context.Result = new BadRequestObjectResult(new ApiResponse<object>(
+                    statusCode: 400,
+                    isSuccess: false,
+                    data: context.ModelState,
+                    errorMessage: "Validation error"
+                ));
             }
         }
 

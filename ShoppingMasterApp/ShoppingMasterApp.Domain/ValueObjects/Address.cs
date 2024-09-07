@@ -19,6 +19,6 @@
             Country = country;
         }
 
-      
+        // Equality override for ValueObject comparison
     }
 }
