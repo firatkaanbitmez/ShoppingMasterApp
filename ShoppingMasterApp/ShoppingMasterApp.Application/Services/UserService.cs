@@ -90,15 +90,26 @@ public class UserService : IUserService
         var existingUser = await _userRepository.GetByIdAsync(command.Id);
         if (existingUser != null)
         {
+            // Sadece gönderilen alanları güncelleme
             existingUser.FirstName = command.FirstName;
             existingUser.LastName = command.LastName;
             existingUser.Email = command.Email;
             existingUser.Roles = command.Roles;
-            existingUser.Address = MapAddress(command.Address); // Adres güncellemesi
+
+            // Adres güncellemesi
+            existingUser.Address = MapAddress(command.Address);
+
+            // Şifre kontrolü: Şifre güncellenmek isteniyorsa
+            if (!string.IsNullOrWhiteSpace(command.Password))
+            {
+                existingUser.PasswordHash = HashPassword(command.Password);
+            }
+
             _userRepository.Update(existingUser);
             await _userRepository.SaveChangesAsync();
         }
     }
+
     public async Task DeleteUserAsync(int id)
     {
         var user = await _userRepository.GetByIdAsync(id);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.User;
 using ShoppingMasterApp.Application.Interfaces.Services;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -17,35 +18,61 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
-            return ApiResponse(user);
+
+            if (user == null)
+            {
+                return ApiNotFound("User not found");
+            }
+
+            return ApiSuccess(user, "User retrieved successfully");
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {
-            await _userService.CreateUserAsync(command);
-            return ApiResponse(message: "User created successfully");
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
-        {
-            var user = await _userService.GetUserByIdAsync(command.Id); // ID body'den alınıyor
-            if (user == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound(new { message = "User not found" });
+                return ApiValidationError(ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
             }
 
+            await _userService.CreateUserAsync(command);
+            return ApiSuccess<object>(null, "User created successfully");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ApiValidationError(ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            var user = await _userService.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                return ApiNotFound("User not found");
+            }
+
+            command.Id = id; // Route'dan gelen ID'yi komuta aktar
+
             await _userService.UpdateUserAsync(command);
-            return Ok(new { message = "User updated successfully" });
+            return ApiSuccess<object>(null, "User updated successfully");
         }
 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            var user = await _userService.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                return ApiNotFound("User not found");
+            }
+
             await _userService.DeleteUserAsync(id);
-            return ApiResponse(message: "User deleted successfully");
+            return ApiSuccess<object>(null, "User deleted successfully");
         }
     }
 }

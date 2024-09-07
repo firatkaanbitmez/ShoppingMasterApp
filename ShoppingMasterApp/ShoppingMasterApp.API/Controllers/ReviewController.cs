@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Review;
 using ShoppingMasterApp.Application.Interfaces.Services;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -17,14 +18,14 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> AddReview([FromBody] AddReviewCommand command)
         {
             await _reviewService.AddReviewAsync(command);
-            return ApiResponse(message: "Review added successfully");
+            return ApiSuccess<object>(null, "Review added successfully");
         }
 
         [HttpDelete("{reviewId}")]
         public async Task<IActionResult> DeleteReview(int reviewId)
         {
             await _reviewService.DeleteReviewAsync(reviewId);
-            return ApiResponse(message: "Review deleted successfully");
+            return ApiSuccess<object>(null, "Review deleted successfully");
         }
     }
 }

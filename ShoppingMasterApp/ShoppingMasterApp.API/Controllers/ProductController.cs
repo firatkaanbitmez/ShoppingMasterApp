@@ -2,6 +2,7 @@
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
 using ShoppingMasterApp.Application.Interfaces.Services;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -18,21 +19,27 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> GetProducts()
         {
             var products = await _productService.GetAllProductsAsync();
-            return ApiResponse(products);
+            return ApiSuccess(products, "Products retrieved successfully");
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
-            return ApiResponse(product);
+
+            if (product == null)
+            {
+                return ApiNotFound("Product not found");
+            }
+
+            return ApiSuccess(product, "Product retrieved successfully");
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
             await _productService.CreateProductAsync(command);
-            return ApiResponse(message: "Product created successfully");
+            return ApiSuccess<object>(null, "Product created successfully");
         }
 
         [HttpPut("{id}")]
@@ -40,14 +47,14 @@ namespace ShoppingMasterApp.API.Controllers
         {
             command.Id = id;
             await _productService.UpdateProductAsync(command);
-            return ApiResponse(message: "Product updated successfully");
+            return ApiSuccess<object>(null, "Product updated successfully");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             await _productService.DeleteProductAsync(id);
-            return ApiResponse(message: "Product deleted successfully");
+            return ApiSuccess<object>(null, "Product deleted successfully");
         }
     }
 }

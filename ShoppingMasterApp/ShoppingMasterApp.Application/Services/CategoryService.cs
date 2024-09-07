@@ -38,6 +38,7 @@ namespace ShoppingMasterApp.Application.Services
         {
             var category = _mapper.Map<Category>(command);
             await _categoryRepository.AddAsync(category);
+            await _categoryRepository.SaveChangesAsync(); // Veritabanına kaydedilir
         }
 
         public async Task UpdateCategoryAsync(UpdateCategoryCommand command)
@@ -45,9 +46,9 @@ namespace ShoppingMasterApp.Application.Services
             var category = await _categoryRepository.GetByIdAsync(command.Id);
             if (category == null) throw new CategoryNotFoundException(command.Id);
 
-            _mapper.Map(command, category);
+            _mapper.Map(command, category); // Command'dan gelen verileri var olan kategoriye yansıtır
             _categoryRepository.Update(category);
-            await _categoryRepository.SaveChangesAsync();
+            await _categoryRepository.SaveChangesAsync(); // Değişiklikleri kaydet
         }
 
         public async Task DeleteCategoryAsync(int id)
@@ -56,8 +57,7 @@ namespace ShoppingMasterApp.Application.Services
             if (category == null) throw new CategoryNotFoundException(id);
 
             _categoryRepository.Delete(category);
-            await _categoryRepository.SaveChangesAsync();
+            await _categoryRepository.SaveChangesAsync(); // Silme işlemi kaydedilir
         }
     }
-
 }

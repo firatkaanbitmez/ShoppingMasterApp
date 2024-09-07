@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShoppingMasterApp.Domain.Entities;
+﻿using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
 using ShoppingMasterApp.Infrastructure.Repositories;

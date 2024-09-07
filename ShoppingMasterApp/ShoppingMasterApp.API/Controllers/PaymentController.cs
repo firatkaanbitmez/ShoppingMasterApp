@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Payment;
 using ShoppingMasterApp.Application.Interfaces.Services;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -19,22 +20,20 @@ namespace ShoppingMasterApp.API.Controllers
             await _paymentService.ProcessPaymentAsync(new Domain.Entities.Payment
             {
                 OrderId = command.OrderId,
-                Amount = new Domain.ValueObjects.Money(command.Amount, "USD"), // Money kullanımı
+                Amount = new Domain.ValueObjects.Money(command.Amount, "USD"),
                 PaymentDetails = new Domain.ValueObjects.PaymentDetails(command.CardType, command.CardNumber, command.ExpiryDate)
             });
 
-            return ApiResponse(message: "Payment processed successfully");
+            return ApiSuccess<object>(null, "Payment processed successfully");
         }
 
         [HttpGet("status/{orderId}")]
         public async Task<IActionResult> GetPaymentStatus(int orderId)
         {
             var payment = await _paymentService.GetPaymentStatusAsync(orderId);
-
-            // Amount artık Money türünde olduğundan sadece Amount kullanılabilir
             var amount = payment.Amount.Amount;
 
-            return ApiResponse(new { Amount = amount });
+            return ApiSuccess(new { Amount = amount }, "Payment status retrieved successfully");
         }
     }
 }
