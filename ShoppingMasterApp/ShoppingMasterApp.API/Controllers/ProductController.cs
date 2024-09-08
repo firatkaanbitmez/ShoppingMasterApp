@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
+using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Application.Interfaces.Services;
+using ShoppingMasterApp.Domain.Exceptions;
+using ShoppingMasterApp.Domain.Models;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
@@ -25,14 +28,15 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
-
-            if (product == null)
+            try
             {
-                return ApiNotFound("Product not found");
+                var product = await _productService.GetProductByIdAsync(id);
+                return ApiSuccess(product, "Product retrieved successfully");
             }
-
-            return ApiSuccess(product, "Product retrieved successfully");
+            catch (ProductNotFoundException ex)
+            {
+                return ApiNotFound(ex.Message); // Ürün bulunamadığında anlamlı hata döner
+            }
         }
 
         [HttpPost]
@@ -45,16 +49,44 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
         {
-            command.Id = id;
-            await _productService.UpdateProductAsync(command);
-            return ApiSuccess<object>(null, "Product updated successfully");
+            try
+            {
+                command.Id = id;
+                await _productService.UpdateProductAsync(command);
+                return ApiSuccess<object>(null, "Product updated successfully");
+            }
+            catch (ProductNotFoundException ex)
+            {
+                return ApiNotFound(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            await _productService.DeleteProductAsync(id);
-            return ApiSuccess<object>(null, "Product deleted successfully");
+            try
+            {
+                await _productService.DeleteProductAsync(id);
+                return ApiSuccess<object>(null, "Product deleted successfully");
+            }
+            catch (ProductNotFoundException ex)
+            {
+                return ApiNotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedProducts([FromQuery] PagedQuery query)
+        {
+            var products = await _productService.GetPagedProductsAsync(query);
+            return ApiSuccess(products, "Paged products retrieved successfully");
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetProductsByCategory(int categoryId)
+        {
+            var products = await _productService.GetProductsByCategoryAsync(categoryId);
+            return ApiSuccess(products, "Products retrieved successfully by category");
         }
     }
 }

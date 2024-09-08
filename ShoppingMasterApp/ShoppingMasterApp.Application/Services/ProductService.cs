@@ -7,8 +7,6 @@ using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Exceptions;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Domain.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class ProductService : IProductService
 {
@@ -30,41 +28,28 @@ public class ProductService : IProductService
     public async Task<ProductDto> GetProductByIdAsync(int id)
     {
         var product = await _productRepository.GetByIdAsync(id);
+        if (product == null) throw new ProductNotFoundException(id); // Product bulunamazsa hata fırlatılır
         return _mapper.Map<ProductDto>(product);
     }
+
     public async Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId)
     {
         var products = await _productRepository.GetAllAsync();
         var filteredProducts = products.Where(p => p.CategoryId == categoryId);
         return _mapper.Map<IEnumerable<ProductDto>>(filteredProducts);
     }
-    public async Task ChangeProductStockAsync(ChangeProductStockCommand command)
-    {
-        var product = await _productRepository.GetByIdAsync(command.ProductId);
-        if (product != null)
-        {
-            product.Stock = command.Stock;
-            _productRepository.Update(product);
-            await _productRepository.SaveChangesAsync();
-        }
-    }
+
     public async Task<IEnumerable<ProductDto>> GetPagedProductsAsync(PagedQuery query)
     {
         var products = await _productRepository.GetPagedProductsAsync(query);
-        return products.Select(product => new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Price = product.Price.Amount,  // Assuming Price is a value object
-            Stock = product.Stock,
-            CategoryName = product.Category.Name
-        }).ToList();
+        return _mapper.Map<IEnumerable<ProductDto>>(products);
     }
 
     public async Task CreateProductAsync(CreateProductCommand command)
     {
         var product = _mapper.Map<Product>(command);
         await _productRepository.AddAsync(product);
+        await _productRepository.SaveChangesAsync(); // Ürün eklendikten sonra kaydediliyor
     }
 
     public async Task UpdateProductAsync(UpdateProductCommand command)
@@ -74,7 +59,7 @@ public class ProductService : IProductService
 
         _mapper.Map(command, product);
         _productRepository.Update(product);
-        await _productRepository.SaveChangesAsync();
+        await _productRepository.SaveChangesAsync(); // Güncelleme kaydediliyor
     }
 
     public async Task DeleteProductAsync(int id)
@@ -83,6 +68,17 @@ public class ProductService : IProductService
         if (product == null) throw new ProductNotFoundException(id);
 
         _productRepository.Delete(product);
-        await _productRepository.SaveChangesAsync();
+        await _productRepository.SaveChangesAsync(); // Silme işlemi kaydediliyor
+    }
+
+    public async Task ChangeProductStockAsync(ChangeProductStockCommand command)
+    {
+        var product = await _productRepository.GetByIdAsync(command.ProductId);
+        if (product != null)
+        {
+            product.Stock = command.Stock;
+            _productRepository.Update(product);
+            await _productRepository.SaveChangesAsync();
+        }
     }
 }

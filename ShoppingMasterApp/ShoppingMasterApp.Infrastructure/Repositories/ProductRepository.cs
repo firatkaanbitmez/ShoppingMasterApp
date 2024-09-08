@@ -4,6 +4,9 @@ using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Domain.Models;
 using ShoppingMasterApp.Infrastructure.Persistence;
 using ShoppingMasterApp.Infrastructure.Repositories;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class ProductRepository : BaseRepository<Product>, IProductRepository
 {

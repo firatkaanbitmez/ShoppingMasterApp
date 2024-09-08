@@ -9,6 +9,7 @@ using ShoppingMasterApp.Application.CQRS.Commands.Shipping;
 using ShoppingMasterApp.Application.CQRS.Commands.User;
 using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.ValueObjects;
 
 namespace ShoppingMasterApp.Application.Mappings
 {
@@ -35,10 +36,18 @@ namespace ShoppingMasterApp.Application.Mappings
             CreateMap<AddOrderItemCommand, OrderItem>().ReverseMap();
 
             // Product Mappings
-            CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<CreateProductCommand, Product>().ReverseMap();
-            CreateMap<UpdateProductCommand, Product>().ReverseMap();
+            
             CreateMap<ChangeProductStockCommand, Product>().ReverseMap();
+
+            CreateMap<CreateProductCommand, Product>()
+               .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD"))); // Decimal to Money mapping
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+
+            CreateMap<UpdateProductCommand, Product>()
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD"))); // Decimal to Money mapping
+
+
 
             // User Mappings
             CreateMap<User, UserDto>().ReverseMap();

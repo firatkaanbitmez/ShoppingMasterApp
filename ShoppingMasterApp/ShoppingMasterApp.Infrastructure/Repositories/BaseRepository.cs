@@ -5,40 +5,38 @@ using System.Linq.Expressions;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
     {
-        private readonly ApplicationDbContext _context;
-        private readonly DbSet<T> _dbSet;
+        protected readonly ApplicationDbContext _context;
 
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _dbSet.FindAsync(id);
+            return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<TEntity> GetByIdAsync(int id)
         {
-            return await _dbSet.ToListAsync();
+            return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
+            await _context.Set<TEntity>().AddAsync(entity);
         }
 
-        public void Update(T entity)
+        public void Update(TEntity entity)
         {
-            _dbSet.Update(entity);
+            _context.Set<TEntity>().Update(entity);
         }
 
-        public void Delete(T entity)
+        public void Delete(TEntity entity)
         {
-            _dbSet.Remove(entity);
+            _context.Set<TEntity>().Remove(entity);
         }
 
         public async Task SaveChangesAsync()
@@ -46,5 +44,6 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
     }
+
 
 }
