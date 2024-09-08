@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShoppingMasterApp.Domain.Entities;
+﻿using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.Enums;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
@@ -14,9 +17,9 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<User>> GetUsersByRoleAsync(string role)
+        public async Task<IEnumerable<User>> FindByConditionAsync(System.Linq.Expressions.Expression<System.Func<User, bool>> predicate)
         {
-            return await _context.Users.Where(u => u.Roles == role).ToListAsync();
+            return await _context.Users.Where(predicate).ToListAsync();
         }
     }
 }

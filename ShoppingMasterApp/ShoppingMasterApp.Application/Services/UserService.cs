@@ -1,122 +1,97 @@
-﻿using ShoppingMasterApp.Application.CQRS.Commands.User;
+﻿using AutoMapper;
+using ShoppingMasterApp.Application.CQRS.Commands.User;
+using ShoppingMasterApp.Application.CQRS.Queries.User;
+using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Application.Interfaces.Services;
 using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.Enums;
+using ShoppingMasterApp.Domain.Exceptions;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
-using ShoppingMasterApp.Domain.ValueObjects;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-public class UserService : IUserService
+namespace ShoppingMasterApp.Application.Services
 {
-    private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
+    public class UserService : IUserService
     {
-        _userRepository = userRepository;
-    }
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-    public async Task<User> RegisterUserAsync(User user)
-    {
-        await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
-        return user;
-    }
-
-    public async Task UpdateUserProfileAsync(User user)
-    {
-        var existingUser = await _userRepository.GetByIdAsync(user.Id);
-        if (existingUser != null)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
-            existingUser.Email = user.Email;
-            _userRepository.Update(existingUser);
+            _userRepository = userRepository;
+            _mapper = mapper;
+        }
+
+        public async Task<UserDto> CreateUserAsync(CreateUserCommand command)
+        {
+            var user = _mapper.Map<User>(command);
+
+            // Hash the password before saving
+            user.PasswordHash = HashPassword(command.Password);
+
+            await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
+
+            return _mapper.Map<UserDto>(user);
         }
-    }
-
-    public async Task<User> GetUserByIdAsync(int id)
-    {
-        return await _userRepository.GetByIdAsync(id);
-    }
-
-    public async Task<IEnumerable<User>> GetUsersByRoleAsync(string role)
-    {
-        return await _userRepository.GetUsersByRoleAsync(role);
-    }
-
-    public async Task CreateUserAsync(CreateUserCommand command)
-    {
-        var newUser = new ShoppingMasterApp.Domain.Entities.User
+        private string HashPassword(string password)
         {
-            FirstName = command.FirstName,
-            LastName = command.LastName,
-            Email = command.Email,
-            PasswordHash = HashPassword(command.Password),
-            Roles = command.Roles,
-            Address = MapAddress(command.Address) // Address map edilerek atanıyor
-        };
-        await _userRepository.AddAsync(newUser);
-        await _userRepository.SaveChangesAsync();
-    }
-
-    public ShoppingMasterApp.Domain.Entities.Address MapAddress(ShoppingMasterApp.Domain.ValueObjects.Address valueObjectAddress)
-    {
-        return new ShoppingMasterApp.Domain.Entities.Address
-        {
-            AddressLine1 = valueObjectAddress.AddressLine1,
-            AddressLine2 = valueObjectAddress.AddressLine2,
-            City = valueObjectAddress.City,
-            State = valueObjectAddress.State,
-            PostalCode = valueObjectAddress.PostalCode,
-            Country = valueObjectAddress.Country
-        };
-    }
-
-
-    private string HashPassword(string password)
-    {
-        using (var sha256 = SHA256.Create())
-        {
-            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
-        }
-    }
-
-    public async Task UpdateUserAsync(UpdateUserCommand command)
-    {
-        var existingUser = await _userRepository.GetByIdAsync(command.Id);
-        if (existingUser != null)
-        {
-            // Sadece gönderilen alanları güncelleme
-            existingUser.FirstName = command.FirstName;
-            existingUser.LastName = command.LastName;
-            existingUser.Email = command.Email;
-            existingUser.Roles = command.Roles;
-
-            // Adres güncellemesi
-            existingUser.Address = MapAddress(command.Address);
-
-            // Şifre kontrolü: Şifre güncellenmek isteniyorsa
-            if (!string.IsNullOrWhiteSpace(command.Password))
+            using (var sha256 = SHA256.Create())
             {
-                existingUser.PasswordHash = HashPassword(command.Password);
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
+            }
+        }
+        public async Task<UserDto> UpdateUserAsync(UpdateUserCommand command)
+        {
+            var user = await _userRepository.GetByIdAsync(command.Id);
+            if (user == null)
+            {
+                throw new NotFoundException($"User with ID {command.Id} not found");
             }
 
-            _userRepository.Update(existingUser);
+            _mapper.Map(command, user);
+            _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
+            return _mapper.Map<UserDto>(user);
         }
-    }
 
-    public async Task DeleteUserAsync(int id)
-    {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user != null)
+        public async Task DeleteUserAsync(int id)
         {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new NotFoundException($"User with ID {id} not found");
+            }
+
             _userRepository.Delete(user);
             await _userRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<UserDto>>(users);
+        }
+
+        public async Task<UserDto> GetUserByIdAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new NotFoundException($"User with ID {id} not found");
+            }
+
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<IEnumerable<UserDto>> GetUsersByRoleAsync(Roles role)
+        {
+            var users = await _userRepository.FindByConditionAsync(u => u.Roles == role);
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
     }
 }

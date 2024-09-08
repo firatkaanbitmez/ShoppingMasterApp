@@ -56,7 +56,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Roles = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Roles = table.Column<int>(type: "int", nullable: false),
                     AddressLine1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressLine2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),

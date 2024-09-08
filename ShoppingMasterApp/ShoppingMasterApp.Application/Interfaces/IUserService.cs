@@ -1,5 +1,7 @@
 ﻿using ShoppingMasterApp.Application.CQRS.Commands.User;
-using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Application.CQRS.Queries.User;
+using ShoppingMasterApp.Application.DTOs;
+using ShoppingMasterApp.Domain.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,12 +9,11 @@ namespace ShoppingMasterApp.Application.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<User> GetUserByIdAsync(int id);
-        Task<IEnumerable<User>> GetUsersByRoleAsync(string role);
-        Task<User> RegisterUserAsync(User user);
-        Task UpdateUserProfileAsync(User user);
-        Task CreateUserAsync(CreateUserCommand command);  
-        Task UpdateUserAsync(UpdateUserCommand command);  
-        Task DeleteUserAsync(int id);                     
+        Task<UserDto> CreateUserAsync(CreateUserCommand command);
+        Task<UserDto> UpdateUserAsync(UpdateUserCommand command);
+        Task DeleteUserAsync(int id);
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<UserDto> GetUserByIdAsync(int id);
+        Task<IEnumerable<UserDto>> GetUsersByRoleAsync(Roles role);
     }
 }

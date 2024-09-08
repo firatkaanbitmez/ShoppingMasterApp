@@ -377,10 +377,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -396,9 +392,8 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Roles")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Roles")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -577,7 +572,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.Entities.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<int>("ShippingId")
                                 .HasColumnType("int");
@@ -628,7 +623,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>
                 {
-                    b.OwnsOne("ShoppingMasterApp.Domain.Entities.Address", "Address", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");
@@ -671,7 +666,28 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Email", "Email", b1 =>
+                        {
+                            b1.Property<int>("UserId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("Email")
                         .IsRequired();
                 });
 

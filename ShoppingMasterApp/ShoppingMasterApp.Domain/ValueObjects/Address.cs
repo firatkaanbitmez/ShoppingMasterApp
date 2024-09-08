@@ -20,18 +20,5 @@
             PostalCode = postalCode;
             Country = country;
         }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Address other)
-                return AddressLine1 == other.AddressLine1 && City == other.City && Country == other.Country;
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(AddressLine1, City, Country);
-        }
     }
-
 }

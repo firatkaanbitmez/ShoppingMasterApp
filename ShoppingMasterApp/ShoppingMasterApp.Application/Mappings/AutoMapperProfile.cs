@@ -36,7 +36,6 @@ namespace ShoppingMasterApp.Application.Mappings
             CreateMap<AddOrderItemCommand, OrderItem>().ReverseMap();
 
             // Product Mappings
-            
             CreateMap<ChangeProductStockCommand, Product>().ReverseMap();
 
             CreateMap<CreateProductCommand, Product>()
@@ -47,12 +46,18 @@ namespace ShoppingMasterApp.Application.Mappings
             CreateMap<UpdateProductCommand, Product>()
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD"))); // Decimal to Money mapping
 
-
-
             // User Mappings
-            CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<CreateUserCommand, User>().ReverseMap();
-            CreateMap<UpdateUserCommand, User>().ReverseMap();
+            CreateMap<CreateUserCommand, User>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => new Email(src.Email))) // Map string to Email value object
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address(src.Address.AddressLine1, src.Address.AddressLine2, src.Address.City, src.Address.State, src.Address.PostalCode, src.Address.Country))); // Map Address object
+
+            CreateMap<UpdateUserCommand, User>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => new Email(src.Email))) // Map string to Email value object
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address(src.Address.AddressLine1, src.Address.AddressLine2, src.Address.City, src.Address.State, src.Address.PostalCode, src.Address.Country))); // Map Address object
+
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Value)) // Map Email value object to string
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.ToString())); // Map Enum to string
 
             // Payment Mappings
             CreateMap<Payment, PaymentDto>().ReverseMap();
@@ -70,3 +75,4 @@ namespace ShoppingMasterApp.Application.Mappings
         }
     }
 }
+ 

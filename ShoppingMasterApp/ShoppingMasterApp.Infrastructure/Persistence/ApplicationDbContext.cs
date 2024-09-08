@@ -58,6 +58,15 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                     sa.Property(a => a.Country).HasColumnName("Country");
                 });
 
+
+            modelBuilder.Entity<User>()
+               .OwnsOne(u => u.Email, e =>
+               {
+                   e.Property(p => p.Value)
+                    .HasColumnName("Email")
+                    .IsRequired();
+               });
+
             // User Address configuration (Value Object)
             modelBuilder.Entity<User>()
                 .OwnsOne(u => u.Address, address =>
