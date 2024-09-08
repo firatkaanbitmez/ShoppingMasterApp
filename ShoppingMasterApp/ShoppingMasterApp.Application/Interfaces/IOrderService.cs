@@ -7,11 +7,11 @@ namespace ShoppingMasterApp.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
-        Task<OrderDto> GetOrderByIdAsync(int id);
-        Task<IEnumerable<OrderDto>> GetUserOrdersAsync(int userId); 
         Task CreateOrderAsync(CreateOrderCommand command);
         Task UpdateOrderAsync(UpdateOrderCommand command);
-        Task DeleteOrderAsync(int id);
+        Task DeleteOrderAsync(DeleteOrderCommand command);
+        Task<OrderDto> GetOrderByIdAsync(int id);
+        Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
     }
+
 }

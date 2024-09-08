@@ -8,10 +8,11 @@ namespace ShoppingMasterApp.Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
-        Task<CategoryDto> GetCategoryByIdAsync(int id);
         Task CreateCategoryAsync(CreateCategoryCommand command);
         Task UpdateCategoryAsync(UpdateCategoryCommand command);
-        Task DeleteCategoryAsync(int id);
+        Task DeleteCategoryAsync(DeleteCategoryCommand command);
+        Task<CategoryDto> GetCategoryByIdAsync(int id);
+        Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
     }
+
 }

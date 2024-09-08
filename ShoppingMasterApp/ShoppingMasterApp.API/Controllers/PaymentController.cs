@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class PaymentController : BaseController
     {
         private readonly IPaymentService _paymentService;
@@ -17,23 +19,18 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpPost("process")]
         public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentCommand command)
         {
-            await _paymentService.ProcessPaymentAsync(new Domain.Entities.Payment
-            {
-                OrderId = command.OrderId,
-                Amount = new Domain.ValueObjects.Money(command.Amount, "USD"),
-                PaymentDetails = new Domain.ValueObjects.PaymentDetails(command.CardType, command.CardNumber, command.ExpiryDate)
-            });
+            if (!ModelState.IsValid)
+                return ApiValidationError(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
 
-            return ApiSuccess<object>(null, "Payment processed successfully");
+            await _paymentService.ProcessPaymentAsync(command);
+            return ApiResponse("Payment processed successfully");
         }
 
-        [HttpGet("status/{orderId}")]
+        [HttpGet("{orderId}")]
         public async Task<IActionResult> GetPaymentStatus(int orderId)
         {
-            var payment = await _paymentService.GetPaymentStatusAsync(orderId);
-            var amount = payment.Amount.Amount;
-
-            return ApiSuccess(new { Amount = amount }, "Payment status retrieved successfully");
+            var result = await _paymentService.GetPaymentStatusAsync(orderId);
+            return ApiResponse(result);
         }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Cart;
+using ShoppingMasterApp.Application.CQRS.Queries.Cart;
 using ShoppingMasterApp.Application.Interfaces.Services;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class CartController : BaseController
     {
         private readonly ICartService _cartService;
@@ -14,39 +17,32 @@ namespace ShoppingMasterApp.API.Controllers
             _cartService = cartService;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetCart(int userId)
-        {
-            var cart = await _cartService.GetUserCartAsync(userId);
-            return ApiSuccess(cart, "Cart retrieved successfully");
-        }
-
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
         {
             await _cartService.AddToCartAsync(command);
-            return ApiSuccess<object>(null, "Product added to cart successfully");
-        }
-
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateCart([FromBody] UpdateCartItemCommand command)
-        {
-            await _cartService.UpdateCartItemAsync(command);
-            return ApiSuccess<object>(null, "Cart updated successfully");
+            return ApiResponse("Product added to cart successfully");
         }
 
         [HttpDelete("remove")]
         public async Task<IActionResult> RemoveFromCart([FromBody] RemoveFromCartCommand command)
         {
             await _cartService.RemoveFromCartAsync(command);
-            return ApiSuccess<object>(null, "Item removed from cart successfully");
+            return ApiResponse("Product removed from cart successfully");
         }
 
-        [HttpDelete("clear/{cartId}")]
-        public async Task<IActionResult> ClearCart(int cartId)
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearCart([FromBody] ClearCartCommand command)
         {
-            await _cartService.ClearCartAsync(cartId);
-            return ApiSuccess<object>(null, "Cart cleared successfully");
+            await _cartService.ClearCartAsync(command);
+            return ApiResponse("Cart cleared successfully");
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetCartByUserId(int userId)
+        {
+            var result = await _cartService.GetCartByUserIdAsync(userId);
+            return ApiResponse(result);
         }
     }
 }

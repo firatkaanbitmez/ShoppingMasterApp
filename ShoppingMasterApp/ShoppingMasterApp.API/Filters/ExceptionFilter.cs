@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using ShoppingMasterApp.API.Controllers;
-using ShoppingMasterApp.Domain.Exceptions;
+using ShoppingMasterApp.Domain.Enums;
 using System;
 using System.Net;
 
@@ -19,27 +19,43 @@ namespace ShoppingMasterApp.API.Filters
 
         public void OnException(ExceptionContext context)
         {
-            // Log full details of the exception
-            _logger.LogError(context.Exception, "Unhandled exception occurred: {Message}, StackTrace: {StackTrace}",
-                             context.Exception.Message, context.Exception.StackTrace);
+            // Log exception details
+            _logger.LogError($"Something went wrong: {context.Exception}");
 
-            var response = context.Exception switch
+            var response = new ApiResponse<object>
             {
-                InvalidInputException => new ApiResponse<object>(statusCode: (int)HttpStatusCode.BadRequest, isSuccess: false, data: null, errorMessage: context.Exception.Message),
-                UnauthorizedAccessException => new ApiResponse<object>(statusCode: (int)HttpStatusCode.Unauthorized, isSuccess: false, data: null, errorMessage: "Unauthorized access"),
-                NotFoundException => new ApiResponse<object>(statusCode: (int)HttpStatusCode.NotFound, isSuccess: false, data: null, errorMessage: "Resource not found"),
-                ValidationException => new ApiResponse<object>(statusCode: (int)HttpStatusCode.BadRequest, isSuccess: false, data: null, errorMessage: "Validation error"),
-                _ => new ApiResponse<object>(statusCode: (int)HttpStatusCode.InternalServerError, isSuccess: false, data: null, errorMessage: "An internal server error occurred.")
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                IsSuccess = false,
+                ErrorMessage = "An unexpected error occurred. Please try again later.",
+                ResponseStatus = ResponseStatus.ServerError.ToString(),
+                Data = null
             };
 
-            context.Result = new JsonResult(response)
+            if (context.Exception is ArgumentException || context.Exception is ArgumentNullException)
+            {
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                response.ErrorMessage = context.Exception.Message;
+                response.ResponseStatus = ResponseStatus.ValidationError.ToString();
+            }
+            else if (context.Exception is KeyNotFoundException)
+            {
+                response.StatusCode = (int)HttpStatusCode.NotFound;
+                response.ErrorMessage = context.Exception.Message;
+                response.ResponseStatus = ResponseStatus.NotFound.ToString();
+            }
+            else if (context.Exception is UnauthorizedAccessException)
+            {
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                response.ErrorMessage = "Access denied.";
+                response.ResponseStatus = ResponseStatus.Unauthorized.ToString();
+            }
+
+            context.Result = new ObjectResult(response)
             {
                 StatusCode = response.StatusCode
             };
 
-            context.ExceptionHandled = true;
+            context.ExceptionHandled = true; // Exception is handled
         }
-
-
     }
 }

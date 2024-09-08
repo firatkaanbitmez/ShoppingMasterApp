@@ -1,5 +1,4 @@
-﻿using ShoppingMasterApp.Application.CQRS.Commands.Review;
-using ShoppingMasterApp.Domain.Entities;
+﻿using ShoppingMasterApp.Application.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,12 +6,10 @@ namespace ShoppingMasterApp.Application.Interfaces.Services
 {
     public interface IReviewService
     {
-        Task AddReviewAsync(AddReviewCommand command);
-        Task UpdateReviewAsync(UpdateReviewCommand command);
+        Task AddReviewAsync(ReviewDto reviewDto);
+        Task UpdateReviewAsync(ReviewDto reviewDto);
         Task DeleteReviewAsync(int reviewId);
-        Task<IEnumerable<Review>> GetReviewsByProductIdAsync(int productId);
-        Task<IEnumerable<Review>> GetUserReviewsAsync(int userId);
+        Task<ReviewDto> GetReviewByProductIdAsync(int productId);
+        Task<IEnumerable<ReviewDto>> GetUserReviewsAsync(int userId);
     }
-
-
 }

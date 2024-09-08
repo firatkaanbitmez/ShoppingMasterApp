@@ -16,15 +16,20 @@ public class DiscountService : IDiscountService
 
     public async Task ApplyDiscountAsync(ApplyDiscountCommand command)
     {
-        var discount = await _discountRepository.GetDiscountByCodeAsync(command.DiscountCode);
-              
+        // Apply discount logic
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task CreateDiscountAsync(CreateDiscountCommand command)
+    {
+        var discount = new Discount { Amount = command.Amount };
         await _discountRepository.AddAsync(discount);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task RemoveDiscountAsync(int id)
+    public async Task RemoveDiscountAsync(RemoveDiscountCommand command)
     {
-        var discount = await _discountRepository.GetByIdAsync(id);
+        var discount = await _discountRepository.GetByIdAsync(command.Id);
         if (discount != null)
         {
             _discountRepository.Delete(discount);

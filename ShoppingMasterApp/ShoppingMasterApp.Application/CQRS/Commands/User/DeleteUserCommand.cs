@@ -8,5 +8,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.User
 {
     public class DeleteUserCommand
     {
+        public int Id { get; set; }
     }
+
 }

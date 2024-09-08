@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShoppingMasterApp.Domain.Enums;
+using System.Collections.Generic;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -7,43 +7,41 @@ namespace ShoppingMasterApp.API.Controllers
     [Route("api/[controller]")]
     public abstract class BaseController : ControllerBase
     {
-        protected IActionResult ApiSuccess<T>(T result, string message = null)
+        protected IActionResult ApiResponse<T>(T result, string message = null, int statusCode = 200)
         {
-            return Ok(new ApiResponse<T>(statusCode: 200, isSuccess: true, data: result, errorMessage: null, responseStatus: ResponseStatus.Success.ToString()));
+            return StatusCode(statusCode, new ApiResponse<T>
+            {
+                StatusCode = statusCode,
+                IsSuccess = true,
+                Data = result,
+                ErrorMessage = null,
+                ResponseStatus = ResponseStatus.Success.ToString(),
+                Message = message
+            });
         }
 
-        // Error Response with customizable status code
         protected IActionResult ApiError(string message, int statusCode = 400, ResponseStatus responseStatus = ResponseStatus.Error)
         {
-            return StatusCode(statusCode, new ApiResponse<object>(statusCode, false, null, message, responseStatus.ToString()));
+            return StatusCode(statusCode, new ApiResponse<object>
+            {
+                StatusCode = statusCode,
+                IsSuccess = false,
+                ErrorMessage = message,
+                ResponseStatus = responseStatus.ToString(),
+                Data = null
+            });
         }
 
-        // Not Found Response
-        protected IActionResult ApiNotFound(string message = "Resource not found")
-        {
-            return ApiError(message, 404, ResponseStatus.NotFound);
-        }
-
-        // Unauthorized Response
-        protected IActionResult ApiUnauthorized(string message = "Unauthorized access")
-        {
-            return ApiError(message, 401, ResponseStatus.Unauthorized);
-        }
-
-        // Validation Error Response
         protected IActionResult ApiValidationError(IEnumerable<string> errors)
         {
-            var validationResponse = new ApiResponse<object>(statusCode: 400, isSuccess: false, errorMessage: "Validation error", responseStatus: ResponseStatus.ValidationError.ToString())
+            return BadRequest(new ApiResponse<object>
             {
+                StatusCode = 400,
+                IsSuccess = false,
+                ErrorMessage = "Validation error",
+                ResponseStatus = ResponseStatus.ValidationError.ToString(),
                 Data = new { Errors = errors }
-            };
-            return BadRequest(validationResponse);
-        }
-
-        // Server Error Response
-        protected IActionResult ApiServerError(string message = "Internal server error")
-        {
-            return ApiError(message, 500, ResponseStatus.ServerError);
+            });
         }
     }
 
@@ -54,14 +52,16 @@ namespace ShoppingMasterApp.API.Controllers
         public T Data { get; set; }
         public string ErrorMessage { get; set; }
         public string ResponseStatus { get; set; }
+        public string Message { get; set; }
+    }
 
-        public ApiResponse(int statusCode, bool isSuccess, T data = default, string errorMessage = null, string responseStatus = "Success")
-        {
-            StatusCode = statusCode;
-            IsSuccess = isSuccess;
-            Data = data;
-            ErrorMessage = errorMessage;
-            ResponseStatus = responseStatus;
-        }
+    public enum ResponseStatus
+    {
+        Success,
+        Error,
+        ValidationError,
+        NotFound,
+        Unauthorized,
+        ServerError 
     }
 }

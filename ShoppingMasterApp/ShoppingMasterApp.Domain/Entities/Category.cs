@@ -1,4 +1,5 @@
 ﻿using ShoppingMasterApp.Domain.Common;
+using System.Collections.Generic;
 
 namespace ShoppingMasterApp.Domain.Entities
 {

@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240908175012_InitialCreate")]
+    [Migration("20240908212240_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -84,7 +84,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Category", b =>
@@ -121,6 +121,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -128,13 +131,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -211,7 +208,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItem");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Payment", b =>
@@ -221,9 +220,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -275,9 +271,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -450,13 +443,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)")
-                                .HasColumnName("Amount");
+                                .HasColumnType("decimal(18,2)");
 
                             b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Currency");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("OrderId");
 
@@ -477,6 +468,14 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
+
+                    b.HasOne("ShoppingMasterApp.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Payment", b =>
@@ -487,25 +486,17 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PaymentDetails", "PaymentDetails", b1 =>
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Money", "Amount", b1 =>
                         {
                             b1.Property<int>("PaymentId")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("CardNumber")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("CardNumber");
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)");
 
-                            b1.Property<string>("CardType")
+                            b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("CardType");
-
-                            b1.Property<string>("ExpiryDate")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("ExpiryDate");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("PaymentId");
 
@@ -514,6 +505,38 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PaymentId");
                         });
+
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PaymentDetails", "PaymentDetails", b1 =>
+                        {
+                            b1.Property<int>("PaymentId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CardNumber")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("CardType")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Cvv")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("ExpiryDate")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("PaymentId");
+
+                            b1.ToTable("Payments");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentId");
+                        });
+
+                    b.Navigation("Amount")
+                        .IsRequired();
 
                     b.Navigation("Order");
 
@@ -529,10 +552,38 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Money", "Price", b1 =>
+                        {
+                            b1.Property<int>("ProductId")
+                                .HasColumnType("int");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Products");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
                     b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.ProductDetails", "ProductDetails", b1 =>
                         {
                             b1.Property<int>("ProductId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("Manufacturer")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Sku")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("ProductId");
 
@@ -544,6 +595,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("Price")
+                        .IsRequired();
+
                     b.Navigation("ProductDetails")
                         .IsRequired();
                 });
@@ -551,7 +605,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Review", b =>
                 {
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -582,33 +636,27 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("AddressLine1")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("AddressLine1");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("AddressLine2")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("AddressLine2");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("City");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Country");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("PostalCode")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("PostalCode");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("State")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("State");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("ShippingId");
 
@@ -633,33 +681,27 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("AddressLine1")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("AddressLine1");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("AddressLine2")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("AddressLine2");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("City");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Country");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("PostalCode")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("PostalCode");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("State")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("State");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("UserId");
 
@@ -676,8 +718,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Email");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("UserId");
 
@@ -713,6 +754,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                     b.Navigation("Shipping")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>

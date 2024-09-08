@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using ShoppingMasterApp.Domain.Exceptions;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,43 +18,38 @@ namespace ShoppingMasterApp.API.Middlewares
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                await _next(httpContext);
+                await _next(context);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong: {ex.Message}, StackTrace: {ex.StackTrace}");
-                await HandleExceptionAsync(httpContext, ex);
+                _logger.LogError($"Something went wrong: {ex}");
+                await HandleExceptionAsync(context, ex);
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            context.Response.ContentType = "application/json";
-
-            var response = exception switch
+            var statusCode = exception switch
             {
-                InvalidInputException => new ErrorDetails
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid input provided."
-                },
-                UnauthorizedAccessException => new ErrorDetails
-                {
-                    StatusCode = (int)HttpStatusCode.Unauthorized,
-                    Message = "You are not authorized to access this resource."
-                },
-                _ => new ErrorDetails
-                {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
-                    Message = "Internal Server Error."
-                }
+                ArgumentNullException or ArgumentException => HttpStatusCode.BadRequest,
+                KeyNotFoundException => HttpStatusCode.NotFound,
+                UnauthorizedAccessException => HttpStatusCode.Unauthorized,
+                _ => HttpStatusCode.InternalServerError
             };
 
-            return context.Response.WriteAsync(response.ToString());
+            _logger.LogError($"Error occurred: {exception.Message}");
+            var errorResponse = new ErrorDetails
+            {
+                StatusCode = (int)statusCode,
+                Message = exception.Message
+            };
+
+            context.Response.StatusCode = (int)statusCode;
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
         }
 
     }

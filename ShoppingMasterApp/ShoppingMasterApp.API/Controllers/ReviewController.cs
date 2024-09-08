@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Review;
+using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Application.Interfaces.Services;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ReviewController : BaseController
     {
         private readonly IReviewService _reviewService;
@@ -14,18 +17,54 @@ namespace ShoppingMasterApp.API.Controllers
             _reviewService = reviewService;
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddReview([FromBody] AddReviewCommand command)
         {
-            await _reviewService.AddReviewAsync(command);
-            return ApiSuccess<object>(null, "Review added successfully");
+            var reviewDto = new ReviewDto
+            {
+                ProductId = command.ProductId,
+                UserId = command.UserId,
+                Comment = command.Comment,
+                Rating = command.Rating
+            };
+
+            await _reviewService.AddReviewAsync(reviewDto);
+            return ApiResponse("Review added successfully");
         }
 
-        [HttpDelete("{reviewId}")]
-        public async Task<IActionResult> DeleteReview(int reviewId)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewCommand command)
         {
-            await _reviewService.DeleteReviewAsync(reviewId);
-            return ApiSuccess<object>(null, "Review deleted successfully");
+            var reviewDto = new ReviewDto
+            {
+                Id = command.Id,
+                Comment = command.Comment,
+                Rating = command.Rating
+            };
+
+            await _reviewService.UpdateReviewAsync(reviewDto);
+            return ApiResponse("Review updated successfully");
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            await _reviewService.DeleteReviewAsync(id);
+            return ApiResponse("Review deleted successfully");
+        }
+
+        [HttpGet("product/{productId}")]
+        public async Task<IActionResult> GetReviewsByProductId(int productId)
+        {
+            var result = await _reviewService.GetReviewByProductIdAsync(productId);
+            return ApiResponse(result);
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetReviewsByUserId(int userId)
+        {
+            var result = await _reviewService.GetUserReviewsAsync(userId);
+            return ApiResponse(result);
         }
     }
 }

@@ -2,11 +2,12 @@
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Order;
 using ShoppingMasterApp.Application.Interfaces;
-using ShoppingMasterApp.Domain.Exceptions;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
@@ -16,60 +17,39 @@ namespace ShoppingMasterApp.API.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCategories()
-        {
-            var categories = await _categoryService.GetAllCategoriesAsync();
-            return ApiSuccess(categories, "Categories retrieved successfully");
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory(int id)
-        {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-
-            if (category == null)
-            {
-                return ApiNotFound($"Category with ID {id} not found");
-            }
-
-            return ApiSuccess(category, "Category retrieved successfully");
-        }
-
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
         {
             await _categoryService.CreateCategoryAsync(command);
-            return ApiSuccess<object>(null, "Category created successfully");
+            return ApiResponse("Category created successfully");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryCommand command)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand command)
         {
-            command.Id = id;
-            try
-            {
-                await _categoryService.UpdateCategoryAsync(command);
-                return ApiSuccess<object>(null, "Category updated successfully");
-            }
-            catch (CategoryNotFoundException ex)
-            {
-                return ApiNotFound(ex.Message); // Kategori bulunamazsa anlamlı bir hata mesajı döner
-            }
+            await _categoryService.UpdateCategoryAsync(command);
+            return ApiResponse("Category updated successfully");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            try
-            {
-                await _categoryService.DeleteCategoryAsync(id);
-                return ApiSuccess<object>(null, "Category deleted successfully");
-            }
-            catch (CategoryNotFoundException ex)
-            {
-                return ApiNotFound(ex.Message);
-            }
+            await _categoryService.DeleteCategoryAsync(new DeleteCategoryCommand { Id = id });
+            return ApiResponse("Category deleted successfully");
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoryById(int id)
+        {
+            var result = await _categoryService.GetCategoryByIdAsync(id);
+            return ApiResponse(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var result = await _categoryService.GetAllCategoriesAsync();
+            return ApiResponse(result);
         }
     }
 }

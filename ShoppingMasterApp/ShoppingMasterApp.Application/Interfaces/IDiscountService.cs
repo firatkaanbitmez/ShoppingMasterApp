@@ -6,6 +6,9 @@ namespace ShoppingMasterApp.Application.Interfaces.Services
     public interface IDiscountService
     {
         Task ApplyDiscountAsync(ApplyDiscountCommand command);
-        Task RemoveDiscountAsync(int id);
+        Task CreateDiscountAsync(CreateDiscountCommand command);
+        Task RemoveDiscountAsync(RemoveDiscountCommand command);
     }
+
+
 }

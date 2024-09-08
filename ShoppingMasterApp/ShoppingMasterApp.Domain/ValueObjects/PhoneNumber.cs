@@ -8,16 +8,17 @@ namespace ShoppingMasterApp.Domain.ValueObjects
 {
     public class PhoneNumber
     {
-        public string Value { get; }
+        public string CountryCode { get; private set; }
+        public string Number { get; private set; }
 
-        public PhoneNumber(string value)
+        public PhoneNumber(string countryCode, string number)
         {
-            if (string.IsNullOrWhiteSpace(value) || value.Length != 10)
-                throw new ArgumentException("Invalid phone number");
-
-            Value = value;
+            if (string.IsNullOrEmpty(countryCode) || string.IsNullOrEmpty(number))
+            {
+                throw new ArgumentException("Invalid phone number.");
+            }
+            CountryCode = countryCode;
+            Number = number;
         }
-
-        public override string ToString() => Value;
     }
 }

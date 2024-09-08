@@ -7,4 +7,5 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
     {
         Task<Shipping> GetShippingByOrderIdAsync(int orderId);
     }
+
 }

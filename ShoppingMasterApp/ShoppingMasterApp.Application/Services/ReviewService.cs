@@ -4,6 +4,7 @@ using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ShoppingMasterApp.Application.DTOs;
 
 public class ReviewService : IReviewService
 {
@@ -14,53 +15,78 @@ public class ReviewService : IReviewService
         _reviewRepository = reviewRepository;
     }
 
-    public async Task AddReviewAsync(AddReviewCommand command)
+    public async Task AddReviewAsync(ReviewDto reviewDto)
     {
-        if (command.Rating < 1 || command.Rating > 5)
-            throw new ArgumentException("Rating must be between 1 and 5.");
-
         var review = new Review
         {
-            Comment = command.Comment,
-            Rating = command.Rating,
-            ProductId = command.ProductId,
-            UserId = command.UserId
+            ProductId = reviewDto.ProductId,
+            UserId = reviewDto.UserId,
+            Rating = reviewDto.Rating,
+            Comment = reviewDto.Comment,
+            CreatedAt = DateTime.Now
         };
 
         await _reviewRepository.AddAsync(review);
-        await _reviewRepository.SaveChangesAsync();
     }
 
-
-    public async Task UpdateReviewAsync(UpdateReviewCommand command)
+    public async Task UpdateReviewAsync(ReviewDto reviewDto)
     {
-        var existingReview = await _reviewRepository.GetByIdAsync(command.Id);
-        if (existingReview != null)
+        var review = await _reviewRepository.GetByIdAsync(reviewDto.Id);
+        if (review == null)
         {
-            existingReview.Comment = command.Comment;
-            existingReview.Rating = command.Rating;
-            _reviewRepository.Update(existingReview);
-            await _reviewRepository.SaveChangesAsync();
+            throw new Exception("Review not found");
         }
+
+        review.Rating = reviewDto.Rating;
+        review.Comment = reviewDto.Comment;
+
+        await _reviewRepository.UpdateAsync(review);
     }
 
     public async Task DeleteReviewAsync(int reviewId)
     {
         var review = await _reviewRepository.GetByIdAsync(reviewId);
-        if (review != null)
+        if (review == null)
         {
-            _reviewRepository.Delete(review);
-            await _reviewRepository.SaveChangesAsync();
+            throw new Exception("Review not found");
         }
+
+        await _reviewRepository.DeleteAsync(review);
     }
 
-    public async Task<IEnumerable<Review>> GetReviewsByProductIdAsync(int productId)
+    public async Task<ReviewDto> GetReviewByProductIdAsync(int productId)
     {
-        return await _reviewRepository.GetReviewsByProductIdAsync(productId);
+        var review = (await _reviewRepository.GetByProductIdAsync(productId)).FirstOrDefault();
+        if (review == null)
+        {
+            throw new Exception("Review not found for this product");
+        }
+
+        return new ReviewDto
+        {
+            ProductId = review.ProductId,
+            UserId = review.UserId,
+            Rating = review.Rating,
+            Comment = review.Comment
+        };
     }
 
-    public async Task<IEnumerable<Review>> GetUserReviewsAsync(int userId)
+
+    public async Task<IEnumerable<ReviewDto>> GetUserReviewsAsync(int userId)
     {
-        return await _reviewRepository.GetUserReviewsAsync(userId);
+        var reviews = await _reviewRepository.GetByUserIdAsync(userId);
+        if (reviews == null || !reviews.Any())
+        {
+            throw new Exception("No reviews found for this user");
+        }
+
+        return reviews.Select(review => new ReviewDto
+        {
+            ProductId = review.ProductId,
+            UserId = review.UserId,
+            Rating = review.Rating,
+            Comment = review.Comment
+        }).ToList();
     }
+
 }

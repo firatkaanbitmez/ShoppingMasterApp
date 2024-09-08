@@ -1,11 +1,15 @@
-﻿using ShoppingMasterApp.Domain.Entities;
+﻿using ShoppingMasterApp.Application.CQRS.Commands.Payment;
+using ShoppingMasterApp.Application.DTOs;
+using ShoppingMasterApp.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.Interfaces.Services
 {
     public interface IPaymentService
     {
-        Task<Payment> ProcessPaymentAsync(Payment payment);
-        Task<Payment> GetPaymentStatusAsync(int orderId);
+        Task ProcessPaymentAsync(ProcessPaymentCommand command);
+        Task<PaymentDto> GetPaymentStatusAsync(int orderId);
     }
+
+
 }

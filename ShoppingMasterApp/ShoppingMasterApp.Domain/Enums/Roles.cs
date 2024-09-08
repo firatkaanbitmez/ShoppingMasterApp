@@ -1,4 +1,6 @@
-﻿namespace ShoppingMasterApp.Domain.Enums
+﻿using System;
+
+namespace ShoppingMasterApp.Domain.Enums
 {
     public enum Roles
     {
@@ -6,4 +8,5 @@
         Customer = 2,
         Vendor = 3
     }
+
 }

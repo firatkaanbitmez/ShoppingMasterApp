@@ -2,76 +2,76 @@
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Application.CQRS.Commands.Cart;
+using AutoMapper;
+using ShoppingMasterApp.Application.DTOs;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class CartService : ICartService
 {
     private readonly ICartRepository _cartRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork)
+    public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _cartRepository = cartRepository;
         _unitOfWork = unitOfWork;
-    }
-
-    public async Task<Cart> GetUserCartAsync(int userId)
-    {
-        return await _cartRepository.GetUserCartAsync(userId);
+        _mapper = mapper;
     }
 
     public async Task AddToCartAsync(AddToCartCommand command)
     {
-        var cartItem = new CartItem
+        var cart = await _cartRepository.GetCartByUserIdAsync(command.UserId);
+        if (cart == null)
         {
-            ProductId = command.ProductId,
-            Quantity = command.Quantity,
-            CartId = command.UserId
-        };
-        await _cartRepository.AddAsync(new Cart
-        {
-            UserId = command.UserId,
-            CartItems = new List<CartItem> { cartItem }
-        });
-        await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task UpdateCartItemAsync(UpdateCartItemCommand command)
-    {
-        var cart = await _cartRepository.GetByIdAsync(command.UserId);
-        if (cart != null)
-        {
-            var item = cart.CartItems.FirstOrDefault(x => x.ProductId == command.ProductId);
-            if (item != null)
-            {
-                item.Quantity = command.Quantity;
-            }
-            _cartRepository.Update(cart);
-            await _unitOfWork.SaveChangesAsync();
+            cart = new Cart { UserId = command.UserId };
+            await _cartRepository.AddAsync(cart);
         }
+
+        var cartItem = cart.CartItems.FirstOrDefault(i => i.ProductId == command.ProductId);
+        if (cartItem != null)
+        {
+            cartItem.Quantity += command.Quantity;
+        }
+        else
+        {
+            cart.CartItems.Add(new CartItem
+            {
+                ProductId = command.ProductId,
+                Quantity = command.Quantity
+            });
+        }
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task RemoveFromCartAsync(RemoveFromCartCommand command)
     {
-        var cart = await _cartRepository.GetUserCartAsync(command.UserId);
-        if (cart != null)
+        var cart = await _cartRepository.GetCartByUserIdAsync(command.UserId);
+        var cartItem = cart.CartItems.FirstOrDefault(i => i.ProductId == command.ProductId);
+        if (cartItem != null)
         {
-            var item = cart.CartItems.FirstOrDefault(i => i.ProductId == command.ProductId);
-            if (item != null)
-            {
-                cart.CartItems.Remove(item);
-                _cartRepository.Update(cart);
-                await _unitOfWork.SaveChangesAsync();
-            }
+            cart.CartItems.Remove(cartItem);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 
-    public async Task ClearCartAsync(int cartId)
+    public async Task ClearCartAsync(ClearCartCommand command)
     {
-        var cart = await _cartRepository.GetByIdAsync(cartId);
+        var cart = await _cartRepository.GetByIdAsync(command.CartId);
         if (cart != null)
         {
             cart.CartItems.Clear();
             await _unitOfWork.SaveChangesAsync();
         }
+    }
+
+    public async Task<CartDto> GetCartByUserIdAsync(int userId)
+    {
+        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+        if (cart == null) return null;
+
+        return _mapper.Map<CartDto>(cart);
     }
 }

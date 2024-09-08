@@ -11,7 +11,6 @@ namespace ShoppingMasterApp.Domain.Entities
         public Product Product { get; set; }
         public int Quantity { get; set; }
 
-        // Return only the decimal amount for total price calculation
-        public decimal TotalPrice => Product.Price.Amount * Quantity;
+    
     }
 }

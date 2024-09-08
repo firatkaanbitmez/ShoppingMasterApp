@@ -1,8 +1,9 @@
-﻿using ProductEntity = ShoppingMasterApp.Domain.Entities.Product;
+﻿using ShoppingMasterApp.Application.DTOs;
+using ProductEntity = ShoppingMasterApp.Domain.Entities.Product;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Product
 {
-    public class GetProductByIdQuery
+    public class GetProductByIdQuery 
     {
         public int Id { get; set; }
     }

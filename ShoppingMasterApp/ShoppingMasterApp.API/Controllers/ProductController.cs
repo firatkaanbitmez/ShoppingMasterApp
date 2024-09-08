@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
-using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Application.Interfaces.Services;
-using ShoppingMasterApp.Domain.Exceptions;
-using ShoppingMasterApp.Domain.Models;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ProductController : BaseController
     {
         private readonly IProductService _productService;
@@ -18,75 +17,39 @@ namespace ShoppingMasterApp.API.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetProducts()
-        {
-            var products = await _productService.GetAllProductsAsync();
-            return ApiSuccess(products, "Products retrieved successfully");
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
-        {
-            try
-            {
-                var product = await _productService.GetProductByIdAsync(id);
-                return ApiSuccess(product, "Product retrieved successfully");
-            }
-            catch (ProductNotFoundException ex)
-            {
-                return ApiNotFound(ex.Message); // Ürün bulunamadığında anlamlı hata döner
-            }
-        }
-
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
             await _productService.CreateProductAsync(command);
-            return ApiSuccess<object>(null, "Product created successfully");
+            return ApiResponse("Product created successfully");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommand command)
         {
-            try
-            {
-                command.Id = id;
-                await _productService.UpdateProductAsync(command);
-                return ApiSuccess<object>(null, "Product updated successfully");
-            }
-            catch (ProductNotFoundException ex)
-            {
-                return ApiNotFound(ex.Message);
-            }
+            await _productService.UpdateProductAsync(command);
+            return ApiResponse("Product updated successfully");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            try
-            {
-                await _productService.DeleteProductAsync(id);
-                return ApiSuccess<object>(null, "Product deleted successfully");
-            }
-            catch (ProductNotFoundException ex)
-            {
-                return ApiNotFound(ex.Message);
-            }
+            await _productService.DeleteProductAsync(new DeleteProductCommand { Id = id });
+            return ApiResponse("Product deleted successfully");
         }
 
-        [HttpGet("paged")]
-        public async Task<IActionResult> GetPagedProducts([FromQuery] PagedQuery query)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
         {
-            var products = await _productService.GetPagedProductsAsync(query);
-            return ApiSuccess(products, "Paged products retrieved successfully");
+            var result = await _productService.GetProductByIdAsync(id);
+            return ApiResponse(result);
         }
 
-        [HttpGet("category/{categoryId}")]
-        public async Task<IActionResult> GetProductsByCategory(int categoryId)
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts()
         {
-            var products = await _productService.GetProductsByCategoryAsync(categoryId);
-            return ApiSuccess(products, "Products retrieved successfully by category");
+            var result = await _productService.GetAllProductsAsync();
+            return ApiResponse(result);
         }
     }
 }

@@ -5,6 +5,5 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
     public interface IPaymentRepository : IBaseRepository<Payment>
     {
-        Task<Payment> GetPaymentByOrderIdAsync(int orderId);
     }
 }

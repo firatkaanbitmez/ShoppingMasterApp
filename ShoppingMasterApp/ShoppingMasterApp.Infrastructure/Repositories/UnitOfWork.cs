@@ -1,34 +1,15 @@
 ﻿using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
-using ShoppingMasterApp.Infrastructure.Repositories;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly ApplicationDbContext _context;
-        public ICategoryRepository Categories { get; }
-        public IOrderRepository Orders { get; }
-        public IProductRepository Products { get; }
-        public ICartRepository Carts { get; }
-        public IShippingRepository Shippings { get; }
-        public IReviewRepository Reviews { get; }
-        public IPaymentRepository Payments { get; }
-
-        public UnitOfWork(ApplicationDbContext context, ICategoryRepository categoryRepository,
-                          IOrderRepository orderRepository, IProductRepository productRepository,
-                          ICartRepository cartRepository, IShippingRepository shippingRepository,
-                          IReviewRepository reviewRepository,
-                          IPaymentRepository paymentRepository)
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Categories = categoryRepository;
-            Orders = orderRepository;
-            Products = productRepository;
-            Carts = cartRepository;
-            Shippings = shippingRepository;
-            Reviews = reviewRepository;
-            Payments = paymentRepository;
         }
 
         public async Task<int> SaveChangesAsync()
@@ -36,28 +17,25 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task CommitAsync()
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public void Dispose()
         {
             _context.Dispose();
         }
-        public async Task CommitAsync()
-        {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            }
-        }
-
     }
-
 
 }

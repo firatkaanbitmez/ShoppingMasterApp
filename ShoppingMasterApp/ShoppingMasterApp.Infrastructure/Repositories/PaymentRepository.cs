@@ -2,19 +2,17 @@
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using ShoppingMasterApp.Infrastructure.Repositories;
+using System.Threading.Tasks;
 
-public class PaymentRepository : BaseRepository<Payment>, IPaymentRepository
+namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    private readonly ApplicationDbContext _context;
-
-    public PaymentRepository(ApplicationDbContext context) : base(context)
+    public class PaymentRepository : BaseRepository<Payment>, IPaymentRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task<Payment> GetPaymentByOrderIdAsync(int orderId)
-    {
-        return await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
+        public PaymentRepository(ApplicationDbContext context) : base(context)
+        {
+            _context = context;
+        }
     }
 }

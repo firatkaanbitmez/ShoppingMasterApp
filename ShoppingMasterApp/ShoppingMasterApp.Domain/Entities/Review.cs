@@ -1,4 +1,5 @@
 ﻿using ShoppingMasterApp.Domain.Common;
+using System;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
@@ -9,7 +10,7 @@ namespace ShoppingMasterApp.Domain.Entities
         public int UserId { get; set; }
         public User User { get; set; }
         public string Comment { get; set; }
-        public int Rating { get; set; }  // Rating between 1-5 stars
+        public int Rating { get; set; }  
         public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
     }
 }

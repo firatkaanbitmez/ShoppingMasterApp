@@ -1,6 +1,7 @@
 ﻿using ShoppingMasterApp.Domain.Common;
 using ShoppingMasterApp.Domain.Enums;
 using ShoppingMasterApp.Domain.ValueObjects;
+using System.Collections.Generic;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
@@ -8,10 +9,10 @@ namespace ShoppingMasterApp.Domain.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public Email Email { get; set; }  // Value object for Email
+        public Email Email { get; set; } 
         public string PasswordHash { get; set; }
-        public Roles Roles { get; set; }  // Enum for Roles (Admin, Customer, Vendor)
-        public Address Address { get; set; }  // ValueObject for Address
+        public Roles Roles { get; set; } 
+        public Address Address { get; set; }  
         public ICollection<Order> Orders { get; set; }
     }
 }

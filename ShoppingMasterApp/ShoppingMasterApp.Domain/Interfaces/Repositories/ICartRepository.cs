@@ -5,6 +5,8 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
     public interface ICartRepository : IBaseRepository<Cart>
     {
-        Task<Cart> GetUserCartAsync(int userId);
+        Task<Cart> GetCartByUserIdAsync(int userId);
     }
+
+
 }

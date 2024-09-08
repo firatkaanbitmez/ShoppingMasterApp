@@ -14,9 +14,5 @@ public class DiscountRepository : BaseRepository<Discount>, IDiscountRepository
         _context = context;
     }
 
-    // Get discount by code implementation
-    public async Task<Discount> GetDiscountByCodeAsync(string code)
-    {
-        return await _context.Discounts.FirstOrDefaultAsync(d => d.Code == code);
-    }
+   
 }

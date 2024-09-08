@@ -1,14 +1,13 @@
 ﻿using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
-        ICategoryRepository Categories { get; }
-        IOrderRepository Orders { get; }
-        IProductRepository Products { get; }
-
         Task<int> SaveChangesAsync();
+        Task CommitAsync();
     }
+
 
 }

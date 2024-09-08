@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ShoppingMasterApp.API.Controllers;
+using ShoppingMasterApp.Domain.Enums;
+using System.Linq;
 
 namespace ShoppingMasterApp.API.Filters
 {
@@ -10,12 +12,21 @@ namespace ShoppingMasterApp.API.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                context.Result = new BadRequestObjectResult(new ApiResponse<object>(
-                    statusCode: 400,
-                    isSuccess: false,
-                    data: context.ModelState,
-                    errorMessage: "Validation error"
-                ));
+                var errors = context.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                var validationResponse = new ApiResponse<object>
+                {
+                    StatusCode = 400,
+                    IsSuccess = false,
+                    ErrorMessage = "Validation error",
+                    ResponseStatus = ResponseStatus.ValidationError.ToString(),
+                    Data = new { Errors = errors }
+                };
+
+                context.Result = new BadRequestObjectResult(validationResponse);
             }
         }
 

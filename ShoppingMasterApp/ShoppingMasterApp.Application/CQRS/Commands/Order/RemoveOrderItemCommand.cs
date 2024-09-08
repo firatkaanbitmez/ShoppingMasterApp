@@ -8,5 +8,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
 {
     public class RemoveOrderItemCommand
     {
+        public int ProductId { get; set; }
+        public int OrderId { get; set; }
     }
 }

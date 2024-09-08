@@ -1,18 +1,23 @@
-﻿namespace ShoppingMasterApp.Domain.ValueObjects
+﻿using System;
+
+namespace ShoppingMasterApp.Domain.ValueObjects
 {
     public class Address
     {
-        public string AddressLine1 { get; }
-        public string AddressLine2 { get; }
-        public string City { get; }
-        public string State { get; }
-        public string PostalCode { get; }
-        public string Country { get; }
+        public string AddressLine1 { get; private set; }
+        public string AddressLine2 { get; private set; }
+        public string City { get; private set; }
+        public string State { get; private set; }
+        public string PostalCode { get; private set; }
+        public string Country { get; private set; }
 
         public Address(string addressLine1, string addressLine2, string city, string state, string postalCode, string country)
         {
-            if (string.IsNullOrWhiteSpace(addressLine1) || string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
-                throw new ArgumentException("Address Line 1, City, and Country are required.");
+            if (string.IsNullOrWhiteSpace(addressLine1)) throw new ArgumentException("Address Line 1 is required");
+            if (string.IsNullOrWhiteSpace(city)) throw new ArgumentException("City is required");
+            if (string.IsNullOrWhiteSpace(postalCode)) throw new ArgumentException("Postal Code is required");
+            if (string.IsNullOrWhiteSpace(country)) throw new ArgumentException("Country is required");
+
             AddressLine1 = addressLine1;
             AddressLine2 = addressLine2;
             City = city;
@@ -21,4 +26,6 @@
             Country = country;
         }
     }
+
+
 }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class OrderController : BaseController
     {
         private readonly IOrderService _orderService;
@@ -15,46 +17,32 @@ namespace ShoppingMasterApp.API.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetOrders()
-        {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return ApiSuccess(orders, "Orders retrieved successfully");
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-
-            if (order == null)
-            {
-                return ApiNotFound("Order not found");
-            }
-
-            return ApiSuccess(order, "Order retrieved successfully");
-        }
-
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
         {
             await _orderService.CreateOrderAsync(command);
-            return ApiSuccess<object>(null, "Order created successfully");
+            return ApiResponse("Order created successfully");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderCommand command)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderCommand command)
         {
-            command.Id = id;
             await _orderService.UpdateOrderAsync(command);
-            return ApiSuccess<object>(null, "Order updated successfully");
+            return ApiResponse("Order updated successfully");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            await _orderService.DeleteOrderAsync(id);
-            return ApiSuccess<object>(null, "Order deleted successfully");
+            await _orderService.DeleteOrderAsync(new DeleteOrderCommand { Id = id });
+            return ApiResponse("Order deleted successfully");
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var result = await _orderService.GetOrderByIdAsync(id);
+            return ApiResponse(result);
         }
     }
 }
