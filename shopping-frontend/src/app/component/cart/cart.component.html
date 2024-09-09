@@ -1,0 +1,10 @@
+<!-- cart/cart.component.html -->
+<div class="cart" *ngIf="cart">
+    <h2>Your Cart</h2>
+    <div *ngFor="let item of cart.cartItems">
+      <p>{{ item.productName }} - Quantity: {{ item.quantity }}</p>
+      <button (click)="removeItem(item.productId)">Remove</button>
+    </div>
+    <p>Total: {{ cart.totalPrice | currency }}</p>
+  </div>
+  

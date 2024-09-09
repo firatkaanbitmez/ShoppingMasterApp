@@ -1,5 +1,5 @@
 {
-  "name": "shopping-master-app-frontend",
+  "name": "shopping-frontend",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,19 +7,21 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:shopping-master-app-frontend": "node dist/shopping-master-app-frontend/server/server.mjs"
+    "serve:ssr:shopping-frontend": "node dist/shopping-frontend/server/server.mjs"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.0",
+    "@angular/cdk": "^18.2.3",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
-    "@angular/forms": "^18.2.0",
+    "@angular/forms": "^18.2.3",
+    "@angular/material": "^18.2.3",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/platform-server": "^18.2.0",
-    "@angular/router": "^18.2.0",
+    "@angular/router": "^18.2.3",
     "@angular/ssr": "^18.2.3",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
