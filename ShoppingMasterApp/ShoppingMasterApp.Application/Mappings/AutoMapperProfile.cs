@@ -17,23 +17,35 @@ namespace ShoppingMasterApp.Application.Mappings
     {
         public AutoMapperProfile()
         {
-            // Map entities to DTOs
+            // Map entities to DTOs and commands
             CreateMap<Cart, CartDto>().ReverseMap();
             CreateMap<CartItem, CartItemDto>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Order, OrderDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemDto>().ReverseMap();
-            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price.Amount))  
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));  
+
+
+            // Mapping CreateProductCommand to Product, with proper Price mapping
+            CreateMap<CreateProductCommand, Product>()
+                .ForMember(dest => dest.ProductDetails, opt => opt.MapFrom(src => new ProductDetails(src.Manufacturer, src.Sku)))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD"))); 
+
+
+            // Mapping UpdateProductCommand to Product, with proper Price mapping
+            CreateMap<UpdateProductCommand, Product>()
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD")));
+
             CreateMap<Review, ReviewDto>().ReverseMap();
             CreateMap<Shipping, ShippingDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Email, string>().ConvertUsing(email => email.Value);
-            // Map Value Objects
-            CreateMap<Address, AddressDto>().ReverseMap();
-            CreateMap<Email, string>().ConvertUsing(email => email.Value);
+
+            // Map value objects
             CreateMap<Money, MoneyDto>().ReverseMap();
         }
     }
-
 }

@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240908212240_InitialCreate")]
+    [Migration("20240909080015_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -558,11 +558,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("Price_Amount");
 
                             b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Price_Currency");
 
                             b1.HasKey("ProductId");
 

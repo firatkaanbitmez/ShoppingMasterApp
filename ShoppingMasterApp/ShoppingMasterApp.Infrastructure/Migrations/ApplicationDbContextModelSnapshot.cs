@@ -555,11 +555,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("Price_Amount");
 
                             b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Price_Currency");
 
                             b1.HasKey("ProductId");
 

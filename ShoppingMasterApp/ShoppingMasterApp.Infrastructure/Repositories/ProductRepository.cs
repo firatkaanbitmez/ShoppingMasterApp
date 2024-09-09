@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShoppingMasterApp.Application.CQRS.Queries.Product;
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
@@ -16,5 +17,10 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         _context = context;
     }
 
-   
+    public async Task<IEnumerable<Product>> GetAllAsync()
+    {
+        return await _context.Products.Include(p => p.Category)
+                                      .Include(p => p.ProductDetails)  // İlişkili entity'leri de dahil ediyoruz
+                                      .ToListAsync();  // Tüm ürünleri getirir
+    }
 }

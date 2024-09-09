@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
+using ShoppingMasterApp.Application.CQRS.Queries.Product;
 using ShoppingMasterApp.Application.Interfaces.Services;
 using System.Threading.Tasks;
 
@@ -48,8 +49,10 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var result = await _productService.GetAllProductsAsync();
+            var result = await _productService.GetAllProductsAsync();  // Tüm ürünleri getirir
             return ApiResponse(result);
         }
+
+
     }
 }

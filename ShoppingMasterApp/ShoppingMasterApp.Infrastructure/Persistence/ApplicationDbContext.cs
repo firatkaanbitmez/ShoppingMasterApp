@@ -9,7 +9,7 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
         {
         }
 
-        // DbSet tanımları
+        // DbSet definitions
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -24,65 +24,62 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // User entity
             modelBuilder.Entity<User>(builder =>
             {
                 builder.OwnsOne(u => u.Address);
-                builder.OwnsOne(u => u.Email); 
+                builder.OwnsOne(u => u.Email);
             });
+
+            // Shipping entity
             modelBuilder.Entity<Shipping>(builder =>
             {
                 builder.OwnsOne(s => s.ShippingAddress);
             });
-            modelBuilder.Entity<Shipping>(builder =>
-            {
-                builder.OwnsOne(s => s.ShippingAddress);
-            });
+
+            // Order entity
             modelBuilder.Entity<Order>(builder =>
             {
-                builder.OwnsOne(o => o.TotalAmount);  
-            });
-            modelBuilder.Entity<Order>()
-                .OwnsOne(o => o.TotalAmount, builder =>
+                builder.OwnsOne(o => o.TotalAmount, config =>
                 {
-                    builder.Property(m => m.Amount).HasColumnType("decimal(18,2)");
+                    config.Property(m => m.Amount).HasColumnType("decimal(18,2)");
                 });
-            modelBuilder.Entity<Product>()
-                  .OwnsOne(p => p.Price, builder =>
-                  {
-                      builder.Property(m => m.Amount).HasColumnType("decimal(18,2)");
-                  });
-
-            modelBuilder.Entity<Payment>()
-                .OwnsOne(p => p.Amount, builder =>
-                {
-                    builder.Property(m => m.Amount).HasColumnType("decimal(18,2)");
-                });
-
-            modelBuilder.Entity<OrderItem>()
-                .Property(oi => oi.UnitPrice)
-                .HasColumnType("decimal(18,2)");
-
-            modelBuilder.Entity<Discount>()
-                .Property(d => d.Amount)
-                .HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<Payment>(builder =>
-            {
-                builder.OwnsOne(o => o.Amount);
-            });
-            modelBuilder.Entity<Payment>(builder =>
-            {
-                builder.OwnsOne(p => p.PaymentDetails); 
             });
 
+            // Product entity
             modelBuilder.Entity<Product>(builder =>
             {
-                builder.OwnsOne(p => p.Price);
+                builder.OwnsOne(p => p.Price, config =>
+                {
+                    config.Property(m => m.Amount).HasColumnName("Price_Amount").HasColumnType("decimal(18,2)");
+                    config.Property(m => m.Currency).HasColumnName("Price_Currency");
+                });
                 builder.OwnsOne(p => p.ProductDetails);
-
             });
-            base.OnModelCreating(modelBuilder);
 
-          
+            // Payment entity
+            modelBuilder.Entity<Payment>(builder =>
+            {
+                builder.OwnsOne(p => p.Amount, config =>
+                {
+                    config.Property(m => m.Amount).HasColumnType("decimal(18,2)");
+                });
+                builder.OwnsOne(p => p.PaymentDetails);
+            });
+
+            // OrderItem entity
+            modelBuilder.Entity<OrderItem>(builder =>
+            {
+                builder.Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)");
+            });
+
+            // Discount entity
+            modelBuilder.Entity<Discount>(builder =>
+            {
+                builder.Property(d => d.Amount).HasColumnType("decimal(18,2)");
+            });
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

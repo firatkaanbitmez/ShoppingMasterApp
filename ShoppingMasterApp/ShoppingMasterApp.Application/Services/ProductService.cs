@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
+using ShoppingMasterApp.Application.CQRS.Queries.Product;
 using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Application.Interfaces.Services;
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ShoppingMasterApp.Application.CQRS.Queries.Product;  
 
 public class ProductService : IProductService
 {
@@ -23,7 +25,9 @@ public class ProductService : IProductService
     {
         var product = _mapper.Map<Product>(command);
         await _productRepository.AddAsync(product);
+        await _productRepository.SaveChangesAsync(); 
     }
+
 
     public async Task UpdateProductAsync(UpdateProductCommand command)
     {
@@ -35,7 +39,6 @@ public class ProductService : IProductService
             await _productRepository.SaveChangesAsync();
         }
     }
-
     public async Task DeleteProductAsync(DeleteProductCommand command)
     {
         var product = await _productRepository.GetByIdAsync(command.Id);
@@ -54,7 +57,8 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
     {
-        var products = await _productRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<ProductDto>>(products);
+        var products = await _productRepository.GetAllAsync();  // Tüm ürünleri getirir
+        return _mapper.Map<IEnumerable<ProductDto>>(products);  // DTO'ya mapler
     }
+
 }
