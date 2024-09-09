@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Notification = ({ message }) => {
+const Notification = ({ message, autoClose = true, duration = 3000 }) => {
   const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (autoClose) {
+      const timer = setTimeout(() => {
+        setVisible(false);
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [autoClose, duration]);
 
   if (!visible) return null;
 

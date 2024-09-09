@@ -1,6 +1,10 @@
 import React from 'react';
 
 const Slider = ({ products }) => {
+  if (products.length === 0) {
+    return <p>No limited stock products available.</p>;
+  }
+
   return (
     <div id="limitedStockSlider" className="carousel slide" data-ride="carousel">
       <div className="carousel-inner">
