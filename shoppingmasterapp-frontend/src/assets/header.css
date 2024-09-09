@@ -1,0 +1,57 @@
+/* Header stilleri */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #131921;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    width: 50px;  /* Logonun genişliği ayarlanabilir */
+    height: auto;
+    margin-right: 15px;  /* Logo ile yazı arasında boşluk */
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-list li {
+  display: inline;
+}
+
+.nav-list li a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.nav-list li a:hover {
+  color: #f8694c;
+  border-bottom: 2px solid #f8694c;
+}
+
+.nav-list li a.active {
+  color: #f8694c;
+  border-bottom: 2px solid #f8694c;
+}

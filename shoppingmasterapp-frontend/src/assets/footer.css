@@ -1,0 +1,51 @@
+/* Footer stilleri */
+.footer {
+    background-color: #131921;
+    color: white;
+    padding: 15px 20px; /* Daha ince görünmesi için padding azaltıldı */
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px; /* Yükseklik ayarlandı, isterseniz bunu da azaltabilirsiniz */
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.social-icons {
+    margin-top: 5px; /* Daha az boşluk olması için margin küçültüldü */
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icons .icon {
+    color: white;
+    font-size: 18px; /* İkonlar biraz daha küçültüldü */
+    transition: color 0.3s ease;
+}
+
+.social-icons .icon:hover {
+    color: #f8694c;
+}
+
+.footer p {
+    margin: 5px 0; /* Paragraf aralıkları daraltıldı */
+    font-size: 12px; /* Yazı boyutu küçültüldü */
+    font-weight: 300;
+}
+
+/* Sayfa içeriğinin footer'ın altında kalmasını sağlamak için gerekli ayarlar */
+html, body {
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1; /* İçerik kısmının esnekliği ayarlanarak footer her zaman en altta kalır */
+}
