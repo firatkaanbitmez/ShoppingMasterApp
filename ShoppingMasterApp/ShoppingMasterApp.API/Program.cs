@@ -54,7 +54,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     // Enable CORS globally
     services.AddCors(options =>
     {
-        options.AddPolicy("AllowAll", builder =>
+        options.AddPolicy("AllowAllOrigins", builder =>
             builder.AllowAnyOrigin()
                    .AllowAnyMethod()
                    .AllowAnyHeader());
@@ -102,7 +102,7 @@ void ConfigureMiddleware(WebApplication app)
     }
 
     app.UseHttpsRedirection();
-    app.UseCors("AllowAll");
+    app.UseCors("AllowAllOrigins");
     app.UseAuthorization();
 
     // Add custom middleware

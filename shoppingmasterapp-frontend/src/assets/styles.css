@@ -1,0 +1,212 @@
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f8fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Header */
+header {
+  background-color: #343a40;
+  color: white;
+  padding: 15px;
+}
+header nav ul {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+header nav ul li {
+  margin: 0 10px;
+}
+header nav ul li a {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+header nav ul li a:hover {
+  color: #f8694c;
+}
+
+/* Slider */
+#limitedStockSlider {
+  max-width: 1200px;
+  margin: 30px auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+.carousel-caption {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+}
+.carousel-caption h5 {
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.carousel-caption p {
+  color: #666;
+  font-size: 1.2rem;
+}
+.carousel-caption .price {
+  color: #e44d26;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Cards */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.card-title {
+  font-size: 1.4rem;
+  color: #007bff;
+}
+.card-text {
+  color: #6c757d;
+  margin-bottom: 15px;
+}
+
+/* Button */
+button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+button:hover {
+  background-color: #218838;
+}
+
+/* Footer */
+footer {
+  background-color: #343a40;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+/* User Management */
+.user-management {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.user-management h1, .user-management h2 {
+  text-align: center;
+}
+
+.user-form {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.user-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.user-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.user-form button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.user-form button:hover {
+  background-color: #218838;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.user-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.user-list li {
+  padding: 15px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-list li:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
