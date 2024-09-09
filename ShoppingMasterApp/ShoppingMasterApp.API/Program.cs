@@ -20,7 +20,7 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    // Add controllers with filters (if required)
+    
     services.AddControllers(options =>
     {
         options.Filters.Add<ValidationFilter>();  // Global validation filter
@@ -34,9 +34,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
         sqlOptions =>
         {
-            sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); // Retry policy
+            sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); 
         })
-        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)); // Improves performance for read-only queries
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)); 
 
     // Add AutoMapper
     services.AddAutoMapper(typeof(AutoMapperProfile));

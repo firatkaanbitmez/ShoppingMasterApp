@@ -9,6 +9,7 @@ using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Domain.ValueObjects;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ShoppingMasterApp.Application.Services
 {
@@ -78,9 +79,24 @@ namespace ShoppingMasterApp.Application.Services
         // Get user by ID
         public async Task<UserDto> GetUserByIdAsync(int id)
         {
+            // ID'nin geçerli olup olmadığını kontrol ediyoruz.
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
             var user = await _userRepository.GetByIdAsync(id);
+
+            // Kullanıcı bulunamadığında hata döndürülüyor.
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+
+            // Kullanıcı bulunduğunda DTO'ya map edilip geri döndürülüyor.
             return _mapper.Map<UserDto>(user);
         }
+
 
         // Get all users
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -92,8 +108,25 @@ namespace ShoppingMasterApp.Application.Services
         // Get users by role
         public async Task<IEnumerable<UserDto>> GetUsersByRoleAsync(string role)
         {
-            var users = await _userRepository.GetUsersByRoleAsync((Roles)Enum.Parse(typeof(Roles), role));
+            // Role'ün boş veya null olup olmadığını kontrol ediyoruz.
+            if (string.IsNullOrWhiteSpace(role))
+            {
+                throw new ArgumentException("Role cannot be null or empty");
+            }
+
+            // Rolü parse ediyoruz ve geçerli olup olmadığını kontrol ediyoruz.
+            // Eğer geçersiz bir role girilirse ArgumentException fırlatılacak.
+            if (!Enum.TryParse(typeof(Roles), role, true, out var parsedRole) || !Enum.IsDefined(typeof(Roles), parsedRole))
+            {
+                throw new ArgumentException("Invalid role");
+            }
+
+            // Kullanıcıları role göre sorguluyoruz
+            var users = await _userRepository.GetUsersByRoleAsync((Roles)parsedRole);
+
+            // Kullanıcıları map ediyoruz ve geri döndürüyoruz
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
+
     }
 }
