@@ -1,0 +1,8 @@
+cd shopping-master-app-frontend
+ng serve
+
+
+
+
+http://localhost:4300/
+ng serve --port 4300
