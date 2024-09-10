@@ -8,7 +8,7 @@ namespace ShoppingMasterApp.Domain.Entities
     {
         public int UserId { get; set; }
         public List<CartItem> CartItems { get; set; } = new List<CartItem>();
-        public decimal TotalPrice { get; private set; }
+        public decimal TotalPrice { get; private set; }  // TotalPrice dışarıdan set edilemez, yalnızca hesaplama ile güncellenir.
 
         public void CalculateTotalPrice()
         {
@@ -54,9 +54,10 @@ namespace ShoppingMasterApp.Domain.Entities
         public void Clear()
         {
             CartItems.Clear();
-            TotalPrice = 0;
+            CalculateTotalPrice();  // TotalPrice sıfırlanır
         }
     }
+
 
 
 

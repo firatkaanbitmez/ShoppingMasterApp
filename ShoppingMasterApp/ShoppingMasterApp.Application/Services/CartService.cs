@@ -67,9 +67,20 @@ public class CartService : ICartService
             throw new Exception("Cart not found.");
         }
 
-        cart.RemoveItem(command.ProductId);
-        await _unitOfWork.SaveChangesAsync();
+        var cartItem = cart.CartItems.FirstOrDefault(item => item.ProductId == command.ProductId);
+        if (cartItem != null)
+        {
+            cart.RemoveItem(command.ProductId);  // Ürünü sepetten kaldır, CalculateTotalPrice otomatik çağrılır
+
+            _cartRepository.Update(cart);
+            await _unitOfWork.SaveChangesAsync();  // Değişiklikleri kaydet
+        }
+        else
+        {
+            throw new Exception("Cart item not found.");
+        }
     }
+
 
     public async Task ClearCartAsync(int userId)
     {
@@ -79,7 +90,10 @@ public class CartService : ICartService
             throw new Exception("Cart not found.");
         }
 
-        cart.Clear();
-        await _unitOfWork.SaveChangesAsync();
+        cart.Clear();  // Sepeti temizle, CalculateTotalPrice otomatik çağrılır
+        _cartRepository.Update(cart);  // Değişiklikleri kaydet
+        await _unitOfWork.SaveChangesAsync();  // Veritabanına kaydet
     }
+
+
 }
