@@ -79,6 +79,12 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 builder.Property(d => d.Amount).HasColumnType("decimal(18,2)");
             });
 
+            modelBuilder.Entity<Cart>()
+                .HasMany(c => c.CartItems)
+                .WithOne()
+                .HasForeignKey(ci => ci.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
     }

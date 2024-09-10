@@ -7,11 +7,13 @@ namespace ShoppingMasterApp.Application.Interfaces.Services
 {
     public interface ICartService
     {
-        Task AddToCartAsync(AddToCartCommand command);
-        Task RemoveFromCartAsync(RemoveFromCartCommand command);
-        Task ClearCartAsync(ClearCartCommand command);
         Task<CartDto> GetCartByUserIdAsync(int userId);
+        Task AddOrUpdateCartItemAsync(AddToCartCommand command); 
+        Task RemoveCartItemAsync(RemoveFromCartCommand command); 
+        Task ClearCartAsync(int userId); 
     }
+
+
 
 
 }

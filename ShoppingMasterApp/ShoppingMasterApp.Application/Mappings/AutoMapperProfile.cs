@@ -17,9 +17,7 @@ namespace ShoppingMasterApp.Application.Mappings
     {
         public AutoMapperProfile()
         {
-            // Map entities to DTOs and commands
-            CreateMap<Cart, CartDto>().ReverseMap();
-            CreateMap<CartItem, CartItemDto>().ReverseMap();
+            // Map entities to DTOs and commands         
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Order, OrderDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemDto>().ReverseMap();
@@ -43,6 +41,14 @@ namespace ShoppingMasterApp.Application.Mappings
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Email, string>().ConvertUsing(email => email.Value);
+
+            CreateMap<Cart, CartDto>().ReverseMap();
+            CreateMap<CartItem, CartItemDto>()
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.UnitPrice * src.Quantity))
+                .ReverseMap();
+
+
+
 
             // Map value objects
             CreateMap<Money, MoneyDto>().ReverseMap();

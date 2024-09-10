@@ -20,10 +20,6 @@ namespace ShoppingMasterApp.Domain.Common
             UpdatedAt = DateTime.UtcNow;
         }
 
-        // Entity eklenirken CreatedAt otomatik ayarlanacak.
-        public void MarkAsCreated()
-        {
-            CreatedAt = DateTime.UtcNow;
-        }
+        
     }
 }

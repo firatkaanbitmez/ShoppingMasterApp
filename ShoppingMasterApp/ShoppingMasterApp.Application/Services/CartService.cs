@@ -10,68 +10,76 @@ using System.Threading.Tasks;
 public class CartService : ICartService
 {
     private readonly ICartRepository _cartRepository;
+    private readonly IProductRepository _productRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork, IMapper mapper)
+    public CartService(ICartRepository cartRepository, IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _cartRepository = cartRepository;
+        _productRepository = productRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
-    public async Task AddToCartAsync(AddToCartCommand command)
+    public async Task<CartDto> GetCartByUserIdAsync(int userId)
     {
-        var cart = await _cartRepository.GetCartByUserIdAsync(command.UserId);
+        var cart = await _cartRepository.GetByUserIdAsync(userId);
+        if (cart == null)
+        {
+            cart = new Cart { UserId = userId };
+            await _cartRepository.AddAsync(cart);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        return _mapper.Map<CartDto>(cart);
+    }
+
+    public async Task AddOrUpdateCartItemAsync(AddToCartCommand command)
+    {
+        var cart = await _cartRepository.GetByUserIdAsync(command.UserId);
         if (cart == null)
         {
             cart = new Cart { UserId = command.UserId };
-            await _cartRepository.AddAsync(cart);
+            await _cartRepository.AddAsync(cart);  // Yeni sepeti ekle
+            await _unitOfWork.SaveChangesAsync();  // Veritabanına kaydet
         }
 
-        var cartItem = cart.CartItems.FirstOrDefault(i => i.ProductId == command.ProductId);
-        if (cartItem != null)
+        var product = await _productRepository.GetByIdAsync(command.ProductId);
+        if (product == null || product.Stock < command.Quantity)
         {
-            cartItem.Quantity += command.Quantity;
-        }
-        else
-        {
-            cart.CartItems.Add(new CartItem
-            {
-                ProductId = command.ProductId,
-                Quantity = command.Quantity
-            });
+            throw new Exception("Product is out of stock.");
         }
 
+        // Sepete ürün ekle veya güncelle
+        cart.AddOrUpdateItem(product, command.Quantity);
+
+        // Sepet ve ürünleri kaydet
+        _cartRepository.Update(cart);
+        await _unitOfWork.SaveChangesAsync();  // Veritabanına tüm değişiklikleri kaydet
+    }
+
+
+    public async Task RemoveCartItemAsync(RemoveFromCartCommand command)
+    {
+        var cart = await _cartRepository.GetByUserIdAsync(command.UserId);
+        if (cart == null)
+        {
+            throw new Exception("Cart not found.");
+        }
+
+        cart.RemoveItem(command.ProductId);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task RemoveFromCartAsync(RemoveFromCartCommand command)
+    public async Task ClearCartAsync(int userId)
     {
-        var cart = await _cartRepository.GetCartByUserIdAsync(command.UserId);
-        var cartItem = cart.CartItems.FirstOrDefault(i => i.ProductId == command.ProductId);
-        if (cartItem != null)
+        var cart = await _cartRepository.GetByUserIdAsync(userId);
+        if (cart == null)
         {
-            cart.CartItems.Remove(cartItem);
-            await _unitOfWork.SaveChangesAsync();
+            throw new Exception("Cart not found.");
         }
-    }
 
-    public async Task ClearCartAsync(ClearCartCommand command)
-    {
-        var cart = await _cartRepository.GetByIdAsync(command.CartId);
-        if (cart != null)
-        {
-            cart.CartItems.Clear();
-            await _unitOfWork.SaveChangesAsync();
-        }
-    }
-
-    public async Task<CartDto> GetCartByUserIdAsync(int userId)
-    {
-        var cart = await _cartRepository.GetCartByUserIdAsync(userId);
-        if (cart == null) return null;
-
-        return _mapper.Map<CartDto>(cart);
+        cart.Clear();
+        await _unitOfWork.SaveChangesAsync();
     }
 }

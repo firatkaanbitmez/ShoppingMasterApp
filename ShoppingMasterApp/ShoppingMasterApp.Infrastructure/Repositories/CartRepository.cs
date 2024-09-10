@@ -19,13 +19,20 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Cart> GetCartByUserIdAsync(int userId)
+        public async Task<Cart> GetByUserIdAsync(int userId)
         {
             return await _context.Carts
-                .Include(c => c.CartItems)
+                .Include(c => c.CartItems)  // CartItems'ı da dahil et
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
+
+        public async Task<CartItem> GetCartItemAsync(int cartId, int productId)
+        {
+            return await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+        }
     }
+
 
 
 }

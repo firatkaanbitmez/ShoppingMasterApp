@@ -9,7 +9,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Cart
     public class RemoveFromCartCommand
     {
         public int ProductId { get; set; }
-        public int UserId { get; set; } 
+        public int UserId { get; set; }
     }
 
 }

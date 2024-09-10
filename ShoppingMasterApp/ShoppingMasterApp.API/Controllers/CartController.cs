@@ -17,32 +17,38 @@ namespace ShoppingMasterApp.API.Controllers
             _cartService = cartService;
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
-        {
-            await _cartService.AddToCartAsync(command);
-            return ApiResponse("Product added to cart successfully");
-        }
-
-        [HttpDelete("remove")]
-        public async Task<IActionResult> RemoveFromCart([FromBody] RemoveFromCartCommand command)
-        {
-            await _cartService.RemoveFromCartAsync(command);
-            return ApiResponse("Product removed from cart successfully");
-        }
-
-        [HttpDelete("clear")]
-        public async Task<IActionResult> ClearCart([FromBody] ClearCartCommand command)
-        {
-            await _cartService.ClearCartAsync(command);
-            return ApiResponse("Cart cleared successfully");
-        }
-
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetCartByUserId(int userId)
         {
-            var result = await _cartService.GetCartByUserIdAsync(userId);
-            return ApiResponse(result);
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            return ApiResponse(cart);
+        }
+
+        [HttpPost("addOrUpdate")]
+        public async Task<IActionResult> AddOrUpdateCartItem([FromBody] AddToCartCommand command)
+        {
+            await _cartService.AddOrUpdateCartItemAsync(command);
+            return ApiResponse("Product added or updated in the cart successfully.");
+        }
+
+        [HttpPost("remove")]
+        public async Task<IActionResult> RemoveCartItem([FromBody] RemoveFromCartCommand command)
+        {
+            await _cartService.RemoveCartItemAsync(command);
+            return ApiResponse("Product removed from the cart successfully.");
+        }
+
+        [HttpDelete("clear/{userId}")]
+        public async Task<IActionResult> ClearCart(int userId)
+        {
+            await _cartService.ClearCartAsync(userId);
+            return ApiResponse("Cart cleared successfully.");
         }
     }
+
+
+
+
+
+
 }

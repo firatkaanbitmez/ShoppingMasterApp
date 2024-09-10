@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240909141023_InitialCreate")]
+    [Migration("20240910091641_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -39,6 +39,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -46,8 +49,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -72,8 +73,15 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -81,8 +89,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("CartItems");
                 });
@@ -399,34 +405,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Cart", b =>
-                {
-                    b.HasOne("ShoppingMasterApp.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.CartItem", b =>
                 {
-                    b.HasOne("ShoppingMasterApp.Domain.Entities.Cart", "Cart")
+                    b.HasOne("ShoppingMasterApp.Domain.Entities.Cart", null)
                         .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ShoppingMasterApp.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Order", b =>
