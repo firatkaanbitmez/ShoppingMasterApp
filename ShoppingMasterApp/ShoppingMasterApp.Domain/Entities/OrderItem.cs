@@ -13,6 +13,8 @@ namespace ShoppingMasterApp.Domain.Entities
         // Toplam fiyat dinamik olarak hesaplanıyor.
         public decimal TotalPrice => UnitPrice * Quantity;
 
+        public int OrderId { get; set; }
+
         // Constructor eklendi
         public OrderItem(int productId, decimal unitPrice, int quantity)
         {

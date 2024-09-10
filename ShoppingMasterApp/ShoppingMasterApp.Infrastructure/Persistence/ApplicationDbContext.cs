@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.ValueObjects;
 
 namespace ShoppingMasterApp.Infrastructure.Persistence
 {
@@ -24,68 +25,86 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // User entity
+            // Configure User entity
             modelBuilder.Entity<User>(builder =>
             {
                 builder.OwnsOne(u => u.Address);
                 builder.OwnsOne(u => u.Email);
             });
 
-            // Shipping entity
-            modelBuilder.Entity<Shipping>(builder =>
-            {
-                builder.OwnsOne(s => s.ShippingAddress);
-            });
-
-            // Order entity
-            modelBuilder.Entity<Order>(builder =>
-            {
-                builder.OwnsOne(o => o.TotalAmount, config =>
-                {
-                    config.Property(m => m.Amount).HasColumnType("decimal(18,2)");
-                });
-            });
-
-            // Product entity
+            // Configure Product entity
             modelBuilder.Entity<Product>(builder =>
             {
                 builder.OwnsOne(p => p.Price, config =>
                 {
-                    config.Property(m => m.Amount).HasColumnName("Price_Amount").HasColumnType("decimal(18,2)");
+                    config.Property(m => m.Amount).HasColumnType("decimal(18,2)").HasColumnName("Price_Amount");
                     config.Property(m => m.Currency).HasColumnName("Price_Currency");
                 });
                 builder.OwnsOne(p => p.ProductDetails);
             });
 
-            // Payment entity
+            // Configure Cart entity
+            modelBuilder.Entity<Cart>(builder =>
+            {
+                builder.HasMany(c => c.CartItems)
+                       .WithOne()
+                       .HasForeignKey(ci => ci.CartId)
+                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure Order entity with TotalAmount as an owned type
+            modelBuilder.Entity<Order>(builder =>
+            {
+                builder.OwnsOne(o => o.TotalAmount, config =>
+                {
+                    config.Property(m => m.Amount).HasColumnName("TotalAmount_Amount").HasColumnType("decimal(18,2)");
+                    config.Property(m => m.Currency).HasColumnName("TotalAmount_Currency");
+                });
+                builder.HasMany(o => o.OrderItems)
+                       .WithOne()
+                       .HasForeignKey(oi => oi.OrderId)
+                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure Payment entity with Amount and PaymentDetails as owned types
             modelBuilder.Entity<Payment>(builder =>
             {
                 builder.OwnsOne(p => p.Amount, config =>
                 {
-                    config.Property(m => m.Amount).HasColumnType("decimal(18,2)");
+                    config.Property(m => m.Amount).HasColumnType("decimal(18,2)").HasColumnName("Payment_Amount");
+                    config.Property(m => m.Currency).HasColumnName("Payment_Currency");
                 });
-                builder.OwnsOne(p => p.PaymentDetails);
+
+                // Configure PaymentDetails as owned by Payment
+                builder.OwnsOne(p => p.PaymentDetails, config =>
+                {
+                    config.Property(pd => pd.CardType).HasColumnName("Card_Type");
+                    config.Property(pd => pd.CardNumber).HasColumnName("Card_Number");
+                    config.Property(pd => pd.ExpiryDate).HasColumnName("Expiry_Date");
+                    config.Property(pd => pd.Cvv).HasColumnName("CVV");
+                });
             });
 
-            // OrderItem entity
-            modelBuilder.Entity<OrderItem>(builder =>
+            // Configure Shipping entity with ShippingAddress as an owned type
+            modelBuilder.Entity<Shipping>(builder =>
             {
-                builder.Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)");
+                builder.OwnsOne(s => s.ShippingAddress, config =>
+                {
+                    config.Property(a => a.AddressLine1).HasColumnName("ShippingAddress_Line1");
+                    config.Property(a => a.AddressLine2).HasColumnName("ShippingAddress_Line2");
+                    config.Property(a => a.City).HasColumnName("ShippingAddress_City");
+                    config.Property(a => a.State).HasColumnName("ShippingAddress_State");
+                    config.Property(a => a.PostalCode).HasColumnName("ShippingAddress_PostalCode");
+                    config.Property(a => a.Country).HasColumnName("ShippingAddress_Country");
+                });
             });
 
-            // Discount entity
-            modelBuilder.Entity<Discount>(builder =>
-            {
-                builder.Property(d => d.Amount).HasColumnType("decimal(18,2)");
-            });
-
-            modelBuilder.Entity<Cart>()
-                .HasMany(c => c.CartItems)
-                .WithOne()
-                .HasForeignKey(ci => ci.CartId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // Do not configure PaymentDetails as an independent entity
+            // Remove the following line: modelBuilder.Entity<PaymentDetails>().HasNoKey();
 
             base.OnModelCreating(modelBuilder);
         }
+
+
     }
 }

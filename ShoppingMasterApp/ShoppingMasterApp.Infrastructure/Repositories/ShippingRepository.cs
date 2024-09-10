@@ -12,10 +12,7 @@ public class ShippingRepository : BaseRepository<Shipping>, IShippingRepository
     {
         _context = context;
     }
-    public async Task<Shipping> GetShippingByOrderIdAsync(int orderId)
-    {
-        return await _context.Shippings.FirstOrDefaultAsync(s => s.OrderId == orderId);
-    }
+ 
 
 
 }

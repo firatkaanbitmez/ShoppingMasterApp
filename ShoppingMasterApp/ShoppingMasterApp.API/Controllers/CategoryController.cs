@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MediatR;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
-using ShoppingMasterApp.Application.CQRS.Commands.Order;
-using ShoppingMasterApp.Application.Interfaces;
+using ShoppingMasterApp.Application.CQRS.Queries.Category;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
@@ -10,45 +10,45 @@ namespace ShoppingMasterApp.API.Controllers
     [Route("api/[controller]")]
     public class CategoryController : BaseController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IMediator _mediator;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(IMediator mediator)
         {
-            _categoryService = categoryService;
+            _mediator = mediator;
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
         {
-            await _categoryService.CreateCategoryAsync(command);
+            await _mediator.Send(command);
             return ApiResponse("Category created successfully");
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryCommand command)
         {
-            await _categoryService.UpdateCategoryAsync(command);
+            await _mediator.Send(command);
             return ApiResponse("Category updated successfully");
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            await _categoryService.DeleteCategoryAsync(new DeleteCategoryCommand { Id = id });
+            await _mediator.Send(new DeleteCategoryCommand { Id = id });
             return ApiResponse("Category deleted successfully");
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
-            var result = await _categoryService.GetCategoryByIdAsync(id);
+            var result = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
             return ApiResponse(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var result = await _categoryService.GetAllCategoriesAsync();
+            var result = await _mediator.Send(new GetAllCategoriesQuery());
             return ApiResponse(result);
         }
     }

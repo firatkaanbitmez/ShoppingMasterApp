@@ -1,17 +1,29 @@
-﻿using ShoppingMasterApp.Application.DTOs;
-using System;
+﻿using AutoMapper;
+using MediatR;
+using ShoppingMasterApp.Application.DTOs;
+using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.User
 {
-    public class GetAllUsersQuery
+    public class GetAllUsersQuery : IRequest<IEnumerable<UserDto>>
     {
-    }
-    public class GetAllUsersQueryResponse
-    {
-        public IEnumerable<UserDto> Users { get; set; }
+        public class Handler : IRequestHandler<GetAllUsersQuery, IEnumerable<UserDto>>
+        {
+            private readonly IUserRepository _userRepository;
+            private readonly IMapper _mapper;
+
+            public Handler(IUserRepository userRepository, IMapper mapper)
+            {
+                _userRepository = userRepository;
+                _mapper = mapper;
+            }
+
+            public async Task<IEnumerable<UserDto>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+            {
+                var users = await _userRepository.GetAllUsersAsync();
+                return _mapper.Map<IEnumerable<UserDto>>(users);
+            }
+        }
     }
 }

@@ -35,6 +35,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -209,7 +210,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -221,7 +222,8 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
@@ -237,13 +239,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    Amount_Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Amount_Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Payment_Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Payment_Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentDetails_CardType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentDetails_CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentDetails_ExpiryDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentDetails_Cvv = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Card_Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Card_Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Expiry_Date = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CVV = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsSuccessful = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -267,8 +269,8 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ShippingAddress_AddressLine1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShippingAddress_AddressLine2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_Line1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_Line2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_State = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),

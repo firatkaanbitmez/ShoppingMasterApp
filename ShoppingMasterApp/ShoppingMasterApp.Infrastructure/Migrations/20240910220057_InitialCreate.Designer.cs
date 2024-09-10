@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240910093303_InitialCreate")]
+    [Migration("20240910220057_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -103,6 +103,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -195,7 +199,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("OrderId")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -428,11 +432,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("TotalAmount_Amount");
 
                             b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("TotalAmount_Currency");
 
                             b1.HasKey("OrderId");
 
@@ -452,7 +458,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                 {
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Product", "Product")
                         .WithMany()
@@ -477,11 +485,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("Payment_Amount");
 
                             b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Payment_Currency");
 
                             b1.HasKey("PaymentId");
 
@@ -498,19 +508,23 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("CardNumber")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Card_Number");
 
                             b1.Property<string>("CardType")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Card_Type");
 
                             b1.Property<string>("Cvv")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("CVV");
 
                             b1.Property<string>("ExpiryDate")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Expiry_Date");
 
                             b1.HasKey("PaymentId");
 
@@ -623,27 +637,33 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("AddressLine1")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ShippingAddress_Line1");
 
                             b1.Property<string>("AddressLine2")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ShippingAddress_Line2");
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ShippingAddress_City");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ShippingAddress_Country");
 
                             b1.Property<string>("PostalCode")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ShippingAddress_PostalCode");
 
                             b1.Property<string>("State")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("ShippingAddress_State");
 
                             b1.HasKey("ShippingId");
 

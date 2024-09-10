@@ -1,12 +1,4 @@
 ﻿using AutoMapper;
-using ShoppingMasterApp.Application.CQRS.Commands.Cart;
-using ShoppingMasterApp.Application.CQRS.Commands.Category;
-using ShoppingMasterApp.Application.CQRS.Commands.Order;
-using ShoppingMasterApp.Application.CQRS.Commands.Payment;
-using ShoppingMasterApp.Application.CQRS.Commands.Product;
-using ShoppingMasterApp.Application.CQRS.Commands.Review;
-using ShoppingMasterApp.Application.CQRS.Commands.Shipping;
-using ShoppingMasterApp.Application.CQRS.Commands.User;
 using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.ValueObjects;
@@ -17,41 +9,42 @@ namespace ShoppingMasterApp.Application.Mappings
     {
         public AutoMapperProfile()
         {
-            // Map entities to DTOs and commands         
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<Order, OrderDto>().ReverseMap();
-            CreateMap<OrderItem, OrderItemDto>().ReverseMap();
+            // Cart Mappings
+            CreateMap<Cart, CartDto>()
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice));
+
+            // CartItem Mappings
+            CreateMap<CartItem, CartItemDto>();
+
+            // Category Mappings
+            CreateMap<Category, CategoryDto>();
+
+            // Product Mappings
             CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price.Amount))  
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));  
+                .ForMember(dest => dest.Manufacturer, opt => opt.MapFrom(src => src.ProductDetails.Manufacturer))
+                .ForMember(dest => dest.Sku, opt => opt.MapFrom(src => src.ProductDetails.Sku))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price.Amount));
 
+            // Review Mappings
+            CreateMap<Review, ReviewDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FirstName));
 
-            // Mapping CreateProductCommand to Product, with proper Price mapping
-            CreateMap<CreateProductCommand, Product>()
-                .ForMember(dest => dest.ProductDetails, opt => opt.MapFrom(src => new ProductDetails(src.Manufacturer, src.Sku)))
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD"))); 
+            // Shipping Mappings
+            CreateMap<Shipping, ShippingDto>()
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => $"{src.ShippingAddress.AddressLine1}, {src.ShippingAddress.City}, {src.ShippingAddress.State}"));
 
+            // Order Mappings
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalAmount.Amount));
 
-            // Mapping UpdateProductCommand to Product, with proper Price mapping
-            CreateMap<UpdateProductCommand, Product>()
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => new Money(src.Price, "USD")));
+            // OrderItem Mappings
+            CreateMap<OrderItem, OrderItemDto>();
 
-            CreateMap<Review, ReviewDto>().ReverseMap();
-            CreateMap<Shipping, ShippingDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<Address, AddressDto>().ReverseMap();
-            CreateMap<Email, string>().ConvertUsing(email => email.Value);
-
-            CreateMap<Cart, CartDto>().ReverseMap();
-            CreateMap<CartItem, CartItemDto>()
-                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.UnitPrice * src.Quantity))
-                .ReverseMap();
-
-
-
-
-            // Map value objects
-            CreateMap<Money, MoneyDto>().ReverseMap();
+            // User Mappings
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Value))
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.ToString()));
         }
     }
 }

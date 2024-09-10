@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using ShoppingMasterApp.Application.Interfaces.Services;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
 using ShoppingMasterApp.Infrastructure.Repositories;
 using ShoppingMasterApp.API.Middlewares;
 using ShoppingMasterApp.API.Filters;
 using ShoppingMasterApp.Application.Mappings;
-using ShoppingMasterApp.Application.Interfaces;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using ShoppingMasterApp.Application.Services;
+using MediatR;
+using ShoppingMasterApp.Application.CQRS.Commands.User;
+using ShoppingMasterApp.Application.CQRS.Queries.User;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
@@ -20,13 +20,12 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    
+    // Add controllers and global filters
     services.AddControllers(options =>
     {
         options.Filters.Add<ValidationFilter>();  // Global validation filter
         options.Filters.Add<LoggingFilter>();     // Global logging filter
         options.Filters.Add<ExceptionFilter>();   // Global exception filter
-
     });
 
     // Configure database context with retry policy and error handling
@@ -34,21 +33,18 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
         sqlOptions =>
         {
-            sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); 
+            sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
         })
-        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)); 
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
-    // Add AutoMapper
+    // Add AutoMapper for DTO to entity mappings
     services.AddAutoMapper(typeof(AutoMapperProfile));
 
-    // Add Swagger
+    // Add Swagger for API documentation
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingMaster API", Version = "v1" });
-        //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        //c.IncludeXmlComments(xmlPath);
     });
 
     // Enable CORS globally
@@ -60,23 +56,15 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                    .AllowAnyHeader());
     });
 
+    // Add MediatR for handling CQRS (commands and queries)
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
+
     // Register services and repositories
     RegisterServices(services);
 }
 
 void RegisterServices(IServiceCollection services)
-{
-    // Application services
-    services.AddScoped<ICartService, CartService>();
-    services.AddScoped<ICategoryService, CategoryService>();
-    services.AddScoped<IDiscountService, DiscountService>();
-    services.AddScoped<IOrderService, OrderService>();
-    services.AddScoped<IPaymentService, PaymentService>();
-    services.AddScoped<IProductService, ProductService>();
-    services.AddScoped<IReviewService, ReviewService>();
-    services.AddScoped<IShippingService, ShippingService>();
-    services.AddScoped<IUserService, UserService>();
-
+{ 
     // Repositories
     services.AddScoped<ICartRepository, CartRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -94,6 +82,7 @@ void RegisterServices(IServiceCollection services)
 
 void ConfigureMiddleware(WebApplication app)
 {
+    // Use Swagger in development mode
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
@@ -105,7 +94,7 @@ void ConfigureMiddleware(WebApplication app)
     app.UseCors("AllowAllOrigins");
     app.UseAuthorization();
 
-    // Add custom middleware
+    // Add custom middleware for exception handling
     app.UseMiddleware<ExceptionMiddleware>();
     app.MapControllers();
 }
