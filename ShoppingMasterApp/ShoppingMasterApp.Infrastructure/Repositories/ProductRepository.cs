@@ -17,5 +17,16 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         _context = context;
     }
 
-    
+    public async Task<IEnumerable<Product>> GetAllAsync()
+    {
+        return await _context.Products
+            .Include(p => p.Category) // This ensures the Category is loaded
+            .ToListAsync();
+    }
+    public async Task<Product> GetByIdAsync(int id)
+    {
+        return await _context.Products
+            .Include(p => p.Category) // Ensure Category is included for individual products as well
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
 }
