@@ -15,5 +15,4 @@ namespace ShoppingMasterApp.Application.DTOs
         public string PostalCode { get; set; }
         public string Country { get; set; }
     }
-
 }

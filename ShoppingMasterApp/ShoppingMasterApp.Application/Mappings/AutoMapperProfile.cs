@@ -41,10 +41,15 @@ namespace ShoppingMasterApp.Application.Mappings
             // OrderItem Mappings
             CreateMap<OrderItem, OrderItemDto>();
 
+            // Add mapping for Address -> AddressDto
+            CreateMap<Address, AddressDto>();
+
             // User Mappings
             CreateMap<User, UserDto>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Value))
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.ToString()));
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Value))
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.ToString()))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+
         }
     }
 }

@@ -26,4 +26,5 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.User
             }
         }
     }
+
 }

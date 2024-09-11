@@ -23,9 +23,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     // Add controllers and global filters
     services.AddControllers(options =>
     {
-        options.Filters.Add<ValidationFilter>();  // Global validation filter
-        options.Filters.Add<LoggingFilter>();     // Global logging filter
-        options.Filters.Add<ExceptionFilter>();   // Global exception filter
+        //options.Filters.Add<ValidationFilter>();  // Global validation filter
+        //options.Filters.Add<LoggingFilter>();     // Global logging filter
+        //options.Filters.Add<ExceptionFilter>();   // Global exception filter
     });
 
     // Configure database context with retry policy and error handling
@@ -95,6 +95,6 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthorization();
 
     // Add custom middleware for exception handling
-    app.UseMiddleware<ExceptionMiddleware>();
+    //app.UseMiddleware<ExceptionMiddleware>();
     app.MapControllers();
 }

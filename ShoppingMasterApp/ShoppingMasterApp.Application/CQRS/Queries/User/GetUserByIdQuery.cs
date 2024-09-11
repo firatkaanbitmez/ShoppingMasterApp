@@ -27,9 +27,9 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.User
                 {
                     throw new KeyNotFoundException("User not found");
                 }
-
                 return _mapper.Map<UserDto>(user);
             }
         }
     }
+
 }
