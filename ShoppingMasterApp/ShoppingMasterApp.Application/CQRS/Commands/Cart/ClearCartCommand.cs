@@ -1,14 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using ShoppingMasterApp.Domain.Interfaces.Repositories;
 
-namespace ShoppingMasterApp.Application.CQRS.Commands.Cart
+public class ClearCartCommand : IRequest<Unit>
 {
-    public class ClearCartCommand
-    {
-        public int CartId { get; set; }
-    }
+    public int UserId { get; set; }
 
+    public class Handler : IRequestHandler<ClearCartCommand, Unit>
+    {
+        private readonly ICartRepository _cartRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public Handler(ICartRepository cartRepository, IUnitOfWork unitOfWork)
+        {
+            _cartRepository = cartRepository;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<Unit> Handle(ClearCartCommand request, CancellationToken cancellationToken)
+        {
+            var cart = await _cartRepository.GetCartByUserIdAsync(request.UserId);
+            if (cart == null)
+            {
+                throw new KeyNotFoundException("Cart not found.");
+            }
+
+            cart.CartItems.Clear();  // Tüm ürünleri temizle
+            _cartRepository.Update(cart);  // Veritabanında güncelle
+            await _unitOfWork.SaveChangesAsync();  // Değişiklikleri kaydet
+
+            return Unit.Value;
+        }
+    }
 }

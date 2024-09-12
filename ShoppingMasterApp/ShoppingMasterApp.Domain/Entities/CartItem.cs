@@ -1,5 +1,4 @@
 ﻿using ShoppingMasterApp.Domain.Common;
-using ShoppingMasterApp.Domain.ValueObjects;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
@@ -13,8 +12,4 @@ namespace ShoppingMasterApp.Domain.Entities
 
         public decimal TotalPrice => UnitPrice * Quantity;
     }
-
-
-
-
 }

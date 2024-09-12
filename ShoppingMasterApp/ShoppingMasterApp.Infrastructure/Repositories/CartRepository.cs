@@ -2,10 +2,6 @@
 using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
@@ -19,9 +15,15 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             _context = context;
         }
 
-      
-    }
+        public async Task<Cart> GetCartByUserIdAsync(int userId)
+        {
+            return await _context.Carts
+                .Include(c => c.CartItems)  
+                .AsTracking()  
+                .FirstOrDefaultAsync(c => c.UserId == userId);  
+        }
 
+    }
 
 
 }

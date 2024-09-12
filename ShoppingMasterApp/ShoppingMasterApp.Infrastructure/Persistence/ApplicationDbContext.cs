@@ -46,12 +46,13 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
             // Configure Cart entity
             modelBuilder.Entity<Cart>(builder =>
             {
+                builder.HasKey(c => c.Id);
+                builder.Property(c => c.Id).ValueGeneratedOnAdd(); // Id otomatik olarak oluşturulacak
                 builder.HasMany(c => c.CartItems)
                        .WithOne()
                        .HasForeignKey(ci => ci.CartId)
                        .OnDelete(DeleteBehavior.Cascade);
             });
-
             // Configure Order entity with TotalAmount as an owned type
             modelBuilder.Entity<Order>(builder =>
             {
