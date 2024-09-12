@@ -27,6 +27,6 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
         return await _context.Products
             .Include(p => p.Category) // Ensure Category is included for individual products as well
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.DisplayId == id);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ShoppingMasterApp.Domain.Common;
 using ShoppingMasterApp.Domain.ValueObjects;
+using ShoppingMasterApp.Domain.Enums;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
@@ -11,9 +11,7 @@ namespace ShoppingMasterApp.Domain.Entities
         public Order Order { get; set; }
         public Money Amount { get; set; }
         public DateTime PaymentDate { get; set; }
-
         public PaymentDetails PaymentDetails { get; set; }
-
-        public bool IsSuccessful { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
     }
 }

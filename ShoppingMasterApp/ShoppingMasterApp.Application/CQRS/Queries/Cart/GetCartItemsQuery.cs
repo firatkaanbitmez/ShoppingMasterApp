@@ -4,6 +4,6 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.Cart
 {
     public class GetCartItemsQuery 
     {
-        public int UserId { get; set; }
+        public int CustomerId { get; set; }
     }
 }

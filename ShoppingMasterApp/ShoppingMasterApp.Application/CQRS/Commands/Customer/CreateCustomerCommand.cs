@@ -8,36 +8,35 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.User
 {
-    public class CreateUserCommand : IRequest<Unit>
+    public class CreateCustomerCommand : IRequest<Unit>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Roles { get; set; }
         public Address Address { get; set; }
 
         // Handler embedded inside the command class
-        public class Handler : IRequestHandler<CreateUserCommand, Unit>
+        public class Handler : IRequestHandler<CreateCustomerCommand, Unit>
         {
-            private readonly IUserRepository _userRepository;
+            private readonly ICustomerRepository _userRepository;
             private readonly IUnitOfWork _unitOfWork;
 
-            public Handler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+            public Handler(ICustomerRepository userRepository, IUnitOfWork unitOfWork)
             {
                 _userRepository = userRepository;
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
-                var user = new Domain.Entities.User
+                var user = new Domain.Entities.Customer
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Email = new Email(request.Email),
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                    Roles = (Roles)Enum.Parse(typeof(Roles), request.Roles),
+                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                    Roles = Roles.Customer, // Sabit Rol Customer
                     Address = request.Address
                 };
 

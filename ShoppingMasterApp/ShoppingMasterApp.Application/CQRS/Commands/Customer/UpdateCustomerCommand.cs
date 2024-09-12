@@ -8,29 +8,28 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.User
 {
-    public class UpdateUserCommand : IRequest<Unit>
+    public class UpdateCustomerCommand : IRequest<Unit>
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Roles { get; set; }
         public Address Address { get; set; }
 
         // Handler embedded inside the command class
-        public class Handler : IRequestHandler<UpdateUserCommand, Unit>
+        public class Handler : IRequestHandler<UpdateCustomerCommand, Unit>
         {
-            private readonly IUserRepository _userRepository;
+            private readonly ICustomerRepository _userRepository;
             private readonly IUnitOfWork _unitOfWork;
 
-            public Handler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+            public Handler(ICustomerRepository userRepository, IUnitOfWork unitOfWork)
             {
                 _userRepository = userRepository;
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByIdAsync(request.Id);
                 if (user == null)
@@ -41,8 +40,8 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.User
                 user.FirstName = request.FirstName;
                 user.LastName = request.LastName;
                 user.Email = new Email(request.Email);
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-                user.Roles = (Roles)Enum.Parse(typeof(Roles), request.Roles);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                user.Roles = Roles.Customer; // Rol sabit olarak Customer
                 user.Address = request.Address;
 
                 _userRepository.Update(user);

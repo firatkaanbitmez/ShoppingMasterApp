@@ -8,11 +8,11 @@ namespace ShoppingMasterApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : BaseController
+    public class CustomerController : BaseController
     {
         private readonly IMediator _mediator;
 
-        public UserController(IMediator mediator)
+        public CustomerController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -20,26 +20,26 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            var result = await _mediator.Send(new GetUserByIdQuery { Id = id });
+            var result = await _mediator.Send(new GetCustomerByIdQuery { Id = id });
             return ApiResponse(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var result = await _mediator.Send(new GetAllUsersQuery());
+            var result = await _mediator.Send(new GetAllCustomersQuery());
             return ApiResponse(result);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> CreateUser([FromBody] CreateCustomerCommand command)
         {
             await _mediator.Send(command);
             return ApiResponse("User created successfully");
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateCustomerCommand command)
         {
             await _mediator.Send(command);
             return ApiResponse("User updated successfully");
@@ -48,7 +48,7 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            await _mediator.Send(new DeleteUserCommand { Id = id });
+            await _mediator.Send(new DeleteCustomerCommand { Id = id });
             return ApiResponse("User deleted successfully");
         }
     }

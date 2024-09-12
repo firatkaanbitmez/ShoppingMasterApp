@@ -20,5 +20,4 @@ namespace ShoppingMasterApp.Domain.ValueObjects
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
     }
-
 }

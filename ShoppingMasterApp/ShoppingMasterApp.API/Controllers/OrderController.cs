@@ -41,7 +41,7 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetOrdersByUserId(int userId)
         {
-            var orders = await _mediator.Send(new GetOrdersByUserIdQuery { UserId = userId });
+            var orders = await _mediator.Send(new GetOrdersByCustomerIdQuery { CustomerId = userId });
             return ApiResponse(orders);
         }
     }

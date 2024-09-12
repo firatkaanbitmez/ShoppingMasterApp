@@ -19,14 +19,14 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Shipping> Shippings { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Discount> Discounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure User entity
-            modelBuilder.Entity<User>(builder =>
+            modelBuilder.Entity<Customer>(builder =>
             {
                 builder.OwnsOne(u => u.Address);
                 builder.OwnsOne(u => u.Email);
@@ -46,8 +46,8 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
             // Configure Cart entity
             modelBuilder.Entity<Cart>(builder =>
             {
-                builder.HasKey(c => c.Id);
-                builder.Property(c => c.Id).ValueGeneratedOnAdd(); // Id otomatik olarak oluşturulacak
+                builder.HasKey(c => c.DisplayId);
+                builder.Property(c => c.DisplayId).ValueGeneratedOnAdd(); // Id otomatik olarak oluşturulacak
                 builder.HasMany(c => c.CartItems)
                        .WithOne()
                        .HasForeignKey(ci => ci.CartId)

@@ -5,14 +5,16 @@ using System.Collections.Generic;
 
 namespace ShoppingMasterApp.Domain.Entities
 {
-    public class User : BaseEntity
+    public class Customer : BaseEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Email Email { get; set; } 
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
         public Roles Roles { get; set; } 
         public Address Address { get; set; }  
         public ICollection<Order> Orders { get; set; }
+        public Wallet Wallet { get; set; }
+
     }
 }

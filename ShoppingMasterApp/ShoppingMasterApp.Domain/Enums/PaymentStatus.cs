@@ -7,4 +7,5 @@
         Failed = 3,
         Refunded = 4
     }
+
 }

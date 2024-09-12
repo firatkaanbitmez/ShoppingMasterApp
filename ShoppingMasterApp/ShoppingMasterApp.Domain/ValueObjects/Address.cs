@@ -26,6 +26,4 @@ namespace ShoppingMasterApp.Domain.ValueObjects
             Country = country;
         }
     }
-
-
 }
