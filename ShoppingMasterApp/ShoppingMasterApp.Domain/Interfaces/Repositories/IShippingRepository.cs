@@ -5,6 +5,6 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
     public interface IShippingRepository : IBaseRepository<Shipping>
     {
+        Task<Shipping> GetShippingByOrderIdAsync(int orderId); 
     }
-
 }

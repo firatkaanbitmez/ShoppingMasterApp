@@ -8,8 +8,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
 {
     public class UpdateOrderCommand
     {
-        public int Id { get; set; }
-        public decimal TotalAmount { get; set; }
+      
     }
 
 

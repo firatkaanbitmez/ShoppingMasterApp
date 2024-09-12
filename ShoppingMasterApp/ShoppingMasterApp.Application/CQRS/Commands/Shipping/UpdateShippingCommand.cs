@@ -1,28 +1,44 @@
-﻿using System;
-
-namespace ShoppingMasterApp.Application.CQRS.Commands.Shipping
+﻿using MediatR;
+using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Domain.Enums;
+using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using System.Threading;
+using System.Threading.Tasks;
+namespace ShoppingMasterApp.Application.CQRS.Queries.Shipping
 {
-    public class UpdateShippingCommand
+    public class UpdateShippingCommand : IRequest<Unit>
     {
-        public int ShippingId { get; set; }
-        public string Status { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string PostalCode { get; set; }
-        public string Country { get; set; }
+        public int OrderId { get; set; }
+        public ShippingStatus NewStatus { get; set; }
 
-        public UpdateShippingCommand(int shippingId, string status, string addressLine1, string addressLine2, string city, string state, string postalCode, string country)
+        public class Handler : IRequestHandler<UpdateShippingCommand, Unit>
         {
-            ShippingId = shippingId;
-            Status = status;
-            AddressLine1 = addressLine1;
-            AddressLine2 = addressLine2;
-            City = city;
-            State = state;
-            PostalCode = postalCode;
-            Country = country;
+            private readonly IShippingRepository _shippingRepository;
+            private readonly IUnitOfWork _unitOfWork;
+
+            public Handler(IShippingRepository shippingRepository, IUnitOfWork unitOfWork)
+            {
+                _shippingRepository = shippingRepository;
+                _unitOfWork = unitOfWork;
+            }
+
+            public async Task<Unit> Handle(UpdateShippingCommand request, CancellationToken cancellationToken)
+            {
+                var shipping = await _shippingRepository.GetShippingByOrderIdAsync(request.OrderId);
+                if (shipping == null)
+                {
+                    throw new KeyNotFoundException("Shipping record not found");
+                }
+
+                shipping.UpdateStatus(request.NewStatus);
+
+                _shippingRepository.Update(shipping);
+                await _unitOfWork.SaveChangesAsync();
+
+                return Unit.Value;
+            }
         }
     }
+
+
 }

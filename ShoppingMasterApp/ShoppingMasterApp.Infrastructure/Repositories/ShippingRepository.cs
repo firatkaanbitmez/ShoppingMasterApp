@@ -1,18 +1,25 @@
-﻿using ShoppingMasterApp.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using ShoppingMasterApp.Infrastructure.Repositories;
+using System.Threading.Tasks;
 
-public class ShippingRepository : BaseRepository<Shipping>, IShippingRepository
+namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    private readonly ApplicationDbContext _context;
-
-    public ShippingRepository(ApplicationDbContext context) : base(context)
+    public class ShippingRepository : BaseRepository<Shipping>, IShippingRepository
     {
-        _context = context;
+        private readonly ApplicationDbContext _context;
+
+        public ShippingRepository(ApplicationDbContext context) : base(context)
+        {
+            _context = context;
+        }
+
+        public async Task<Shipping> GetShippingByOrderIdAsync(int orderId)
+        {
+            return await _context.Shippings
+                .Include(s => s.ShippingAddress) 
+                .FirstOrDefaultAsync(s => s.OrderId == orderId);
+        }
     }
- 
-
-
 }

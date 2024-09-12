@@ -1,13 +1,12 @@
-﻿using System;
+﻿using ShoppingMasterApp.Domain.Enums;
 
-namespace ShoppingMasterApp.Application.DTOs
+public class ShippingDto
 {
-    public class ShippingDto
-    {
-        public int Id { get; set; }
-        public int OrderId { get; set; }
-        public string Status { get; set; }
-        public DateTime ShippedDate { get; set; }
-        public string ShippingAddress { get; set; }
-    }
+    public int Id { get; set; }
+    public int OrderId { get; set; }
+    public ShippingStatus Status { get; set; } // Enum
+    public DateTime ShippedDate { get; set; }
+    public decimal ShippingCost { get; set; }
+    public string ShippingCompany { get; set; }
+    public string ShippingAddress { get; set; } // Formatted string address
 }

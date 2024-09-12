@@ -1,16 +1,18 @@
 ﻿using MediatR;
 using ShoppingMasterApp.Application.DTOs;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Order
 {
-    public class GetOrderByIdQuery : IRequest<OrderDto>
+    public class GetOrdersByUserIdQuery : IRequest<List<OrderDto>>
     {
-        public int OrderId { get; set; }
+        public int UserId { get; set; }
 
-        public class Handler : IRequestHandler<GetOrderByIdQuery, OrderDto>
+        public class Handler : IRequestHandler<GetOrdersByUserIdQuery, List<OrderDto>>
         {
             private readonly IOrderRepository _orderRepository;
 
@@ -19,23 +21,18 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.Order
                 _orderRepository = orderRepository;
             }
 
-            public async Task<OrderDto> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
+            public async Task<List<OrderDto>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
             {
-                var order = await _orderRepository.GetOrderByIdAsync(request.OrderId);
+                var orders = await _orderRepository.GetOrdersByUserIdAsync(request.UserId);
 
-                if (order == null)
-                {
-                    throw new KeyNotFoundException($"Order with ID {request.OrderId} not found.");
-                }
-
-                return new OrderDto
+                return orders.Select(order => new OrderDto
                 {
                     Id = order.Id,
                     ProductId = order.OrderItems.FirstOrDefault()?.ProductId ?? 0,
                     ProductName = order.OrderItems.FirstOrDefault()?.Product?.Name,
                     Quantity = order.OrderItems.FirstOrDefault()?.Quantity ?? 0,
                     TotalPrice = order.TotalAmount.Amount
-                };
+                }).ToList();
             }
         }
     }

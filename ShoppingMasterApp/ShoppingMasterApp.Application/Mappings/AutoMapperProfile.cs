@@ -32,7 +32,13 @@ namespace ShoppingMasterApp.Application.Mappings
 
             // Shipping Mappings
             CreateMap<Shipping, ShippingDto>()
-                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => $"{src.ShippingAddress.AddressLine1}, {src.ShippingAddress.City}, {src.ShippingAddress.State}"));
+            .ForMember(dest => dest.ShippingAddress,
+               opt => opt.MapFrom(src => $"{src.ShippingAddress.AddressLine1}, {src.ShippingAddress.City}, {src.ShippingAddress.State}"));
+
+            // Payment Mappings
+            CreateMap<Payment, PaymentDto>()
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.PaymentDate));
+
 
             // Order Mappings
             CreateMap<Order, OrderDto>()
