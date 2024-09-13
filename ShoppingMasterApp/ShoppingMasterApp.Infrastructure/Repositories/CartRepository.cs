@@ -15,12 +15,12 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Cart> GetCartByCustomerIdAsync(int CustomerId)
+        public async Task<Cart> GetCartByUserIdAsync(int userId)
         {
             return await _context.Carts
                 .Include(c => c.CartItems)  
                 .AsTracking()  
-                .FirstOrDefaultAsync(c => c.CustomerId == CustomerId);  
+                .FirstOrDefaultAsync(c => c.UserId == userId);  
         }
 
     }

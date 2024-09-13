@@ -5,29 +5,29 @@ using ShoppingMasterApp.Domain.Interfaces.Repositories;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.User
 {
-    public class GetCustomerByIdQuery : IRequest<CustomerDto>
+    public class GetUserByIdQuery : IRequest<UserDto>
     {
         public int Id { get; set; }
 
-        public class Handler : IRequestHandler<GetCustomerByIdQuery, CustomerDto>
+        public class Handler : IRequestHandler<GetUserByIdQuery, UserDto>
         {
-            private readonly ICustomerRepository _userRepository;
+            private readonly IUserRepository _userRepository;
             private readonly IMapper _mapper;
 
-            public Handler(ICustomerRepository userRepository, IMapper mapper)
+            public Handler(IUserRepository userRepository, IMapper mapper)
             {
                 _userRepository = userRepository;
                 _mapper = mapper;
             }
 
-            public async Task<CustomerDto> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByIdAsync(request.Id);
                 if (user == null)
                 {
                     throw new KeyNotFoundException("User not found");
                 }
-                return _mapper.Map<CustomerDto>(user);
+                return _mapper.Map<UserDto>(user);
             }
         }
     }

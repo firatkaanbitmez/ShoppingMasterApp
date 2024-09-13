@@ -9,7 +9,7 @@ namespace ShoppingMasterApp.Application.DTOs
     public class CartDto
     {
         public int Id { get; set; }
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
         public List<CartItemDto> CartItems { get; set; }
         public decimal TotalPrice { get; set; }
     }

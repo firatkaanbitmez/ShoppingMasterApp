@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Order
 {
-    public class GetOrdersByCustomerIdQuery : IRequest<List<OrderDto>>
+    public class GetOrdersByUserIdQuery : IRequest<List<OrderDto>>
     {
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
 
-        public class Handler : IRequestHandler<GetOrdersByCustomerIdQuery, List<OrderDto>>
+        public class Handler : IRequestHandler<GetOrdersByUserIdQuery, List<OrderDto>>
         {
             private readonly IOrderRepository _orderRepository;
 
@@ -21,13 +21,13 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.Order
                 _orderRepository = orderRepository;
             }
 
-            public async Task<List<OrderDto>> Handle(GetOrdersByCustomerIdQuery request, CancellationToken cancellationToken)
+            public async Task<List<OrderDto>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
             {
-                var orders = await _orderRepository.GetOrdersByCustomerIdAsync(request.CustomerId);
+                var orders = await _orderRepository.GetOrdersByUserIdAsync(request.UserId);
 
                 return orders.Select(order => new OrderDto
                 {
-                    Id = order.DisplayId,
+                    Id = order.Id,
                     ProductId = order.OrderItems.FirstOrDefault()?.ProductId ?? 0,
                     ProductName = order.OrderItems.FirstOrDefault()?.Product?.Name,
                     Quantity = order.OrderItems.FirstOrDefault()?.Quantity ?? 0,

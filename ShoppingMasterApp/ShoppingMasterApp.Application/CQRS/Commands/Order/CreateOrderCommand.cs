@@ -10,7 +10,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
 {
     public class CreateOrderCommand : IRequest<int>
     {
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
         public List<OrderItemDto> OrderItems { get; set; }
         public AddressDto ShippingAddress { get; set; }
 
@@ -29,7 +29,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
             {
                 var order = new ShoppingMasterApp.Domain.Entities.Order
                 {
-                    CustomerId = request.CustomerId,
+                    UserId = request.UserId,
                     OrderDate = DateTime.UtcNow,
                     Shipping = new Shipping
                     {
@@ -51,7 +51,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
                 await _orderRepository.AddAsync(order);
                 await _unitOfWork.SaveChangesAsync();
 
-                return order.DisplayId;  // Returning the newly created order ID
+                return order.Id;  // Returning the newly created order ID
             }
 
             private decimal CalculateShippingCost(AddressDto address)

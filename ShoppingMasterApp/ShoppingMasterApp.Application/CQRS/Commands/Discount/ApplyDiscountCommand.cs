@@ -9,6 +9,6 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Discount
     public class ApplyDiscountCommand 
     {
         public string DiscountCode { get; set; }
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
     }
 }

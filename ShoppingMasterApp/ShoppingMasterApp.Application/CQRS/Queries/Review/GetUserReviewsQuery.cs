@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Review
 {
-    public class GetCustomerReviewsQuery
+    public class GetUserReviewsQuery
     {
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
     }
 }

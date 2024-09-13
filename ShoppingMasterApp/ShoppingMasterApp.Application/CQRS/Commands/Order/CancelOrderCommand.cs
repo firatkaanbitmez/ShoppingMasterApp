@@ -32,6 +32,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
                     throw new InvalidOperationException("Order cannot be cancelled");
                 }
 
+                order.Payment.IsSuccessful = false;
                 order.Shipping.UpdateStatus(ShippingStatus.Preparing); // Revert shipping status
 
                 _orderRepository.Update(order);

@@ -16,4 +16,8 @@ namespace ShoppingMasterApp.Domain.ValueObjects
             Currency = currency;
         }
     }
+
+
+
+
 }

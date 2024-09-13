@@ -30,7 +30,7 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.Order
 
                 return new OrderDto
                 {
-                    Id = order.DisplayId,
+                    Id = order.Id,
                     ProductId = order.OrderItems.FirstOrDefault()?.ProductId ?? 0,
                     ProductName = order.OrderItems.FirstOrDefault()?.Product?.Name,
                     Quantity = order.OrderItems.FirstOrDefault()?.Quantity ?? 0,

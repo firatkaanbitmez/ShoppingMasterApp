@@ -3,7 +3,7 @@ using ShoppingMasterApp.Domain.Interfaces.Repositories;
 
 public class ClearCartCommand : IRequest<Unit>
 {
-    public int CustomerId { get; set; }
+    public int UserId { get; set; }
 
     public class Handler : IRequestHandler<ClearCartCommand, Unit>
     {
@@ -18,7 +18,7 @@ public class ClearCartCommand : IRequest<Unit>
 
         public async Task<Unit> Handle(ClearCartCommand request, CancellationToken cancellationToken)
         {
-            var cart = await _cartRepository.GetCartByCustomerIdAsync(request.CustomerId);
+            var cart = await _cartRepository.GetCartByUserIdAsync(request.UserId);
             if (cart == null)
             {
                 throw new KeyNotFoundException("Cart not found.");

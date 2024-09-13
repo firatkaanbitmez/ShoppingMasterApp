@@ -8,6 +8,6 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
     {
         // Add these missing methods
         Task<Order> GetOrderByIdAsync(int orderId);
-        Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId);
     }
 }

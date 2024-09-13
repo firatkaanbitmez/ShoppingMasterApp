@@ -28,7 +28,7 @@ namespace ShoppingMasterApp.Application.Mappings
             // Review Mappings
             CreateMap<Review, ReviewDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Customer.FirstName));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FirstName));
 
             // Shipping Mappings
             CreateMap<Shipping, ShippingDto>()
@@ -51,7 +51,7 @@ namespace ShoppingMasterApp.Application.Mappings
             CreateMap<Address, AddressDto>();
 
             // User Mappings
-            CreateMap<Customer, CustomerDto>()
+            CreateMap<User, UserDto>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Value))
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.ToString()))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));

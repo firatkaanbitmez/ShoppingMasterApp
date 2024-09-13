@@ -33,23 +33,23 @@ namespace ShoppingMasterApp.API.Controllers
         }
 
         [HttpDelete("remove/{productId}")]
-        public async Task<IActionResult> RemoveFromCart(int productId, [FromQuery] int customerId)
+        public async Task<IActionResult> RemoveFromCart(int productId, [FromQuery] int userId)
         {
-            await _mediator.Send(new RemoveFromCartCommand { ProductId = productId, CustomerId = customerId });
+            await _mediator.Send(new RemoveFromCartCommand { ProductId = productId, UserId = userId });
             return ApiResponse("Product removed from cart.");
         }
 
-        [HttpDelete("clear/{customerId}")]
-        public async Task<IActionResult> ClearCart(int customerId)
+        [HttpDelete("clear/{userId}")]
+        public async Task<IActionResult> ClearCart(int userId)
         {
-            await _mediator.Send(new ClearCartCommand { CustomerId = customerId });
+            await _mediator.Send(new ClearCartCommand { UserId = userId });
             return ApiResponse("Cart cleared successfully.");
         }
 
-        [HttpGet("user/{customerId}")]
-        public async Task<IActionResult> GetUserCart(int customerId)
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetUserCart(int userId)
         {
-            var cart = await _mediator.Send(new GetCustomerCartQuery { CustomerId = customerId });
+            var cart = await _mediator.Send(new GetUserCartQuery { UserId = userId });
             return ApiResponse(cart);
         }
     }

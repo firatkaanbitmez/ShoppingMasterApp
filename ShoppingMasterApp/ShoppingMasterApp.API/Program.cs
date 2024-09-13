@@ -57,7 +57,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     });
 
     // Add MediatR for handling CQRS (commands and queries)
-    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
 
     // Register services and repositories
     RegisterServices(services);
@@ -74,7 +74,7 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IProductRepository, ProductRepository>();
     services.AddScoped<IReviewRepository, ReviewRepository>();
     services.AddScoped<IShippingRepository, ShippingRepository>();
-    services.AddScoped<ICustomerRepository, CustomerRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
 
     // Unit of Work pattern
     services.AddScoped<IUnitOfWork, UnitOfWork>();
