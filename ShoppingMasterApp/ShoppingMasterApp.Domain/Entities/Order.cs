@@ -7,8 +7,8 @@ namespace ShoppingMasterApp.Domain.Entities
 {
     public class Order : BaseEntity
     {
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public int CustomerId { get; set; }
+        public Customer Customer { get; set; }
         public DateTime OrderDate { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
         public Money TotalAmount { get; set; } 

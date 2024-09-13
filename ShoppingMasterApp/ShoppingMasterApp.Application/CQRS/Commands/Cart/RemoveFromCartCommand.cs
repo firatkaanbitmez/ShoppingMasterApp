@@ -4,7 +4,7 @@ using ShoppingMasterApp.Domain.Interfaces.Repositories;
 public class RemoveFromCartCommand : IRequest<Unit>
 {
     public int ProductId { get; set; }
-    public int UserId { get; set; }
+    public int CustomerId { get; set; }
 
     public class Handler : IRequestHandler<RemoveFromCartCommand, Unit>
     {
@@ -19,7 +19,7 @@ public class RemoveFromCartCommand : IRequest<Unit>
 
         public async Task<Unit> Handle(RemoveFromCartCommand request, CancellationToken cancellationToken)
         {
-            var cart = await _cartRepository.GetCartByUserIdAsync(request.UserId);
+            var cart = await _cartRepository.GetCartByCustomerIdAsync(request.CustomerId);
             if (cart == null)
             {
                 throw new KeyNotFoundException("Cart not found.");

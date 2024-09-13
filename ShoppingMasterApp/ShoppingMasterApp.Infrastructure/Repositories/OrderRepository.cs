@@ -26,11 +26,11 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
 
-        // Implementation of GetOrdersByUserIdAsync
-        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
+        // Implementation of GetOrdersByCustomerIdAsync
+        public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
         {
             return await _context.Orders
-                .Where(o => o.UserId == userId)
+                .Where(o => o.CustomerId == customerId)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .ToListAsync();

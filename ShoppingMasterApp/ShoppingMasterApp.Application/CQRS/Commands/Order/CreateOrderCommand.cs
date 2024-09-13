@@ -10,7 +10,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
 {
     public class CreateOrderCommand : IRequest<int>
     {
-        public int UserId { get; set; }
+        public int CustomerId { get; set; }
         public List<OrderItemDto> OrderItems { get; set; }
         public AddressDto ShippingAddress { get; set; }
 
@@ -29,7 +29,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Order
             {
                 var order = new ShoppingMasterApp.Domain.Entities.Order
                 {
-                    UserId = request.UserId,
+                    CustomerId = request.CustomerId,
                     OrderDate = DateTime.UtcNow,
                     Shipping = new Shipping
                     {

@@ -38,10 +38,10 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse(order);
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetOrdersByUserId(int userId)
+        [HttpGet("customer/{customerId}")]
+        public async Task<IActionResult> GetOrdersByCustomerId(int customerId)
         {
-            var orders = await _mediator.Send(new GetOrdersByUserIdQuery { UserId = userId });
+            var orders = await _mediator.Send(new GetOrdersByCustomerIdQuery { CustomerId = customerId });
             return ApiResponse(orders);
         }
     }

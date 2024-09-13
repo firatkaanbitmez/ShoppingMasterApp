@@ -6,42 +6,41 @@ using ShoppingMasterApp.Domain.ValueObjects;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShoppingMasterApp.Application.CQRS.Commands.User
+namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
 {
-    public class CreateUserCommand : IRequest<Unit>
+    public class CreateCustomerCommand : IRequest<Unit>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Roles { get; set; }
         public Address Address { get; set; }
 
         // Handler embedded inside the command class
-        public class Handler : IRequestHandler<CreateUserCommand, Unit>
+        public class Handler : IRequestHandler<CreateCustomerCommand, Unit>
         {
-            private readonly IUserRepository _userRepository;
+            private readonly ICustomerRepository _CustomerRepository;
             private readonly IUnitOfWork _unitOfWork;
 
-            public Handler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+            public Handler(ICustomerRepository CustomerRepository, IUnitOfWork unitOfWork)
             {
-                _userRepository = userRepository;
+                _CustomerRepository = CustomerRepository;
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
-                var user = new Domain.Entities.User
+                var customer = new Domain.Entities.Customer
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Email = new Email(request.Email),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                    Roles = (Roles)Enum.Parse(typeof(Roles), request.Roles),
+                    Roles = Roles.Customer,
                     Address = request.Address
                 };
 
-                await _userRepository.AddAsync(user);
+                await _CustomerRepository.AddAsync(customer);
                 await _unitOfWork.SaveChangesAsync();
 
                 return Unit.Value;

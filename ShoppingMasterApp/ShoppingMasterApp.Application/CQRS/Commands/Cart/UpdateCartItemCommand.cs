@@ -10,7 +10,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Cart
     {
         public int ProductId { get; set; }
         public int Quantity { get; set; }
-        public int UserId { get; set; }
+        public int CustomerId { get; set; }
 
         public class Handler : IRequestHandler<UpdateCartItemCommand, Unit>
         {
@@ -25,7 +25,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Cart
 
             public async Task<Unit> Handle(UpdateCartItemCommand request, CancellationToken cancellationToken)
             {
-                var cart = await _cartRepository.GetCartByUserIdAsync(request.UserId);
+                var cart = await _cartRepository.GetCartByCustomerIdAsync(request.CustomerId);
                 if (cart == null)
                 {
                     throw new KeyNotFoundException("Cart not found.");

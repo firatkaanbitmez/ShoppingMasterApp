@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Queries.Cart
 {
-    public class GetUserCartQuery : IRequest<CartDto>
+    public class GetCustomerCartQuery : IRequest<CartDto>
     {
-        public int UserId { get; set; }
+        public int CustomerId { get; set; }
 
-        public class Handler : IRequestHandler<GetUserCartQuery, CartDto>
+        public class Handler : IRequestHandler<GetCustomerCartQuery, CartDto>
         {
             private readonly ICartRepository _cartRepository;
             private readonly IMapper _mapper;
@@ -22,9 +22,9 @@ namespace ShoppingMasterApp.Application.CQRS.Queries.Cart
                 _mapper = mapper;
             }
 
-            public async Task<CartDto> Handle(GetUserCartQuery request, CancellationToken cancellationToken)
+            public async Task<CartDto> Handle(GetCustomerCartQuery request, CancellationToken cancellationToken)
             {
-                var cart = await _cartRepository.GetCartByUserIdAsync(request.UserId);
+                var cart = await _cartRepository.GetCartByCustomerIdAsync(request.CustomerId);
                 if (cart == null)
                 {
                     throw new KeyNotFoundException("Cart not found.");

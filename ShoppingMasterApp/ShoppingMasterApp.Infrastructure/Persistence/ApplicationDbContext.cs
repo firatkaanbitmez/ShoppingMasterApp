@@ -19,14 +19,14 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Shipping> Shippings { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Discount> Discounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure User entity
-            modelBuilder.Entity<User>(builder =>
+            // Configure Customer entity
+            modelBuilder.Entity<Customer>(builder =>
             {
                 builder.OwnsOne(u => u.Address);
                 builder.OwnsOne(u => u.Email);
@@ -42,6 +42,21 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 });
                 builder.OwnsOne(p => p.ProductDetails);
             });
+            modelBuilder.Entity<CartItem>()
+                .Property(c => c.UnitPrice)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Discount>()
+                .Property(d => d.Amount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(o => o.UnitPrice)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Shipping>()
+                .Property(s => s.ShippingCost)
+                .HasColumnType("decimal(18,2)");
 
             // Configure Cart entity
             modelBuilder.Entity<Cart>(builder =>

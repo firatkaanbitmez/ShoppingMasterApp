@@ -8,8 +8,8 @@ using ShoppingMasterApp.Application.Mappings;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using MediatR;
-using ShoppingMasterApp.Application.CQRS.Commands.User;
-using ShoppingMasterApp.Application.CQRS.Queries.User;
+using ShoppingMasterApp.Application.CQRS.Commands.Customer;
+using ShoppingMasterApp.Application.CQRS.Queries.Customer;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
@@ -39,6 +39,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     // Add AutoMapper for DTO to entity mappings
     services.AddAutoMapper(typeof(AutoMapperProfile));
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
 
     // Add Swagger for API documentation
     services.AddEndpointsApiExplorer();
@@ -57,7 +58,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     });
 
     // Add MediatR for handling CQRS (commands and queries)
-    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
+    //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
 
     // Register services and repositories
     RegisterServices(services);
@@ -74,7 +75,7 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IProductRepository, ProductRepository>();
     services.AddScoped<IReviewRepository, ReviewRepository>();
     services.AddScoped<IShippingRepository, ShippingRepository>();
-    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<ICustomerRepository, CustomerRepository>();
 
     // Unit of Work pattern
     services.AddScoped<IUnitOfWork, UnitOfWork>();

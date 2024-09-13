@@ -1,7 +1,7 @@
 ﻿
 namespace ShoppingMasterApp.Application.DTOs
 {
-    public class UserDto
+    public class CustomerDto
     {
         public int Id { get; set; }
 

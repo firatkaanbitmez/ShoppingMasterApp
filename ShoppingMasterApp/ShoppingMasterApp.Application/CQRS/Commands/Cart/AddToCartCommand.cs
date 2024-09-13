@@ -6,7 +6,7 @@ public class AddToCartCommand : IRequest<Unit>
 {
     public int ProductId { get; set; }
     public int Quantity { get; set; }
-    public int UserId { get; set; }
+    public int CustomerId { get; set; }
 
     public class Handler : IRequestHandler<AddToCartCommand, Unit>
     {
@@ -29,11 +29,11 @@ public class AddToCartCommand : IRequest<Unit>
                 throw new KeyNotFoundException("Product not available or insufficient stock.");
             }
 
-            var cart = await _cartRepository.GetCartByUserIdAsync(request.UserId);
+            var cart = await _cartRepository.GetCartByCustomerIdAsync(request.CustomerId);
             if (cart == null)
             {
                 // Yeni Cart oluşturuluyor
-                cart = new Cart { UserId = request.UserId };
+                cart = new Cart { CustomerId = request.CustomerId };
                 await _cartRepository.AddAsync(cart);
                 await _unitOfWork.SaveChangesAsync();  // Id burada atanmalı
             }

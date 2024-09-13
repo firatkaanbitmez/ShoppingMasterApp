@@ -33,14 +33,17 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -61,7 +64,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("ProductId")
@@ -102,7 +108,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -115,6 +124,46 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Roles")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Discount", b =>
@@ -135,7 +184,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -160,7 +212,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("OrderDate")
@@ -169,12 +227,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
                 });
@@ -190,7 +245,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("OrderId")
@@ -228,7 +286,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSuccessful")
@@ -269,7 +330,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -304,7 +368,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("ProductId")
@@ -319,14 +389,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Reviews");
                 });
@@ -342,7 +409,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("OrderId")
@@ -372,43 +442,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.ToTable("Shippings");
                 });
 
-            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Roles")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.CartItem", b =>
                 {
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Cart", null)
@@ -418,11 +451,74 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Customer", b =>
+                {
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("CustomerId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("AddressLine1")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("AddressLine2")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("CustomerId");
+
+                            b1.ToTable("Customers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId");
+                        });
+
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Email", "Email", b1 =>
+                        {
+                            b1.Property<int>("CustomerId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("CustomerId");
+
+                            b1.ToTable("Customers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("Email")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("ShoppingMasterApp.Domain.Entities.User", "User")
+                    b.HasOne("ShoppingMasterApp.Domain.Entities.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -448,10 +544,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
+                    b.Navigation("Customer");
+
                     b.Navigation("TotalAmount")
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.OrderItem", b =>
@@ -605,21 +701,21 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Review", b =>
                 {
+                    b.HasOne("ShoppingMasterApp.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingMasterApp.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Customer");
 
                     b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Shipping", b =>
@@ -679,69 +775,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>
-                {
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Address", "Address", b1 =>
-                        {
-                            b1.Property<int>("UserId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("AddressLine1")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("AddressLine2")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("State")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Email", "Email", b1 =>
-                        {
-                            b1.Property<int>("UserId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("Email")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -750,6 +783,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Customer", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Order", b =>
@@ -766,11 +804,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Product", b =>
                 {
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
