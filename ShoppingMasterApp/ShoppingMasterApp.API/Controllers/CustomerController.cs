@@ -25,12 +25,14 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse("Customer created successfully");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerCommand command)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerCommand command)
         {
+            command.Id = id; // Ensure the ID is passed
             await _mediator.Send(command);
             return ApiResponse("Customer updated successfully");
         }
+
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)

@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240913075443_InitialCreate")]
+    [Migration("20240913082630_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
