@@ -1,5 +1,6 @@
 import React from 'react';
-import '../assets/footer.css';  // Footer stilleri için import
+import '../assets/footer.css';
+
 
 const Footer = () => {
   return (
