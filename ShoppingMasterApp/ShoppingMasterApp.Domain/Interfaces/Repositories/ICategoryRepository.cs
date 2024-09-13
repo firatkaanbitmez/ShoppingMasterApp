@@ -2,7 +2,7 @@
 
 namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
-    public interface ICategoryRepository : IBaseRepository<Category>
+    public interface ICategoryRepository : IGenericRepository<Category>
     {
     }
 }

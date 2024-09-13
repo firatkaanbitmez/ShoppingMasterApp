@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         protected readonly ApplicationDbContext _context;
 
-        public BaseRepository(ApplicationDbContext context)
+        public GenericRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -39,10 +39,7 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
             _context.Set<TEntity>().Remove(entity);
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+       
     }
 
 

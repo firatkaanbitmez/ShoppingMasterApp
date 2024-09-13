@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class ShippingRepository : BaseRepository<Shipping>, IShippingRepository
+    public class ShippingRepository : GenericRepository<Shipping>, IShippingRepository
     {
         private readonly ApplicationDbContext _context;
 

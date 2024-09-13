@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ShoppingMasterApp.Infrastructure.Repositories;
 
-public class DiscountRepository : BaseRepository<Discount>, IDiscountRepository
+public class DiscountRepository : GenericRepository<Discount>, IDiscountRepository
 {
     private readonly ApplicationDbContext _context;
 

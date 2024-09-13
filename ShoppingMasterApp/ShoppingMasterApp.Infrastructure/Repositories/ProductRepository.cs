@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class ProductRepository : BaseRepository<Product>, IProductRepository
+public class ProductRepository : GenericRepository<Product>, IProductRepository
 {
     private readonly ApplicationDbContext _context;
 

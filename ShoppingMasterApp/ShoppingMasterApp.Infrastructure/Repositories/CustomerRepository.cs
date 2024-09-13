@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
+    public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
     {
         private readonly ApplicationDbContext _context;
 

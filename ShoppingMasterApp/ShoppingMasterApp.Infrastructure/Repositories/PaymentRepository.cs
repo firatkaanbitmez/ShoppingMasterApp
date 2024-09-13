@@ -4,7 +4,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class PaymentRepository : BaseRepository<Payment>, IPaymentRepository
+    public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     {
         public PaymentRepository(ApplicationDbContext context) : base(context)
         {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
-    public interface IProductRepository : IBaseRepository<Product>
+    public interface IProductRepository : IGenericRepository<Product>
     {
 
     }

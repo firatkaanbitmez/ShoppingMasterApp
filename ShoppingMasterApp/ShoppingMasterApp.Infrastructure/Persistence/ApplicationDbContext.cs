@@ -31,7 +31,21 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 builder.OwnsOne(u => u.Address);
                 builder.OwnsOne(u => u.Email);
             });
+            modelBuilder.Entity<Customer>(builder =>
+            {
+                builder.OwnsOne(u => u.Address, navigationBuilder =>
+                {
+                    navigationBuilder.Property(a => a.AddressLine1).HasColumnName("Address_Line1");
+                    navigationBuilder.Property(a => a.AddressLine2).HasColumnName("Address_Line2");
+                    navigationBuilder.Property(a => a.City).HasColumnName("Address_City");
+                    navigationBuilder.Property(a => a.State).HasColumnName("Address_State");
+                    navigationBuilder.Property(a => a.PostalCode).HasColumnName("Address_PostalCode");
+                    navigationBuilder.Property(a => a.Country).HasColumnName("Address_Country");
 
+                    // Explicitly mapping constructor parameters to properties
+                    navigationBuilder.WithOwner();
+                });
+            });
             // Configure Product entity
             modelBuilder.Entity<Product>(builder =>
             {

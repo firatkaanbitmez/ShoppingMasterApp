@@ -17,14 +17,14 @@ namespace ShoppingMasterApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
             await _mediator.Send(command);
             return ApiResponse("Product created successfully");
         }
 
-        [HttpPut("update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductCommand command)
         {
             await _mediator.Send(command);

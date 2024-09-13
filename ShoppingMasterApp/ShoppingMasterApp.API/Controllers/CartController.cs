@@ -18,14 +18,14 @@ namespace ShoppingMasterApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartCommand command)
         {
             await _mediator.Send(command);
             return ApiResponse("Product added to cart successfully.");
         }
 
-        [HttpPut("update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateCartItem([FromBody] UpdateCartItemCommand command)
         {
             await _mediator.Send(command);

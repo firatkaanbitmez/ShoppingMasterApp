@@ -5,9 +5,10 @@ using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Domain.ValueObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
+
 namespace ShoppingMasterApp.Application.CQRS.Commands.Payment
 {
-
     public class ProcessPaymentCommand : IRequest<bool>
     {
         public int OrderId { get; set; }
@@ -32,35 +33,42 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Payment
 
             public async Task<bool> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
             {
+                // Sipariş doğrulaması
                 var order = await _orderRepository.GetByIdAsync(request.OrderId);
                 if (order == null || order.TotalAmount.Amount != request.Amount)
                 {
                     throw new KeyNotFoundException("Order not found or amount mismatch");
                 }
 
-                var payment = new ShoppingMasterApp.Domain.Entities.Payment
+                // Ödeme detaylarını oluşturma
+                var paymentDetails = new PaymentDetails(request.CardNumber)
+                {
+                    CardType = request.CardType,
+                    ExpiryDate = request.ExpiryDate,
+                    Cvv = request.Cvv
+                };
+
+                // Ödeme işlemi
+                var payment = new Domain.Entities.Payment
                 {
                     OrderId = request.OrderId,
                     PaymentDate = DateTime.UtcNow,
                     Amount = new Money(request.Amount, "USD"),
-                    PaymentDetails = new PaymentDetails
-                    {
-                        CardType = request.CardType,
-                        CardNumber = request.CardNumber,
-                        ExpiryDate = request.ExpiryDate,
-                        Cvv = request.Cvv
-                    },
-                    IsSuccessful = ProcessPaymentGateway(request) // Payment gateway logic
+                    PaymentDetails = paymentDetails,
+                    IsSuccessful = ProcessPaymentGateway(request) // Ödeme sistemi entegrasyonu
                 };
 
+                // Siparişe ödeme ekleme
                 order.Payment = payment;
 
+                // Ödeme başarılıysa kargo durumunu güncelle
                 if (payment.IsSuccessful)
                 {
                     order.Shipping.UpdateStatus(ShippingStatus.Preparing);
                 }
 
-                _paymentRepository.AddAsync(payment);
+                // Veritabanına ödeme kaydı
+                await _paymentRepository.AddAsync(payment);
                 await _unitOfWork.SaveChangesAsync();
 
                 return payment.IsSuccessful;
@@ -68,10 +76,10 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Payment
 
             private bool ProcessPaymentGateway(ProcessPaymentCommand request)
             {
-                // Placeholder for calling a payment gateway API
+                // Ödeme gateway API'sine çağrı yapma
+                // Şu an sahte bir sonuç döndürüyor
                 return true;
             }
         }
     }
-
 }

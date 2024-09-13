@@ -2,7 +2,7 @@
 
 namespace ShoppingMasterApp.Domain.Interfaces.Repositories
 {
-    public interface IDiscountRepository : IBaseRepository<Discount>
+    public interface IDiscountRepository : IGenericRepository<Discount>
     {
     }
 

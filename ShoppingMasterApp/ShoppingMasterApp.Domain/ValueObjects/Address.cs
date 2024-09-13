@@ -11,6 +11,10 @@ namespace ShoppingMasterApp.Domain.ValueObjects
         public string PostalCode { get; private set; }
         public string Country { get; private set; }
 
+        // Parametresiz constructor - EF Core'un ihtiyaç duyduğu
+        private Address() { }
+
+        // Parametreli constructor
         public Address(string addressLine1, string addressLine2, string city, string state, string postalCode, string country)
         {
             if (string.IsNullOrWhiteSpace(addressLine1)) throw new ArgumentException("Address Line 1 is required");
@@ -26,6 +30,4 @@ namespace ShoppingMasterApp.Domain.ValueObjects
             Country = country;
         }
     }
-
-
 }

@@ -17,7 +17,7 @@ namespace ShoppingMasterApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
         {
             var orderId = await _mediator.Send(command);

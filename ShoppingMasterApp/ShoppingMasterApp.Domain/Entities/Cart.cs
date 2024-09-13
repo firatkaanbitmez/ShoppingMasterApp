@@ -11,10 +11,25 @@ namespace ShoppingMasterApp.Domain.Entities
 
         public decimal TotalPrice
         {
-            get
-            {
-                return CartItems.Sum(item => item.TotalPrice);
-            }
+            get { return CartItems.Sum(item => item.TotalPrice); }
+        }
+
+        public void AddItem(CartItem item)
+        {
+            if (item.Quantity > item.Product.Stock)
+                throw new InvalidOperationException("Not enough stock for product.");
+
+            CartItems.Add(item);
+        }
+
+        public void RemoveItem(CartItem item)
+        {
+            CartItems.Remove(item);
+        }
+
+        public void ClearCart()
+        {
+            CartItems.Clear();
         }
     }
 }

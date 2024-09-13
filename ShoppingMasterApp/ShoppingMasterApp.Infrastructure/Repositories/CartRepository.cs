@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Infrastructure.Repositories
 {
-    public class CartRepository : BaseRepository<Cart>, ICartRepository
+    public class CartRepository : GenericRepository<Cart>, ICartRepository
     {
         private readonly ApplicationDbContext _context;
 
