@@ -699,11 +699,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("Manufacturer")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Manufacturer");
 
                             b1.Property<string>("Sku")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Sku");
 
                             b1.HasKey("ProductId");
 

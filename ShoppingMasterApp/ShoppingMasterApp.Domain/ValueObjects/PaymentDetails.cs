@@ -1,20 +1,25 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System;
 
 namespace ShoppingMasterApp.Domain.ValueObjects
 {
     public class PaymentDetails
     {
-        public string CardType { get; set; }
-        public string CardNumber { get; set; }
+        public string CardType { get; private set; }
+        public string CardNumber { get; private set; }
         public string EncryptedCardNumber { get; private set; }
-        public string ExpiryDate { get; set; }
-        public string Cvv { get; set; }
+        public string ExpiryDate { get; private set; }
+        public string Cvv { get; private set; }
 
-        public PaymentDetails(string cardNumber)
+        // Constructor
+        public PaymentDetails(string cardType, string cardNumber, string expiryDate, string cvv)
         {
-            CardNumber = cardNumber;  // Düz CardNumber kaydediyoruz
-            EncryptedCardNumber = Encrypt(cardNumber);  // Şifrelenmiş hali saklanıyor
+            CardType = cardType;
+            CardNumber = cardNumber;
+            ExpiryDate = expiryDate;
+            Cvv = cvv;
+            EncryptedCardNumber = Encrypt(cardNumber);
         }
 
         // Kart numarasını şifreleme
@@ -27,4 +32,5 @@ namespace ShoppingMasterApp.Domain.ValueObjects
             }
         }
     }
+
 }

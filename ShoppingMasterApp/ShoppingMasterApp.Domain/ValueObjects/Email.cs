@@ -7,10 +7,12 @@ namespace ShoppingMasterApp.Domain.ValueObjects
     {
         public string Value { get; private set; }
 
+        private Email() { }  // EF Core için boş constructor
+
         public Email(string value)
         {
             if (!IsValidEmail(value))
-                throw new ArgumentException("Invalid email format");
+                throw new ArgumentException("Invalid email format.");
 
             Value = value;
         }
@@ -19,6 +21,11 @@ namespace ShoppingMasterApp.Domain.ValueObjects
         {
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
-    }
 
+        // Statik fabrika metodu
+        public static Email Create(string value)
+        {
+            return new Email(value);
+        }
+    }
 }

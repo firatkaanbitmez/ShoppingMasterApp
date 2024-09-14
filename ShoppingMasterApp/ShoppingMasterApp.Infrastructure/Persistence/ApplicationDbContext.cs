@@ -49,12 +49,19 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
             // Configure Product entity
             modelBuilder.Entity<Product>(builder =>
             {
+                // Configure Money as an owned type
                 builder.OwnsOne(p => p.Price, config =>
                 {
                     config.Property(m => m.Amount).HasColumnType("decimal(18,2)").HasColumnName("Price_Amount");
                     config.Property(m => m.Currency).HasColumnName("Price_Currency");
                 });
-                builder.OwnsOne(p => p.ProductDetails);
+
+                // Configure ProductDetails as an owned type
+                builder.OwnsOne(p => p.ProductDetails, config =>
+                {
+                    config.Property(pd => pd.Manufacturer).HasColumnName("Manufacturer");
+                    config.Property(pd => pd.Sku).HasColumnName("Sku");
+                });
             });
             modelBuilder.Entity<CartItem>()
                 .Property(c => c.UnitPrice)

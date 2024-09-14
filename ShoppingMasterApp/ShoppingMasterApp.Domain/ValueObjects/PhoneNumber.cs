@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Domain.ValueObjects
 {
@@ -11,14 +7,28 @@ namespace ShoppingMasterApp.Domain.ValueObjects
         public string CountryCode { get; private set; }
         public string Number { get; private set; }
 
+        private PhoneNumber() { }  // EF Core için boş constructor
+
         public PhoneNumber(string countryCode, string number)
         {
-            if (string.IsNullOrEmpty(countryCode) || string.IsNullOrEmpty(number))
-            {
-                throw new ArgumentException("Invalid phone number.");
-            }
+            ValidatePhoneNumber(countryCode, number);
+
             CountryCode = countryCode;
             Number = number;
+        }
+
+        private void ValidatePhoneNumber(string countryCode, string number)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode))
+                throw new ArgumentException("Country Code is required.");
+            if (string.IsNullOrWhiteSpace(number))
+                throw new ArgumentException("Phone Number is required.");
+        }
+
+        // Statik fabrika metodu
+        public static PhoneNumber Create(string countryCode, string number)
+        {
+            return new PhoneNumber(countryCode, number);
         }
     }
 }

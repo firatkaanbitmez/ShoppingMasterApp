@@ -33,41 +33,33 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Payment
 
             public async Task<bool> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
             {
-                // Sipariş doğrulaması
+                // Validate order
                 var order = await _orderRepository.GetByIdAsync(request.OrderId);
                 if (order == null || order.TotalAmount.Amount != request.Amount)
                 {
                     throw new KeyNotFoundException("Order not found or amount mismatch");
                 }
 
-                // Ödeme detaylarını oluşturma
-                var paymentDetails = new PaymentDetails(request.CardNumber)
-                {
-                    CardType = request.CardType,
-                    ExpiryDate = request.ExpiryDate,
-                    Cvv = request.Cvv
-                };
+                // Use constructor to set payment details
+                var paymentDetails = new PaymentDetails(request.CardType, request.CardNumber, request.ExpiryDate, request.Cvv);
 
-                // Ödeme işlemi
+                // Create the payment
                 var payment = new Domain.Entities.Payment
                 {
                     OrderId = request.OrderId,
                     PaymentDate = DateTime.UtcNow,
                     Amount = new Money(request.Amount, "USD"),
                     PaymentDetails = paymentDetails,
-                    IsSuccessful = ProcessPaymentGateway(request) // Ödeme sistemi entegrasyonu
+                    IsSuccessful = ProcessPaymentGateway(request)
                 };
 
-                // Siparişe ödeme ekleme
                 order.Payment = payment;
 
-                // Ödeme başarılıysa kargo durumunu güncelle
                 if (payment.IsSuccessful)
                 {
                     order.Shipping.UpdateStatus(ShippingStatus.Preparing);
                 }
 
-                // Veritabanına ödeme kaydı
                 await _paymentRepository.AddAsync(payment);
                 await _unitOfWork.SaveChangesAsync();
 
@@ -76,10 +68,10 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Payment
 
             private bool ProcessPaymentGateway(ProcessPaymentCommand request)
             {
-                // Ödeme gateway API'sine çağrı yapma
-                // Şu an sahte bir sonuç döndürüyor
+                // Fake payment processing
                 return true;
             }
         }
+
     }
 }

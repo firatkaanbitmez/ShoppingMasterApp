@@ -17,7 +17,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Product
         public string Manufacturer { get; set; }
         public string Sku { get; set; }
 
-        public class Handler : IRequestHandler<UpdateProductCommand,Unit>
+        public class Handler : IRequestHandler<UpdateProductCommand, Unit>
         {
             private readonly IProductRepository _productRepository;
             private readonly IUnitOfWork _unitOfWork;
@@ -36,12 +36,11 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Product
                     throw new KeyNotFoundException("Product not found");
                 }
 
-                product.Name = request.Name;
-                product.Price = new Money(request.Price, "USD");
-                product.Stock = request.Stock;
-                product.CategoryId = request.CategoryId;
-                product.Description = request.Description;
-                product.ProductDetails = new ProductDetails(request.Manufacturer, request.Sku);
+                product.SetName(request.Name);
+                product.SetPrice(new Money(request.Price, "USD"));
+                product.SetStock(request.Stock);
+                product.SetDescription(request.Description);
+                product.SetProductDetails(new ProductDetails(request.Manufacturer, request.Sku));
 
                 _productRepository.Update(product);
                 await _unitOfWork.SaveChangesAsync();
@@ -49,5 +48,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Product
                 return Unit.Value;
             }
         }
+
+
     }
 }

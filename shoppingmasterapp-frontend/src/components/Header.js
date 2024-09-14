@@ -57,26 +57,24 @@ const SearchBar = () => (
 const AccountCartSection = ({ isLoggedIn, handleLogout }) => (
   <div className="account-cart-section">
     {isLoggedIn ? (
-      <>
-        <div className="dropdown">
-          <Link to="/account" className="account-link">Account</Link>
-          <div className="dropdown-content">
-            <Link to="/profile">Profile</Link>
-            <Link to="/settings">Settings</Link>
-            <button className="logout-button" onClick={handleLogout}>Logout</button>
-          </div>
+      <div className="dropdown">
+        <Link to="/account" className="account-link">Account</Link>
+        <div className="dropdown-content">
+          <Link to="/profile">Profile</Link>
+          <Link to="/settings">Settings</Link>
+          <button className="logout-button" onClick={handleLogout}>Logout</button>
         </div>
-        <Link to="/cart" className="cart-link">
-          <img src="/cart.png" alt="Shopping Cart" className="cart-image" />
-          <span id="cartItemCount" className="badge">0</span>
-        </Link>
-      </>
+      </div>
     ) : (
-      <>
+      <div className="auth-links">
         <Link to="/login" className="login-link">Login</Link>
         <Link to="/signup" className="signup-link">Sign Up</Link>
-      </>
+      </div>
     )}
+    <Link to="/cart" className="cart-link">
+      <img src="/cart.png" alt="Shopping Cart" className="cart-image" />
+      <span id="cartItemCount" className="badge">0</span>
+    </Link>
   </div>
 );
 
@@ -86,11 +84,10 @@ const CategoryMenu = () => (
       <li><Link to="/Customers">Customers</Link></li>
       <li><Link to="/Order">Order</Link></li>
       <li><Link to="/Cart">Cart</Link></li>
-      <li><Link to="/Category ">Category </Link></li>
-      <li><Link to="/Discount ">Discount </Link></li>
-      <li><Link to="/Payment ">Payment </Link></li>
-      <li><Link to="/Shipping  ">Shipping  </Link></li>
-
+      <li><Link to="/Category">Category</Link></li>
+      <li><Link to="/Discount">Discount</Link></li>
+      <li><Link to="/Payment">Payment</Link></li>
+      <li><Link to="/Shipping">Shipping</Link></li>
     </ul>
   </nav>
 );

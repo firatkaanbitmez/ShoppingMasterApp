@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240913082630_InitialCreate")]
+    [Migration("20240914210255_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -702,11 +702,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("Manufacturer")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Manufacturer");
 
                             b1.Property<string>("Sku")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Sku");
 
                             b1.HasKey("ProductId");
 

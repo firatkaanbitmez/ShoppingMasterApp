@@ -31,15 +31,14 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Product
 
             public async Task<Unit> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
-                var product = new ShoppingMasterApp.Domain.Entities.Product
-                {
-                    Name = request.Name,
-                    Price = new Money(request.Price, "USD"),
-                    Stock = request.Stock,
-                    CategoryId = request.CategoryId,
-                    Description = request.Description,
-                    ProductDetails = new ProductDetails(request.Manufacturer, request.Sku)
-                };
+                var productDetails = new ProductDetails(request.Manufacturer, request.Sku);
+                var product = new ShoppingMasterApp.Domain.Entities.Product(
+                    request.Name,
+                    request.Description,
+                    new Money(request.Price, "USD"),
+                    request.Stock,
+                    request.CategoryId,
+                    productDetails);
 
                 await _productRepository.AddAsync(product);
                 await _unitOfWork.SaveChangesAsync();
@@ -47,5 +46,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Product
                 return Unit.Value;
             }
         }
+
+
     }
 }
