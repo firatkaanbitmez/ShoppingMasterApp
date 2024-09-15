@@ -1,51 +1,37 @@
-/* Footer stilleri */
+/* footer.css */
+
 .footer {
-    background-color: #131921;
-    color: white;
-    margin-top: 100px;
-    
+    background-color: #1a1a1a;
+    padding: 10px 0; /* İnceltilmiş padding */
     text-align: center;
-    position: relative; /* Absolute yerine relative kullanılıyor */
-    width: 100%;
-    height: 60px;
-    box-sizing: border-box;
-}
-
-.social-icons {
-    margin-top: 5px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.social-icons .icon {
-    color: white;
-    font-size: 18px;
-    transition: color 0.3s ease;
-}
-
-.social-icons .icon:hover {
-    color: #f8694c;
-}
-
-.footer p {
-    margin: 5px 0;
-    font-size: 12px;
-    font-weight: 300;
-}
-
-/* Sayfa içeriğinin footer'ın altında kalmasını sağlamak için gerekli ayarlar */
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-.wrapper {
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .footer-content {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Sayfanın tam yüksekliğini kaplaması için min-height kullanılıyor */
-}
-
-.main-content {
-    flex: 1; /* İçeriğin esnek olarak yerleşmesini sağlıyor */
-}
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .footer p {
+    margin: 0;
+    font-size: 12px; /* Daha ince görünüm için font küçültüldü */
+  }
+  
+  .social-icons {
+    margin-top: 10px; /* Daha ince görünüm için küçültüldü */
+  }
+  
+  .icon {
+    color: #fff;
+    margin: 0 8px; /* İkonlar arasındaki boşluk azaltıldı */
+    font-size: 18px; /* İkon boyutu küçültüldü */
+    transition: color 0.3s ease;
+  }
+  
+  .icon:hover {
+    color: #ff6347; /* Hoş bir hover rengi */
+  }
+  

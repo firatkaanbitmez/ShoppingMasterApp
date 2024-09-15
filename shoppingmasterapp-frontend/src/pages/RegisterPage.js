@@ -36,13 +36,14 @@ const RegisterPage = () => {
     // Tüm alanların dolu olup olmadığını kontrol edin
     if (firstName && lastName && email && password && address.addressLine1 && address.city && address.state && address.postalCode && address.country) {
       try {
-        const response = await register({
+        await register({
           firstName,
           lastName,
           email,
           password,
           address
         });
+        
         setSuccessMessage('Registration successful! You can now login.');
       } catch (error) {
         setError('Registration failed. Please try again.');

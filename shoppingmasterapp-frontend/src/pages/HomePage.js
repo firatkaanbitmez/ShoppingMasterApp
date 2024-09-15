@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/productSlice';
 import ProductList from '../components/ProductList';
-import '../assets/styles.css';  // Genel sayfa stilleri için import
-import '../assets/layout.css';  // Layout stilleri için import
+import '../assets/homepage.css';  // Layout stilleri için import
 
 const HomePage = () => {
   const dispatch = useDispatch();

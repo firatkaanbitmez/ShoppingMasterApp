@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { getCustomers, createCustomer, updateCustomer, deleteCustomer } from '../services/customerService';
-import '../assets/styles.css';
-import '../assets/layout.css';
 import '../assets/header.css';
 import '../assets/footer.css';
 import '../assets/CustomerPage.css'; // CustomerPage için özel CSS

@@ -1,17 +1,20 @@
 :root {
-  --background-color: #ffffff;
-  --primary-color: #ff6f61;
-  --text-color-dark: #333;
-  --text-color-light: #555;
-  --hover-color: #ff5c51;
-  --border-color: #e0e0e0;
-  --dropdown-bg: #fff;
-  --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --background-color: #f5f5f7;
+  --primary-color: #2c3e50;
+  --secondary-color: #ecf0f1;
+  --accent-color: #2980b9;
+  --text-color-dark: #2d3436;
+  --text-color-light: #7f8c8d;
+  --hover-color: #3498db;
+  --border-color: #dcdde1;
+  --dropdown-bg: #ffffff;
+  --box-shadow-color: rgba(0, 0, 0, 0.08);
   --transition-speed: 0.3s;
-  --font-family: 'Poppins', sans-serif;
+  --font-family: 'Roboto', sans-serif;
+  --logo-size: 64px;
+  --search-height: 44px;
 }
 
-/* General Reset */
 * {
   margin: 0;
   padding: 0;
@@ -20,64 +23,71 @@
 
 body {
   font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color-dark);
+  line-height: 1.6;
 }
 
-/* Header Styling */
 .header {
   background-color: var(--background-color);
-  box-shadow: 0 2px 10px var(--box-shadow-color);
-
+  box-shadow: 0 1px 5px var(--box-shadow-color);
   position: sticky;
   top: 0;
   width: 100%;
   z-index: 100;
-  transition: background-color var(--transition-speed) ease;
+  padding: 0.75em 0;
 }
 
 .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
- 
-  margin: 0 1em 0 1em;
-  padding: 0 1em 0 1em;
+  padding: 0 3em;
 }
 
 .logo-section {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: var(--background-color);
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition-speed) ease;
+  position: relative;
 }
 
 .logo-img {
-  width: 96px;
-  height: 96px;
+  width: calc(var(--logo-size) * 1.2);
+  height: auto;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
   transition: transform var(--transition-speed) ease;
-  margin-bottom: -70px;
 }
 
 .logo-text {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-color-dark);
-  margin-left: 120px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-left: 0.5em;
+  margin-top: -0.5em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color var(--transition-speed) ease;
+  position: relative;
+  top: -50px;
+  left: 90px;
 }
 
-.logo-link:hover .logo-img {
-  transform: scale(1.1);
-}
-
-/* Search Bar Styling */
 .search-bar {
   display: flex;
-  max-width: 500px;
-
   flex-grow: 1;
-  margin: 0 1.5em;
+  max-width: 500px;
+  margin: 0 2em;
 }
 
 .search-input {
   flex-grow: 1;
-  padding: 1em 1em;
+  padding: 0.75em 1em;
   border: 1px solid var(--border-color);
   border-radius: 50px 0 0 50px;
   font-size: 0.9rem;
@@ -86,18 +96,18 @@ body {
 }
 
 .search-input:focus {
-  border-color: var(--primary-color);
+  border-color: var(--accent-color);
 }
 
 .search-button {
-  background-color: var(--primary-color);
+  background-color: var(--accent-color);
   border: none;
   border-radius: 0 50px 50px 0;
-  color: #fff;
-  height: 50px;
-  margin-top: 0.5em;
-  font-size: 1.1rem;
+  color: white;
+  font-size: 0.85rem;
   cursor: pointer;
+  padding: 0.5em 1em;
+  height: 41px;
   transition: background-color var(--transition-speed) ease;
 }
 
@@ -105,7 +115,6 @@ body {
   background-color: var(--hover-color);
 }
 
-/* Account and Cart Section */
 .account-cart-section {
   display: flex;
   align-items: center;
@@ -114,22 +123,26 @@ body {
 .auth-links a {
   color: var(--text-color-dark);
   font-size: 1rem;
-  margin-left: 1em;
+  margin-left: 1.5em;
   text-decoration: none;
   transition: color var(--transition-speed) ease;
 }
 
 .auth-links a:hover {
-  color: var(--primary-color);
+  color: var(--accent-color);
 }
 
 .account-link {
   color: var(--text-color-dark);
   font-size: 1rem;
-  text-decoration: none;
   position: relative;
   padding-right: 1em;
   cursor: pointer;
+  transition: color var(--transition-speed) ease;
+}
+
+.account-link:hover {
+  color: var(--accent-color);
 }
 
 .account-link::after {
@@ -150,13 +163,14 @@ body {
 .dropdown-content {
   display: none;
   position: absolute;
-  top: 100%;
-  left: 0;
+  top: 100px;
+  right: 80px;
   background-color: var(--dropdown-bg);
-  box-shadow: 0 4px 12px var(--box-shadow-color);
+  box-shadow: 0 4px 8px var(--box-shadow-color);
   border-radius: 8px;
   overflow: hidden;
-  min-width: 200px;
+  min-width: 180px;
+  z-index: 101;
 }
 
 .dropdown:hover .dropdown-content {
@@ -172,7 +186,7 @@ body {
 }
 
 .dropdown-content a:hover, .logout-button:hover {
-  background-color: var(--primary-color);
+  background-color: var(--accent-color);
   color: white;
 }
 
@@ -184,36 +198,34 @@ body {
   cursor: pointer;
 }
 
-/* Cart Styling */
 .cart-link {
   display: flex;
   align-items: center;
   position: relative;
-  margin-left: 1em;
+  margin-left: 1.5em;
 }
 
 .cart-image {
   width: 36px;
   height: 36px;
-  filter: brightness(0) saturate(100%) invert(44%) sepia(48%) saturate(724%) hue-rotate(336deg) brightness(96%) contrast(98%);
+  filter: brightness(0) saturate(100%) invert(44%) sepia(48%) saturate(724%) hue-rotate(180deg) brightness(96%) contrast(98%);
 }
 
 .badge {
   position: absolute;
   top: -10px;
   right: 5px;
-  background-color: var(--primary-color);
+  background-color: var(--accent-color);
   color: white;
   padding: 0.25em 0.5em;
   border-radius: 50%;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: bold;
 }
 
-/* Category Menu */
 .category-menu {
   background-color: var(--background-color);
-  box-shadow: 0 1px 6px var(--box-shadow-color);
+  box-shadow: 0 1px 4px var(--box-shadow-color);
   margin-top: 0.5em;
 }
 
@@ -238,11 +250,10 @@ body {
 }
 
 .category-menu a:hover {
-  background-color: var(--primary-color);
+  background-color: var(--accent-color);
   color: white;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   .header-top {
     flex-direction: column;
@@ -262,5 +273,9 @@ body {
 
   .category-menu li {
     margin-bottom: 0.5em;
+  }
+
+  .dropdown-content {
+    right: 0;
   }
 }
