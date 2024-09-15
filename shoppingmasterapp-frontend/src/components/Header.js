@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import '../assets/header.css';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');  // Check for JWT token in localStorage
+    const token = localStorage.getItem('token');
     if (token) {
-      setIsLoggedIn(true);  // User is logged in if token exists
+      setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('token');  // Clear JWT token on logout
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
+    navigate('/login');
   };
 
   return (
@@ -61,7 +62,7 @@ const AccountCartSection = ({ isLoggedIn, handleLogout }) => (
   <div className="account-cart-section">
     {isLoggedIn ? (
       <div className="dropdown">
-        <Link to="/account" className="account-link">Account</Link>
+        <span className="account-link">Account</span>
         <div className="dropdown-content">
           <Link to="/profile">Profile</Link>
           <Link to="/settings">Settings</Link>
@@ -71,7 +72,7 @@ const AccountCartSection = ({ isLoggedIn, handleLogout }) => (
     ) : (
       <div className="auth-links">
         <Link to="/login" className="login-link">Login</Link>
-        <Link to="/register" className="signup-link">Sign Up</Link> {/* Changed from /signup to /register */}
+        <Link to="/register" className="signup-link">Sign Up</Link>
       </div>
     )}
     <Link to="/cart" className="cart-link">
@@ -84,13 +85,13 @@ const AccountCartSection = ({ isLoggedIn, handleLogout }) => (
 const CategoryMenu = () => (
   <nav className="category-menu">
     <ul>
-      <li><Link to="/Customers">Customers</Link></li>
-      <li><Link to="/Order">Order</Link></li>
-      <li><Link to="/Cart">Cart</Link></li>
-      <li><Link to="/Category">Category</Link></li>
-      <li><Link to="/Discount">Discount</Link></li>
-      <li><Link to="/Payment">Payment</Link></li>
-      <li><Link to="/Shipping">Shipping</Link></li>
+      <li><Link to="/customers">Customers</Link></li>
+      <li><Link to="/order">Order</Link></li>
+      <li><Link to="/cart">Cart</Link></li>
+      <li><Link to="/category">Category</Link></li>
+      <li><Link to="/discount">Discount</Link></li>
+      <li><Link to="/payment">Payment</Link></li>
+      <li><Link to="/shipping">Shipping</Link></li>
     </ul>
   </nav>
 );
