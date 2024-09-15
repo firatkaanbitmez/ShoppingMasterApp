@@ -10,5 +10,6 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
         Task<IEnumerable<Customer>> GetCustomersByRoleAsync(Roles role);
         Task<Customer> GetCustomerByEmailAsync(string email);
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
+
     }
 }

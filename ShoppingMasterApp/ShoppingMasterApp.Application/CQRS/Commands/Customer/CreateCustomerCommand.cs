@@ -16,20 +16,27 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
         public string Password { get; set; }
         public Address Address { get; set; }
 
-        // Handler embedded inside the command class
         public class Handler : IRequestHandler<CreateCustomerCommand, Unit>
         {
-            private readonly ICustomerRepository _CustomerRepository;
+            private readonly ICustomerRepository _customerRepository;
             private readonly IUnitOfWork _unitOfWork;
 
-            public Handler(ICustomerRepository CustomerRepository, IUnitOfWork unitOfWork)
+            public Handler(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
             {
-                _CustomerRepository = CustomerRepository;
+                _customerRepository = customerRepository;
                 _unitOfWork = unitOfWork;
             }
 
             public async Task<Unit> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
+                // Check if email already exists
+                var existingCustomer = await _customerRepository.GetCustomerByEmailAsync(request.Email);
+                if (existingCustomer != null)
+                {
+                    throw new ArgumentException("Email already registered.");
+                }
+
+                // Hash the password before saving
                 var customer = new Domain.Entities.Customer
                 {
                     FirstName = request.FirstName,
@@ -40,11 +47,11 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                     Address = request.Address
                 };
 
-                await _CustomerRepository.AddAsync(customer);
+                await _customerRepository.AddAsync(customer);
                 await _unitOfWork.SaveChangesAsync();
-
                 return Unit.Value;
             }
         }
     }
+
 }

@@ -16,7 +16,21 @@ namespace ShoppingMasterApp.API.Controllers
         {
             _mediator = mediator;
         }
-               
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] CreateCustomerCommand command)
+        {
+            await _mediator.Send(command);
+            return ApiResponse("Customer registered successfully.");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginCustomerCommand command)
+        {
+            var token = await _mediator.Send(command);
+            return ApiResponse(token, "Login successful.");
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)

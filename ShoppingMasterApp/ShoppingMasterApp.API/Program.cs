@@ -10,6 +10,11 @@ using System.Reflection;
 using MediatR;
 using ShoppingMasterApp.Application.CQRS.Commands.Customer;
 using ShoppingMasterApp.Application.CQRS.Queries.Customer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using ShoppingMasterApp.Application.Interfaces;
+using ShoppingMasterApp.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
@@ -57,15 +62,33 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                    .AllowAnyHeader());
     });
 
-    // Add MediatR for handling CQRS (commands and queries)
-    //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
+    // Add JWT Authentication
+    var key = Encoding.ASCII.GetBytes(configuration["JwtConfig:Secret"]);
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
     // Register services and repositories
     RegisterServices(services);
 }
 
 void RegisterServices(IServiceCollection services)
-{ 
+{
     // Repositories
     services.AddScoped<ICartRepository, CartRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -79,6 +102,9 @@ void RegisterServices(IServiceCollection services)
 
     // Unit of Work pattern
     services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+    // Register the JWT token generator
+    services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 }
 
 void ConfigureMiddleware(WebApplication app)
@@ -92,10 +118,17 @@ void ConfigureMiddleware(WebApplication app)
     }
 
     app.UseHttpsRedirection();
+
+    // Enable CORS
     app.UseCors("AllowAllOrigins");
+
+    // Enable JWT authentication
+    app.UseAuthentication();
+
     app.UseAuthorization();
 
     // Add custom middleware for exception handling
     //app.UseMiddleware<ExceptionMiddleware>();
+
     app.MapControllers();
 }
