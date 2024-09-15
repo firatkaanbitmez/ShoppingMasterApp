@@ -32,4 +32,19 @@ export const getCart = async (customerId) => {
   }
 };
 
-// Diğer API servisleri...
+const authHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const login = async (email, password) => {
+  return await axios.post(`${API_URL}/Customer/login`, { email, password });
+};
+
+export const register = async (userData) => {
+  return await axios.post(`${API_URL}/Customer/register`, userData);
+};
+
+export const fetchProtectedData = async () => {
+  return await axios.get(`${API_URL}/protected-endpoint`, { headers: authHeader() });
+};

@@ -3,15 +3,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeItemFromCart, clearCart } from '../redux/cartSlice';
 
 const Cart = () => {
-  const cartItems = useSelector(state => state.cart.items);
+  const cartItems = useSelector(state => state.cart?.items || []); // Add a fallback to an empty array if undefined
   const dispatch = useDispatch();
-  
+
   const handleRemoveItem = (itemId) => {
     dispatch(removeItemFromCart({ id: itemId }));
   };
 
   const handleClearCart = () => {
     dispatch(clearCart());
+  };
+
+  const totalAmount = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+
+  const handleCheckout = () => {
+    alert(`Proceeding to checkout with total amount: ${totalAmount}₺`);
   };
 
   return (
@@ -29,6 +35,8 @@ const Cart = () => {
               </li>
             ))}
           </ul>
+          <h3>Total: {totalAmount}₺</h3>
+          <button onClick={handleCheckout}>Checkout</button>
           <button onClick={handleClearCart}>Clear Cart</button>
         </>
       )}

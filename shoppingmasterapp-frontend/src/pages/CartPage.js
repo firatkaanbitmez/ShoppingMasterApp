@@ -2,9 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeItemFromCart, clearCart } from '../redux/cartSlice';
 
-const CartPage = () => {
+const Cart = () => {
   const cartItems = useSelector(state => state.cart.items);
-  const totalAmount = cartItems.reduce((total, item) => total + item.quantity * item.price, 0);
   const dispatch = useDispatch();
 
   const handleRemoveItem = (itemId) => {
@@ -15,11 +14,18 @@ const CartPage = () => {
     dispatch(clearCart());
   };
 
+  const totalAmount = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+
+  const handleCheckout = () => {
+    // Placeholder checkout function
+    alert(`Proceeding to checkout with total amount: ${totalAmount}₺`);
+  };
+
   return (
-    <div className="cart-page">
-      <h1>Your Cart</h1>
+    <div className="cart">
+      <h2>Your Cart</h2>
       {cartItems.length === 0 ? (
-        <p>No items in the cart.</p>
+        <p>No items in cart</p>
       ) : (
         <>
           <ul>
@@ -30,7 +36,8 @@ const CartPage = () => {
               </li>
             ))}
           </ul>
-          <h2>Total Amount: {totalAmount}₺</h2>
+          <h3>Total: {totalAmount}₺</h3>
+          <button onClick={handleCheckout}>Checkout</button>
           <button onClick={handleClearCart}>Clear Cart</button>
         </>
       )}
@@ -38,4 +45,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage;
+export default Cart;

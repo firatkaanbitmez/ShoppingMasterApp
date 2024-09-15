@@ -8,14 +8,17 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const userLoggedIn = localStorage.getItem('isLoggedIn');
-    if (!userLoggedIn) {
-      setIsLoggedIn(true);
+    const token = localStorage.getItem('token');  // Check for JWT token in localStorage
+    if (token) {
+      setIsLoggedIn(true);  // User is logged in if token exists
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('token');  // Clear JWT token on logout
     setIsLoggedIn(false);
   };
 
@@ -68,7 +71,7 @@ const AccountCartSection = ({ isLoggedIn, handleLogout }) => (
     ) : (
       <div className="auth-links">
         <Link to="/login" className="login-link">Login</Link>
-        <Link to="/signup" className="signup-link">Sign Up</Link>
+        <Link to="/register" className="signup-link">Sign Up</Link> {/* Changed from /signup to /register */}
       </div>
     )}
     <Link to="/cart" className="cart-link">
