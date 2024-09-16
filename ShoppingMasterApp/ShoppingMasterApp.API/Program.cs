@@ -28,9 +28,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     // Add controllers and global filters
     services.AddControllers(options =>
     {
-        //options.Filters.Add<ValidationFilter>();  // Global validation filter
-        //options.Filters.Add<LoggingFilter>();     // Global logging filter
-        //options.Filters.Add<ExceptionFilter>();   // Global exception filter
+        options.Filters.Add<ValidationFilter>();  // Global validation filter
+        options.Filters.Add<LoggingFilter>();     // Global logging filter
+        options.Filters.Add<ExceptionFilter>();   // Global exception filter
     });
 
     // Configure database context with retry policy and error handling
@@ -51,7 +51,34 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingMaster API", Version = "v1" });
+
+        // JWT token'ý Swagger UI üzerinden göndermek için
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization header using the Bearer scheme."
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
+    });
+
 
     // Enable CORS globally
     services.AddCors(options =>
@@ -128,7 +155,7 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthorization();
 
     // Add custom middleware for exception handling
-    //app.UseMiddleware<ExceptionMiddleware>();
+    app.UseMiddleware<ExceptionMiddleware>();
 
     app.MapControllers();
 }

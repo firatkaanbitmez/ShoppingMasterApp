@@ -7,7 +7,7 @@ namespace ShoppingMasterApp.Domain.ValueObjects
     {
         public string Value { get; private set; }
 
-        private Email() { }  // EF Core için boş constructor
+        private Email() { }
 
         public Email(string value)
         {
@@ -20,12 +20,6 @@ namespace ShoppingMasterApp.Domain.ValueObjects
         private bool IsValidEmail(string email)
         {
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        }
-
-        // Statik fabrika metodu
-        public static Email Create(string value)
-        {
-            return new Email(value);
         }
     }
 }

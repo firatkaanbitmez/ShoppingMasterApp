@@ -29,15 +29,13 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
 
             public async Task<Unit> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
-                // Check if email already exists
                 var existingCustomer = await _customerRepository.GetCustomerByEmailAsync(request.Email);
                 if (existingCustomer != null)
                 {
                     throw new ArgumentException("Email already registered.");
                 }
 
-                // Hash the password before saving
-                var customer = new Domain.Entities.Customer
+                var customer = new ShoppingMasterApp.Domain.Entities.Customer
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
@@ -53,5 +51,6 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
             }
         }
     }
+
 
 }
