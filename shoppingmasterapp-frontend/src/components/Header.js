@@ -15,6 +15,23 @@ const Header = () => {
     } else {
       setIsLoggedIn(false);
     }
+
+    // LocalStorage değişikliklerini dinlemek için event listener ekleyin
+    const handleStorageChange = () => {
+      const updatedToken = localStorage.getItem('token');
+      if (updatedToken) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Event listener'ı temizleyin
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const handleLogout = () => {

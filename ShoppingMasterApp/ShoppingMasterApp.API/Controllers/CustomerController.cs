@@ -31,7 +31,6 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse(token, "Login successful.");
         }
 
-
         [HttpPost]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)
         {
@@ -47,6 +46,28 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse("Customer updated successfully");
         }
 
+        [HttpPut("{id}/change-password")]
+        public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordCommand command)
+        {
+            command.CustomerId = id;
+            await _mediator.Send(command);
+            return ApiResponse("Password updated successfully.");
+        }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCustomerInfo()
+        {
+            try
+            {
+                var userId = GetUserIdFromToken();
+                var customer = await _mediator.Send(new GetCustomerByIdQuery { Id = userId });
+                return ApiResponse(customer);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
@@ -54,6 +75,7 @@ namespace ShoppingMasterApp.API.Controllers
             await _mediator.Send(new DeleteCustomerCommand { Id = id });
             return ApiResponse("Customer deleted successfully");
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {

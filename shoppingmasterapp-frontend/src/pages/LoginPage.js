@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { apiService } from '../services/apiService';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -21,9 +21,10 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5199/api/Customer/login', { email, password });
-      localStorage.setItem('token', response.data.token);
-      navigate('/'); // Navigate to home after successful login
+      const response = await apiService.login(email, password);
+      localStorage.setItem('token', response.data);  // Store the token correctly
+      window.dispatchEvent(new Event('storage'));  // Dispatch event for storage changes
+      navigate('/');
     } catch (err) {
       setError('Invalid credentials. Please try again.');
     } finally {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -43,6 +44,20 @@ namespace ShoppingMasterApp.API.Controllers
                 Data = new { Errors = errors }
             });
         }
+
+        // Extract user ID from token
+        protected int GetUserIdFromToken()
+        {
+            if (User.Identity is ClaimsIdentity identity)
+            {
+                var userIdClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return userId;
+                }
+            }
+            throw new UnauthorizedAccessException("User ID could not be extracted from the token.");
+        }
     }
 
     public class ApiResponse<T>
@@ -62,6 +77,6 @@ namespace ShoppingMasterApp.API.Controllers
         ValidationError,
         NotFound,
         Unauthorized,
-        ServerError 
+        ServerError
     }
 }

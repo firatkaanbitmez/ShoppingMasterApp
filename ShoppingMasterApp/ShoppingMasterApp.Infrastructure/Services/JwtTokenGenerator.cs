@@ -27,18 +27,19 @@ namespace ShoppingMasterApp.Infrastructure.Services
             var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(new[]
                 {
-                new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
-                new Claim(ClaimTypes.Name, customer.Email.Value),
-                new Claim(ClaimTypes.Role, customer.Roles.ToString())
-                }),
+            new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
+            new Claim(ClaimTypes.Email, customer.Email.Value),
+            new Claim(ClaimTypes.Role, customer.Roles.ToString())
+        }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
     }
 
 }

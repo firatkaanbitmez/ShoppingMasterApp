@@ -1,13 +1,14 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext'; // AuthProvider import edildi
+import { AuthProvider } from './context/AuthContext'; 
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
 import ProductPage from './pages/ProductPage';
 import CustomerPage from './pages/CustomerPage';
-import LoginPage from './pages/LoginPage';  // LoginPage eklendi
-import RegisterPage from './pages/RegisterPage';  // RegisterPage eklendi
-import MainLayout from './components/MainLayout';  // MainLayout import edildi
+import LoginPage from './pages/LoginPage';  
+import RegisterPage from './pages/RegisterPage';  
+import MainLayout from './components/MainLayout';  
+import ProfilePage from './pages/ProfilePage';  // Eksik importu ekledim
 
 function App() {
   return (
@@ -18,8 +19,10 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/customers" element={<CustomerPage />} />
-          <Route path="/login" element={<LoginPage />} />  {/* Login rotası eklendi */}
-          <Route path="/register" element={<RegisterPage />} />  {/* Register rotası eklendi */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />  {/* Profil sayfası rotası */}
+
         </Routes>
       </MainLayout>
     </AuthProvider>

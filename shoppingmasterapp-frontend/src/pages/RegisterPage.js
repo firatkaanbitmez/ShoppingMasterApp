@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { register } from '../services/apiService';
+import { apiService } from '../services/apiService';
 import { useNavigate } from 'react-router-dom';
-import '../assets/registerPage.css'; // CSS dosyası
 
 const RegisterPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -33,17 +32,15 @@ const RegisterPage = () => {
     setError('');
     setSuccessMessage('');
 
-    // Tüm alanların dolu olup olmadığını kontrol edin
     if (firstName && lastName && email && password && address.addressLine1 && address.city && address.state && address.postalCode && address.country) {
       try {
-        await register({
+        await apiService.register({
           firstName,
           lastName,
           email,
           password,
-          address
+          address,
         });
-        
         setSuccessMessage('Registration successful! You can now login.');
       } catch (error) {
         setError('Registration failed. Please try again.');

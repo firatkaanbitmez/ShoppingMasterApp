@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getCustomers, createCustomer, updateCustomer, deleteCustomer } from '../services/customerService';
 import '../assets/header.css';
 import '../assets/footer.css';
-import '../assets/CustomerPage.css'; // CustomerPage için özel CSS
 
 const CustomerPage = () => {
   const [customers, setCustomers] = useState([]);

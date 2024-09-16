@@ -44,8 +44,8 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                 customer.Roles = Roles.Customer;
                 customer.Address = request.Address;
 
-                _customerRepository.Update(customer);
-                await _unitOfWork.SaveChangesAsync();
+                _customerRepository.Update(customer);  // Using the generic repository's Update method
+                await _unitOfWork.SaveChangesAsync();   // Save changes asynchronously
 
                 return Unit.Value;
             }
