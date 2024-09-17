@@ -19,8 +19,8 @@ namespace ShoppingMasterApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] CreateAdminCommand command)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateAdminCommand command)
         {
             await _mediator.Send(command);
             return ApiResponse("Admin başarıyla kaydedildi.");
