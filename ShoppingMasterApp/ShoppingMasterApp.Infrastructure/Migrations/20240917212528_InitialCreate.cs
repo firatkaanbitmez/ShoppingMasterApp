@@ -25,7 +25,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Roles = table.Column<int>(type: "int", nullable: false)
+                    Roles = table.Column<int>(type: "int", nullable: false),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,7 +89,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Roles = table.Column<int>(type: "int", nullable: false)
+                    Roles = table.Column<int>(type: "int", nullable: false),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

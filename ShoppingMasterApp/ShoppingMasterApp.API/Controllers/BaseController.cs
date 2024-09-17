@@ -4,7 +4,6 @@ using ShoppingMasterApp.Application.Interfaces;
 using ShoppingMasterApp.Domain.Enums;
 using System.Collections.Generic;
 using System.Security.Claims;
-using ShoppingMasterApp.Domain.Enums;
 using ShoppingMasterApp.API.Responses;
 
 namespace ShoppingMasterApp.API.Controllers

@@ -136,6 +136,7 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IShippingRepository, ShippingRepository>();
     services.AddScoped<ICustomerRepository, CustomerRepository>();
     services.AddScoped<IAdminRepository, AdminRepository>();
+    services.AddScoped<IEmailService, EmailService>(); 
 
     // Unit of Work pattern
     services.AddScoped<IUnitOfWork, UnitOfWork>();

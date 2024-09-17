@@ -24,7 +24,7 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateAdminCommand command)
         {
             await _mediator.Send(command);
-            return ApiResponse("Admin başarıyla kaydedildi.");
+            return ApiResponse("Admin registered successfully.");
         }
 
         [HttpPost("login")]
@@ -32,7 +32,7 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginAdminCommand command)
         {
             var token = await _mediator.Send(command);
-            return ApiResponse(token, "Giriş başarılı.");
+            return ApiResponse(token, "Login successfully.");
         }
 
         [HttpPut("{id}")]
@@ -40,14 +40,14 @@ namespace ShoppingMasterApp.API.Controllers
         {
             command.Id = id;
             await _mediator.Send(command);
-            return ApiResponse("Admin başarıyla güncellendi.");
+            return ApiResponse("Admin updated successfully.");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAdmin(int id)
         {
             await _mediator.Send(new DeleteAdminCommand { Id = id });
-            return ApiResponse("Admin başarıyla silindi.");
+            return ApiResponse("Admin deleted successfully.");
         }
 
         [HttpGet("{id}")]

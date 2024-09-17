@@ -34,7 +34,11 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                 {
                     throw new UnauthorizedAccessException("Invalid credentials.");
                 }
-
+                // Kullanıcının doğrulanmış olup olmadığını kontrol et
+                if (!customer.IsVerified)
+                {
+                    throw new UnauthorizedAccessException("User is not verified. Please verify your account.");
+                }
                 // Generate JWT token
                 var token = _tokenService.GenerateToken(customer);
                 return token;

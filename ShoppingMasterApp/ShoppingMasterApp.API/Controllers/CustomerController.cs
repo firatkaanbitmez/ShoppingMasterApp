@@ -26,8 +26,18 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> Register([FromBody] CreateCustomerCommand command)
         {
             await _mediator.Send(command);
-            return ApiResponse("Customer registered successfully.");
+            return Ok("Kayıt başarılı, lütfen e-postanızı doğrulayın.");
         }
+
+
+        [AllowAnonymous]
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("E-posta doğrulandı.");
+        }
+
 
         [AllowAnonymous]
         [HttpPost("login")]

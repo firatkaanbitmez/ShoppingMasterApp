@@ -11,6 +11,8 @@ namespace ShoppingMasterApp.Domain.Entities
         public Email Email { get; set; }
         public string PasswordHash { get; set; }
         public Roles Roles { get; set; }
+        public bool IsVerified { get; set; }  
+        public string VerificationCode { get; set; }  
 
         protected BaseUser(Roles role)
         {

@@ -33,7 +33,9 @@ namespace ShoppingMasterApp.Infrastructure.Seeders
                     LastName = "Admin",
                     Email = new Email(adminEmail),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
-                    Roles = Roles.Admin
+                    Roles = Roles.Admin,
+                    VerificationCode = "123456" // Buraya doğrulama kodu atayın
+
                 };
 
                 await _adminRepository.AddAsync(admin);
