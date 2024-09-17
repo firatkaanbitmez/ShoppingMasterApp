@@ -5,6 +5,7 @@ using ShoppingMasterApp.API.Controllers;
 using ShoppingMasterApp.Domain.Enums;
 using System;
 using System.Net;
+using ResponseStatus = ShoppingMasterApp.Domain.Enums.ResponseStatus;
 
 namespace ShoppingMasterApp.API.Filters
 {
@@ -35,7 +36,7 @@ namespace ShoppingMasterApp.API.Filters
             {
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 response.ErrorMessage = context.Exception.Message;
-                response.ResponseStatus = ResponseStatus.ValidationError.ToString();
+                response.ResponseStatus = Domain.Enums.ResponseStatus.ValidationError.ToString();
             }
             else if (context.Exception is KeyNotFoundException)
             {

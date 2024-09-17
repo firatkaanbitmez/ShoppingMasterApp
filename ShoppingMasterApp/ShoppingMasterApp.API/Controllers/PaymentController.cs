@@ -2,6 +2,7 @@
 using MediatR;
 using ShoppingMasterApp.Application.CQRS.Commands.Payment;
 using System.Threading.Tasks;
+using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -11,7 +12,9 @@ namespace ShoppingMasterApp.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public PaymentController(IMediator mediator)
+
+        public PaymentController(IMediator mediator, ITokenService tokenService)
+     : base(tokenService)
         {
             _mediator = mediator;
         }

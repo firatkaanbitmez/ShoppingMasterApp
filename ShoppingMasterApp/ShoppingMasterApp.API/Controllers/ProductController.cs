@@ -3,6 +3,7 @@ using MediatR;
 using ShoppingMasterApp.Application.CQRS.Commands.Product;
 using ShoppingMasterApp.Application.CQRS.Queries.Product;
 using System.Threading.Tasks;
+using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -12,7 +13,8 @@ namespace ShoppingMasterApp.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public ProductController(IMediator mediator)
+        public ProductController(IMediator mediator, ITokenService tokenService)
+     : base(tokenService)
         {
             _mediator = mediator;
         }

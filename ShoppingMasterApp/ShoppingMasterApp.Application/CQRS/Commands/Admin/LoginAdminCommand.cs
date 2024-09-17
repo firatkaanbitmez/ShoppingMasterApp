@@ -14,12 +14,12 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Admin
         public class Handler : IRequestHandler<LoginAdminCommand, string>
         {
             private readonly IAdminRepository _adminRepository;
-            private readonly IJwtTokenGenerator _jwtTokenGenerator;
+            private readonly ITokenService _TokenService;
 
-            public Handler(IAdminRepository adminRepository, IJwtTokenGenerator jwtTokenGenerator)
+            public Handler(IAdminRepository adminRepository, ITokenService TokenService)
             {
                 _adminRepository = adminRepository;
-                _jwtTokenGenerator = jwtTokenGenerator;
+                _TokenService = TokenService;
             }
 
             public async Task<string> Handle(LoginAdminCommand request, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Admin
                     throw new UnauthorizedAccessException("Invalid credentials.");
                 }
 
-                return _jwtTokenGenerator.GenerateToken(admin);
+                return _TokenService.GenerateToken(admin);
             }
         }
     }

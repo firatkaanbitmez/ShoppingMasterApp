@@ -3,18 +3,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Admin;
 using ShoppingMasterApp.Application.CQRS.Queries.Admin;
+using ShoppingMasterApp.Application.Interfaces;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // Yalnızca Admin rolüne sahip kullanıcılar bu endpoint'e erişebilir
+    [Authorize(Roles = "Admin")] 
     public class AdminController : BaseController
     {
         private readonly IMediator _mediator;
 
-        public AdminController(IMediator mediator)
+        public AdminController(IMediator mediator, ITokenService tokenService)
+      : base(tokenService)
         {
             _mediator = mediator;
         }

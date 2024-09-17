@@ -3,6 +3,7 @@ using MediatR;
 using ShoppingMasterApp.Application.CQRS.Commands.Order;
 using ShoppingMasterApp.Application.CQRS.Queries.Order;
 using System.Threading.Tasks;
+using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -12,11 +13,12 @@ namespace ShoppingMasterApp.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public OrderController(IMediator mediator)
+
+        public OrderController(IMediator mediator, ITokenService tokenService)
+     : base(tokenService)
         {
             _mediator = mediator;
         }
-
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
         {

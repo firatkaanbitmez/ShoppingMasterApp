@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ShoppingMasterApp.Application.Interfaces;
-using ShoppingMasterApp.Infrastructure.Services;
 using ShoppingMasterApp.Infrastructure.Seeders;
+using ShoppingMasterApp.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
@@ -51,7 +51,6 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     // Add AutoMapper for DTO to entity mappings
     services.AddAutoMapper(typeof(AutoMapperProfile));
-    services.AddAutoMapper(typeof(AdminProfile));
 
     services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
 
@@ -142,7 +141,7 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     // Register the JWT token generator
-    services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+    services.AddScoped<ITokenService, TokenService>();
     
 
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Customer;
 using ShoppingMasterApp.Application.CQRS.Queries.Customer;
+using ShoppingMasterApp.Application.Interfaces;
 using ShoppingMasterApp.Domain.Enums;
 using System;
 using System.Threading.Tasks;
@@ -11,17 +12,17 @@ namespace ShoppingMasterApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // JWT token gerektiren tüm işlemler için
+    [Authorize] // JWT token 
     public class CustomerController : BaseController
     {
         private readonly IMediator _mediator;
 
-        public CustomerController(IMediator mediator)
+        public CustomerController(IMediator mediator, ITokenService tokenService)
+      : base(tokenService)
         {
             _mediator = mediator;
         }
 
-        // Sadece Customer kaydı için yetkilendirme gerekmez
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateCustomerCommand command)
@@ -38,7 +39,6 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse(token, "Login successful.");
         }
 
-        // Sadece Admin ve Manager rolündeki kullanıcılar müşteri oluşturabilir
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)
@@ -47,13 +47,12 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse("Customer created successfully.");
         }
 
-        [Authorize(Roles = "Admin,Manager,Customer")]
+        [Authorize(Roles = "Admin,Customer")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerCommand command)
         {
             var userId = GetUserIdFromToken();
 
-            // Eğer müşteri rolündeyse ve kendi ID'si dışında bir kullanıcıyı güncellemeye çalışıyorsa hata ver
             if (User.IsInRole("Customer") && userId != id)
             {
                 return ApiError("Başka bir müşterinin bilgilerini güncelleme yetkiniz yok.", 403);
@@ -65,13 +64,12 @@ namespace ShoppingMasterApp.API.Controllers
         }
 
 
-        [Authorize(Roles = "Admin,Manager,Customer")]
+        [Authorize(Roles = "Admin,Customer")]
         [HttpPut("{id}/change-password")]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordCommand command)
         {
             var userId = GetUserIdFromToken();
 
-            // Eğer müşteri rolündeyse ve başka bir kullanıcının şifresini değiştirmeye çalışıyorsa hata ver
             if (User.IsInRole("Customer") && userId != id)
             {
                 return ApiError("Başka bir müşterinin şifresini değiştirme yetkiniz yok.", 403);
@@ -99,7 +97,7 @@ namespace ShoppingMasterApp.API.Controllers
         }
 
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
@@ -107,7 +105,7 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse("Customer deleted successfully.");
         }
 
-        [Authorize(Roles = "Admin,Manager,Customer")]
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {
@@ -124,8 +122,7 @@ namespace ShoppingMasterApp.API.Controllers
         }
 
 
-        // Sadece Admin ve Manager tüm müşteri listesine erişebilir
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllCustomers()
         {

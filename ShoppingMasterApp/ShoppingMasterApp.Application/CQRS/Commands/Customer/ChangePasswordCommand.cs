@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
 {
-    public class ChangePasswordCommand : IRequest<Unit>  // The return type in the IRequest is Unit
+    public class ChangePasswordCommand : IRequest<Unit>  
     {
         public int CustomerId { get; set; }
         public string NewPassword { get; set; }
     }
 
-    public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, Unit>  // Note the return type Unit in IRequestHandler
+    public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, Unit>  
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;

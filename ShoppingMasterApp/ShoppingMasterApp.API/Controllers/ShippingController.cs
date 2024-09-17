@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands;
 using ShoppingMasterApp.Application.CQRS.Queries.Shipping;
 using ShoppingMasterApp.Application.DTOs;
+using ShoppingMasterApp.Application.Interfaces;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
@@ -13,7 +14,8 @@ namespace ShoppingMasterApp.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public ShippingController(IMediator mediator)
+        public ShippingController(IMediator mediator, ITokenService tokenService)
+     : base(tokenService)
         {
             _mediator = mediator;
         }

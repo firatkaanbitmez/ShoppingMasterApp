@@ -26,42 +26,42 @@ namespace ShoppingMasterApp.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong: {ex}");
+                _logger.LogError($"Error occurred: {ex.Message}");
                 await HandleExceptionAsync(context, ex);
             }
         }
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            var statusCode = exception switch
+            var response = context.Response;
+            response.ContentType = "application/json";
+
+            switch (exception)
             {
-                ArgumentNullException or ArgumentException => HttpStatusCode.BadRequest,
-                KeyNotFoundException => HttpStatusCode.NotFound,
-                UnauthorizedAccessException => HttpStatusCode.Unauthorized,
-                _ => HttpStatusCode.InternalServerError
+                case ArgumentNullException:
+                case ArgumentException:
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+                case KeyNotFoundException:
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                case UnauthorizedAccessException:
+                    response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
+                default:
+                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
+            }
+
+            var errorResponse = new
+            {
+                StatusCode = response.StatusCode,
+                Message = exception.Message,
+                Details = exception.StackTrace // Detaylı hata raporu
             };
 
-            _logger.LogError($"Error occurred: {exception.Message}");
-            var errorResponse = new ErrorDetails
-            {
-                StatusCode = (int)statusCode,
-                Message = exception.Message
-            };
-
-            context.Response.StatusCode = (int)statusCode;
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
-        }
-
-    }
-
-    public class ErrorDetails
-    {
-        public int StatusCode { get; set; }
-        public string Message { get; set; }
-
-        public override string ToString()
-        {
-            return System.Text.Json.JsonSerializer.Serialize(this);
+            await response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
         }
     }
+
 }

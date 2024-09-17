@@ -3,6 +3,7 @@ using MediatR;
 using ShoppingMasterApp.Application.CQRS.Commands.Category;
 using ShoppingMasterApp.Application.CQRS.Queries.Category;
 using System.Threading.Tasks;
+using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -12,7 +13,9 @@ namespace ShoppingMasterApp.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public CategoryController(IMediator mediator)
+
+        public CategoryController(IMediator mediator, ITokenService tokenService)
+     : base(tokenService)
         {
             _mediator = mediator;
         }

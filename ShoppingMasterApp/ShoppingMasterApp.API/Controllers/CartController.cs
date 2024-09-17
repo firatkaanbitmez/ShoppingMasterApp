@@ -4,6 +4,7 @@ using ShoppingMasterApp.Application.CQRS.Commands.Cart;
 using ShoppingMasterApp.Application.CQRS.Queries.Cart;
 using System.Threading.Tasks;
 using ShoppingMasterApp.Domain.Entities;
+using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -13,7 +14,8 @@ namespace ShoppingMasterApp.API.Controllers
     {
         private readonly IMediator _mediator;
 
-        public CartController(IMediator mediator)
+        public CartController(IMediator mediator, ITokenService tokenService)
+     : base(tokenService)
         {
             _mediator = mediator;
         }

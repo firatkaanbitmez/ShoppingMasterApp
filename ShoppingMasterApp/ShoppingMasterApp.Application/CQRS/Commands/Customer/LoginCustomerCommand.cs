@@ -4,6 +4,8 @@ using ShoppingMasterApp.Domain.Entities;
 using ShoppingMasterApp.Domain.Enums;
 using ShoppingMasterApp.Domain.Interfaces.Repositories;
 using ShoppingMasterApp.Domain.ValueObjects;
+using ShoppingMasterApp.Application.Services;
+
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,12 +19,12 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
         public class Handler : IRequestHandler<LoginCustomerCommand, string>
         {
             private readonly ICustomerRepository _customerRepository;
-            private readonly IJwtTokenGenerator _jwtTokenGenerator;
+            private readonly ITokenService _tokenService;
 
-            public Handler(ICustomerRepository customerRepository, IJwtTokenGenerator jwtTokenGenerator)
+            public Handler(ICustomerRepository customerRepository, ITokenService tokenService)
             {
                 _customerRepository = customerRepository;
-                _jwtTokenGenerator = jwtTokenGenerator;
+                _tokenService = tokenService;
             }
 
             public async Task<string> Handle(LoginCustomerCommand request, CancellationToken cancellationToken)
@@ -34,7 +36,7 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                 }
 
                 // Generate JWT token
-                var token = _jwtTokenGenerator.GenerateToken(customer);
+                var token = _tokenService.GenerateToken(customer);
                 return token;
             }
         }

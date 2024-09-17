@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingMasterApp.Application.Interfaces;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -8,6 +9,13 @@ namespace ShoppingMasterApp.API.Controllers
     [Route("api/[controller]")]
     public abstract class BaseController : ControllerBase
     {
+        private readonly ITokenService _tokenService;
+
+        protected BaseController(ITokenService tokenService)
+        {
+            _tokenService = tokenService;
+        }
+
         protected IActionResult ApiResponse<T>(T result, string message = null, int statusCode = 200)
         {
             return StatusCode(statusCode, new ApiResponse<T>
@@ -45,18 +53,9 @@ namespace ShoppingMasterApp.API.Controllers
             });
         }
 
-        // Extract user ID from token
         protected int GetUserIdFromToken()
         {
-            if (User.Identity is ClaimsIdentity identity)
-            {
-                var userIdClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
-                {
-                    return userId;
-                }
-            }
-            throw new UnauthorizedAccessException("User ID could not be extracted from the token.");
+            return _tokenService.GetUserIdFromToken(User);
         }
     }
 

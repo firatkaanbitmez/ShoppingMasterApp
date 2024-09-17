@@ -4,6 +4,8 @@ using ShoppingMasterApp.API.Controllers;
 using ShoppingMasterApp.Domain.Enums;
 using System.Linq;
 using System.Collections.Generic;
+using ShoppingMasterApp.Application.Constants;
+using ResponseStatus = ShoppingMasterApp.Domain.Enums.ResponseStatus;
 
 namespace ShoppingMasterApp.API.Filters
 {
@@ -13,7 +15,6 @@ namespace ShoppingMasterApp.API.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                // Her bir alanın hatasını detaylandırarak liste halinde topluyoruz
                 var errors = context.ModelState
                     .Where(ms => ms.Value.Errors.Count > 0)
                     .Select(ms => new ValidationErrorDetail
@@ -27,12 +28,11 @@ namespace ShoppingMasterApp.API.Filters
                 {
                     StatusCode = 400,
                     IsSuccess = false,
-                    ErrorMessage = "Validation error occurred. Please check the provided details.",
+                    ErrorMessage = ErrorMessages.ValidationError,
                     ResponseStatus = ResponseStatus.ValidationError.ToString(),
                     Data = new { Errors = errors }
                 };
 
-                // Detaylı bir hata döndürülmesi
                 context.Result = new BadRequestObjectResult(validationResponse);
             }
         }
@@ -40,10 +40,10 @@ namespace ShoppingMasterApp.API.Filters
         public void OnActionExecuted(ActionExecutedContext context) { }
     }
 
-    // Hata detaylarını daha iyi göstermek için özel bir yapı oluşturuyoruz
     public class ValidationErrorDetail
     {
         public string FieldName { get; set; }
         public List<string> ErrorMessages { get; set; }
     }
+
 }
