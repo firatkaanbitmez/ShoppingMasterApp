@@ -22,6 +22,7 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Discount> Discounts { get; set; }
+        public DbSet<Admin> Admins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,19 +32,27 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 builder.OwnsOne(u => u.Address);
                 builder.OwnsOne(u => u.Email);
             });
+            modelBuilder.Entity<Admin>(builder =>
+            {
+                builder.OwnsOne(u => u.Email, email =>
+                {
+                    email.Property(e => e.Value).HasColumnName("Email").IsRequired();
+                });
+            });
             modelBuilder.Entity<Customer>(builder =>
             {
-                builder.OwnsOne(u => u.Address, navigationBuilder =>
+                builder.OwnsOne(u => u.Address, address =>
                 {
-                    navigationBuilder.Property(a => a.AddressLine1).HasColumnName("Address_Line1");
-                    navigationBuilder.Property(a => a.AddressLine2).HasColumnName("Address_Line2");
-                    navigationBuilder.Property(a => a.City).HasColumnName("Address_City");
-                    navigationBuilder.Property(a => a.State).HasColumnName("Address_State");
-                    navigationBuilder.Property(a => a.PostalCode).HasColumnName("Address_PostalCode");
-                    navigationBuilder.Property(a => a.Country).HasColumnName("Address_Country");
+                    address.Property(a => a.AddressLine1).HasColumnName("AddressLine1");
+                    address.Property(a => a.City).HasColumnName("City");
+                    address.Property(a => a.State).HasColumnName("State");
+                    address.Property(a => a.PostalCode).HasColumnName("PostalCode");
+                    address.Property(a => a.Country).HasColumnName("Country");
+                });
 
-                    // Explicitly mapping constructor parameters to properties
-                    navigationBuilder.WithOwner();
+                builder.OwnsOne(u => u.Email, email =>
+                {
+                    email.Property(e => e.Value).HasColumnName("Email").IsRequired();
                 });
             });
             // Configure Product entity

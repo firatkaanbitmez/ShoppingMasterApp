@@ -39,7 +39,7 @@ namespace ShoppingMasterApp.API.Controllers
         }
 
         // Sadece Admin ve Manager rolündeki kullanıcılar müşteri oluşturabilir
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)
         {
@@ -47,42 +47,41 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse("Customer created successfully.");
         }
 
-        // Müşteri güncelleme işlemi için Admin, Manager veya kendi hesabına erişim hakkı olan müşteri yapabilir
         [Authorize(Roles = "Admin,Manager,Customer")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerCommand command)
         {
             var userId = GetUserIdFromToken();
 
-            // Eğer müşteri ise sadece kendi bilgilerini güncelleyebilir
+            // Eğer müşteri rolündeyse ve kendi ID'si dışında bir kullanıcıyı güncellemeye çalışıyorsa hata ver
             if (User.IsInRole("Customer") && userId != id)
             {
-                return ApiError("You are not authorized to update other customers.", 403);
+                return ApiError("Başka bir müşterinin bilgilerini güncelleme yetkiniz yok.", 403);
             }
 
             command.Id = id;
             await _mediator.Send(command);
-            return ApiResponse("Customer updated successfully.");
+            return ApiResponse("Customer updated successfullyi.");
         }
 
-        // Şifre değiştirme işlemi için kullanıcı kendi hesabında olmalı veya Admin/Manager olmalı
+
         [Authorize(Roles = "Admin,Manager,Customer")]
         [HttpPut("{id}/change-password")]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordCommand command)
         {
             var userId = GetUserIdFromToken();
 
+            // Eğer müşteri rolündeyse ve başka bir kullanıcının şifresini değiştirmeye çalışıyorsa hata ver
             if (User.IsInRole("Customer") && userId != id)
             {
-                return ApiError("You are not authorized to change the password for another customer.", 403);
+                return ApiError("Başka bir müşterinin şifresini değiştirme yetkiniz yok.", 403);
             }
 
             command.CustomerId = id;
             await _mediator.Send(command);
-            return ApiResponse("Password updated successfully.");
+            return ApiResponse("Şifre başarıyla güncellendi.");
         }
 
-        // Müşteri kendi bilgilerini görüntülemek için bu endpoint'i kullanabilir
         [Authorize(Roles = "Customer")]
         [HttpGet("me")]
         public async Task<IActionResult> GetCustomerInfo()
@@ -99,7 +98,7 @@ namespace ShoppingMasterApp.API.Controllers
             }
         }
 
-        // Sadece Admin ve Manager müşteri silebilir
+
         [Authorize(Roles = "Admin,Manager")]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
@@ -108,14 +107,22 @@ namespace ShoppingMasterApp.API.Controllers
             return ApiResponse("Customer deleted successfully.");
         }
 
-        // Admin ve Manager tüm müşterileri sorgulayabilir, Customer sadece kendi bilgilerini görebilir
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,Customer")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {
+            var userId = GetUserIdFromToken();
+
+            // Eğer müşteri rolündeyse ve kendi ID'si dışında bir veri sorguluyorsa, hata ver
+            if (User.IsInRole("Customer") && userId != id)
+            {
+                return ApiError("Başka bir müşterinin bilgilerine erişim yetkiniz yok.", 403);
+            }
+
             var result = await _mediator.Send(new GetCustomerByIdQuery { Id = id });
             return ApiResponse(result);
         }
+
 
         // Sadece Admin ve Manager tüm müşteri listesine erişebilir
         [Authorize(Roles = "Admin,Manager")]

@@ -22,6 +22,46 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("IdGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Roles")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
+
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -447,6 +487,30 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.ToTable("Shippings");
                 });
 
+            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Admin", b =>
+                {
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.Email", "Email", b1 =>
+                        {
+                            b1.Property<int>("AdminId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("AdminId");
+
+                            b1.ToTable("Admins");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AdminId");
+                        });
+
+                    b.Navigation("Email")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.CartItem", b =>
                 {
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Cart", null)
@@ -474,32 +538,31 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                             b1.Property<string>("AddressLine1")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Address_Line1");
+                                .HasColumnName("AddressLine1");
 
                             b1.Property<string>("AddressLine2")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Address_Line2");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("City")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Address_City");
+                                .HasColumnName("City");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Address_Country");
+                                .HasColumnName("Country");
 
                             b1.Property<string>("PostalCode")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Address_PostalCode");
+                                .HasColumnName("PostalCode");
 
                             b1.Property<string>("State")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Address_State");
+                                .HasColumnName("State");
 
                             b1.HasKey("CustomerId");
 
@@ -516,7 +579,8 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Email");
 
                             b1.HasKey("CustomerId");
 
@@ -536,7 +600,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Order", b =>
                 {
                     b.HasOne("ShoppingMasterApp.Domain.Entities.Customer", "Customer")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -808,11 +872,6 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Customer", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShoppingMasterApp.Domain.Entities.Order", b =>

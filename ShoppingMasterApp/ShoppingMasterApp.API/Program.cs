@@ -15,11 +15,18 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ShoppingMasterApp.Application.Interfaces;
 using ShoppingMasterApp.Infrastructure.Services;
+using ShoppingMasterApp.Infrastructure.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var adminSeeder = scope.ServiceProvider.GetRequiredService<AdminSeeder>();
+    await adminSeeder.SeedAdminAsync();
+}
+
 ConfigureMiddleware(app);
 app.Run();
 
@@ -44,6 +51,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     // Add AutoMapper for DTO to entity mappings
     services.AddAutoMapper(typeof(AutoMapperProfile));
+    services.AddAutoMapper(typeof(AdminProfile));
+
     services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
 
     // Add Swagger for API documentation
@@ -116,6 +125,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
 void RegisterServices(IServiceCollection services)
 {
+    services.AddScoped<AdminSeeder>();
     // Repositories
     services.AddScoped<ICartRepository, CartRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -126,12 +136,15 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IReviewRepository, ReviewRepository>();
     services.AddScoped<IShippingRepository, ShippingRepository>();
     services.AddScoped<ICustomerRepository, CustomerRepository>();
+    services.AddScoped<IAdminRepository, AdminRepository>();
 
     // Unit of Work pattern
     services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     // Register the JWT token generator
     services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+    
+
 }
 
 void ConfigureMiddleware(WebApplication app)

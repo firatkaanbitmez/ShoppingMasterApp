@@ -9,6 +9,7 @@ namespace ShoppingMasterApp.Application.Interfaces
 {
     public interface IJwtTokenGenerator
     {
-        string GenerateToken(Customer customer);
+        string GenerateToken(BaseUser user);
+  
     }
 }
