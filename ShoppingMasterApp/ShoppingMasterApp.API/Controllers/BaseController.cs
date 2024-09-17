@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingMasterApp.Application.Constants;
 using ShoppingMasterApp.Application.Interfaces;
+using ShoppingMasterApp.Domain.Enums;
 using System.Collections.Generic;
 using System.Security.Claims;
+using ShoppingMasterApp.Domain.Enums;
+using ShoppingMasterApp.API.Responses;
 
 namespace ShoppingMasterApp.API.Controllers
 {
@@ -47,7 +51,7 @@ namespace ShoppingMasterApp.API.Controllers
             {
                 StatusCode = 400,
                 IsSuccess = false,
-                ErrorMessage = "Validation error",
+                ErrorMessage = ErrorMessages.ValidationError,
                 ResponseStatus = ResponseStatus.ValidationError.ToString(),
                 Data = new { Errors = errors }
             });
@@ -57,25 +61,6 @@ namespace ShoppingMasterApp.API.Controllers
         {
             return _tokenService.GetUserIdFromToken(User);
         }
-    }
 
-    public class ApiResponse<T>
-    {
-        public int StatusCode { get; set; }
-        public bool IsSuccess { get; set; }
-        public T Data { get; set; }
-        public string ErrorMessage { get; set; }
-        public string ResponseStatus { get; set; }
-        public string Message { get; set; }
-    }
-
-    public enum ResponseStatus
-    {
-        Success,
-        Error,
-        ValidationError,
-        NotFound,
-        Unauthorized,
-        ServerError
     }
 }

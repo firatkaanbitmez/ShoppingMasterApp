@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using ShoppingMasterApp.API.Controllers;
+using ShoppingMasterApp.API.Responses;
 using ShoppingMasterApp.Domain.Enums;
 using System;
 using System.Net;

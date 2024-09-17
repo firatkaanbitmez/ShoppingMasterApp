@@ -10,13 +10,12 @@ namespace ShoppingMasterApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
         private readonly IMediator _mediator;
 
-        public AdminController(IMediator mediator, ITokenService tokenService)
-      : base(tokenService)
+        public AdminController(IMediator mediator, ITokenService tokenService) : base(tokenService)
         {
             _mediator = mediator;
         }

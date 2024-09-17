@@ -57,11 +57,11 @@ namespace ShoppingMasterApp.API.Middlewares
             {
                 StatusCode = response.StatusCode,
                 Message = exception.Message,
-                Details = exception.StackTrace // Detaylı hata raporu
+                Details = exception.StackTrace
             };
 
             await response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
         }
-    }
 
+    }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using ShoppingMasterApp.Application.Constants;
 using ResponseStatus = ShoppingMasterApp.Domain.Enums.ResponseStatus;
+using ShoppingMasterApp.API.Responses;
 
 namespace ShoppingMasterApp.API.Filters
 {

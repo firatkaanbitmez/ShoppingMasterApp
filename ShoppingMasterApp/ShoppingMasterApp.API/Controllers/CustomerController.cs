@@ -4,21 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Customer;
 using ShoppingMasterApp.Application.CQRS.Queries.Customer;
 using ShoppingMasterApp.Application.Interfaces;
-using ShoppingMasterApp.Domain.Enums;
-using System;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // JWT token 
+    [Authorize]
     public class CustomerController : BaseController
     {
         private readonly IMediator _mediator;
 
         public CustomerController(IMediator mediator, ITokenService tokenService)
-      : base(tokenService)
+            : base(tokenService)
         {
             _mediator = mediator;
         }
@@ -51,51 +49,30 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerCommand command)
         {
-            var userId = GetUserIdFromToken();
-
-            if (User.IsInRole("Customer") && userId != id)
-            {
-                return ApiError("Başka bir müşterinin bilgilerini güncelleme yetkiniz yok.", 403);
-            }
-
+            ValidateCustomerAccess(id);
             command.Id = id;
             await _mediator.Send(command);
-            return ApiResponse("Customer updated successfullyi.");
+            return ApiResponse("Customer updated successfully.");
         }
-
 
         [Authorize(Roles = "Admin,Customer")]
         [HttpPut("{id}/change-password")]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordCommand command)
         {
-            var userId = GetUserIdFromToken();
-
-            if (User.IsInRole("Customer") && userId != id)
-            {
-                return ApiError("Başka bir müşterinin şifresini değiştirme yetkiniz yok.", 403);
-            }
-
+            ValidateCustomerAccess(id);
             command.CustomerId = id;
             await _mediator.Send(command);
-            return ApiResponse("Şifre başarıyla güncellendi.");
+            return ApiResponse("Password changed successfully.");
         }
 
         [Authorize(Roles = "Customer")]
         [HttpGet("me")]
         public async Task<IActionResult> GetCustomerInfo()
         {
-            try
-            {
-                var userId = GetUserIdFromToken();
-                var customer = await _mediator.Send(new GetCustomerByIdQuery { Id = userId });
-                return ApiResponse(customer);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+            var userId = GetUserIdFromToken();
+            var customer = await _mediator.Send(new GetCustomerByIdQuery { Id = userId });
+            return ApiResponse(customer);
         }
-
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{id}")]
@@ -109,18 +86,10 @@ namespace ShoppingMasterApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {
-            var userId = GetUserIdFromToken();
-
-            // Eğer müşteri rolündeyse ve kendi ID'si dışında bir veri sorguluyorsa, hata ver
-            if (User.IsInRole("Customer") && userId != id)
-            {
-                return ApiError("Başka bir müşterinin bilgilerine erişim yetkiniz yok.", 403);
-            }
-
+            ValidateCustomerAccess(id);
             var result = await _mediator.Send(new GetCustomerByIdQuery { Id = id });
             return ApiResponse(result);
         }
-
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -128,6 +97,15 @@ namespace ShoppingMasterApp.API.Controllers
         {
             var result = await _mediator.Send(new GetAllCustomersQuery());
             return ApiResponse(result);
+        }
+
+        private void ValidateCustomerAccess(int id)
+        {
+            var userId = GetUserIdFromToken();
+            if (User.IsInRole("Customer") && userId != id)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to access other customer's data.");
+            }
         }
     }
 }
