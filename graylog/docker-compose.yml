@@ -1,0 +1,47 @@
+version: '3'
+services:
+  mongo:
+    image: "mongo:4.2"
+    container_name: mongo
+    networks:
+      - graylog
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"
+    container_name: elasticsearch
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    networks:
+      - graylog
+    ports:
+      - "9200:9200"
+
+  graylog:
+    image: "graylog/graylog:4.0"
+    container_name: graylog
+    environment:
+      - GRAYLOG_PASSWORD_SECRET=1905190519051905Asd. # En az 16 karakterli bir şifre girin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=bdbe03a0c7c15442024cfa9c14000205459104995cba0bd5a168bb57f59d0560
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+    networks:
+      - graylog
+    depends_on:
+      - mongo
+      - elasticsearch
+    ports:
+      - "9000:9000"   # Graylog web arayüzü
+      - "12201:12201/udp" # GELF UDP için kullanılan port
+      - "1514:1514" # TCP veya Syslog için başka portlar
+
+networks:
+  graylog:
+    driver: bridge

@@ -16,8 +16,28 @@ using System.Text;
 using ShoppingMasterApp.Application.Interfaces;
 using ShoppingMasterApp.Infrastructure.Seeders;
 using ShoppingMasterApp.Application.Services;
+using Serilog;
+using Serilog.Sinks.Graylog;
+using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog 
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.Graylog(new GraylogSinkOptions
+    {
+        HostnameOrAddress = "127.0.0.1", // Localhost kullanýyorsanýz
+        Port = 12201,                    // Graylog'un UDP portu
+        TransportType = TransportType.Udp
+    })
+    .CreateLogger();
+
+
+
+// Serilog'u kullanacak þekilde host'u yapýlandýrýn
+builder.Host.UseSerilog();
+
 ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
@@ -72,21 +92,20 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         });
 
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
     });
-    });
-
 
     // Enable CORS globally
     services.AddCors(options =>
@@ -136,15 +155,13 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IShippingRepository, ShippingRepository>();
     services.AddScoped<ICustomerRepository, CustomerRepository>();
     services.AddScoped<IAdminRepository, AdminRepository>();
-    services.AddScoped<IEmailService, EmailService>(); 
+    services.AddScoped<IEmailService, EmailService>();
 
     // Unit of Work pattern
     services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     // Register the JWT token generator
     services.AddScoped<ITokenService, TokenService>();
-    
-
 }
 
 void ConfigureMiddleware(WebApplication app)
@@ -168,7 +185,11 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthorization();
 
     // Add custom middleware for exception handling
+    app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseMiddleware<ExceptionMiddleware>();
+
+    // Use Serilog for request logging
+    app.UseSerilogRequestLogging();
 
     app.MapControllers();
 }
