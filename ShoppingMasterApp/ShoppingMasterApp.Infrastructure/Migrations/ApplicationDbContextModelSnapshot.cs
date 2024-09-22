@@ -33,6 +33,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EmailVerificationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EmailVerificationExpiryDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -43,7 +50,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSmsVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -57,12 +67,15 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<int>("Roles")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("VerificationCode")
+                    b.Property<string>("SmsVerificationCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SmsVerificationExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -186,6 +199,13 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EmailVerificationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EmailVerificationExpiryDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -196,7 +216,10 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSmsVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -210,12 +233,15 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<int>("Roles")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("VerificationCode")
+                    b.Property<string>("SmsVerificationCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SmsVerificationExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -521,7 +547,33 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("AdminId");
                         });
 
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                        {
+                            b1.Property<int>("AdminId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CountryCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Phone_CountryCode");
+
+                            b1.Property<string>("Number")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Phone_Number");
+
+                            b1.HasKey("AdminId");
+
+                            b1.ToTable("Admins");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AdminId");
+                        });
+
                     b.Navigation("Email")
+                        .IsRequired();
+
+                    b.Navigation("PhoneNumber")
                         .IsRequired();
                 });
 
@@ -604,10 +656,36 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("CustomerId");
                         });
 
+                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                        {
+                            b1.Property<int>("CustomerId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CountryCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Phone_CountryCode");
+
+                            b1.Property<string>("Number")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Phone_Number");
+
+                            b1.HasKey("CustomerId");
+
+                            b1.ToTable("Customers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId");
+                        });
+
                     b.Navigation("Address")
                         .IsRequired();
 
                     b.Navigation("Email")
+                        .IsRequired();
+
+                    b.Navigation("PhoneNumber")
                         .IsRequired();
                 });
 

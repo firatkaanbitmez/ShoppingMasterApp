@@ -24,10 +24,16 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone_CountryCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone_Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Roles = table.Column<int>(type: "int", nullable: false),
-                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
-                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
+                    EmailVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSmsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,10 +94,16 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone_CountryCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone_Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Roles = table.Column<int>(type: "int", nullable: false),
-                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
-                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
+                    EmailVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSmsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

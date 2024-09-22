@@ -28,7 +28,11 @@ namespace ShoppingMasterApp.Domain.ValueObjects
         // Statik fabrika metodu
         public static PhoneNumber Create(string countryCode, string number)
         {
-            return new PhoneNumber(countryCode, number);
+            return new PhoneNumber
+            {
+                CountryCode = countryCode,
+                Number = number
+            };
         }
     }
 }

@@ -38,6 +38,11 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 {
                     email.Property(e => e.Value).HasColumnName("Email").IsRequired();
                 });
+                builder.OwnsOne(u => u.PhoneNumber, phone =>
+                {
+                    phone.Property(p => p.CountryCode).HasColumnName("Phone_CountryCode").IsRequired();
+                    phone.Property(p => p.Number).HasColumnName("Phone_Number").IsRequired();
+                });
             });
             modelBuilder.Entity<Customer>(builder =>
             {
@@ -49,7 +54,11 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                     address.Property(a => a.PostalCode).HasColumnName("PostalCode");
                     address.Property(a => a.Country).HasColumnName("Country");
                 });
-
+                builder.OwnsOne(u => u.PhoneNumber, phone =>
+                {
+                    phone.Property(p => p.CountryCode).HasColumnName("Phone_CountryCode").IsRequired();
+                    phone.Property(p => p.Number).HasColumnName("Phone_Number").IsRequired();
+                });
                 builder.OwnsOne(u => u.Email, email =>
                 {
                     email.Property(e => e.Value).HasColumnName("Email").IsRequired();

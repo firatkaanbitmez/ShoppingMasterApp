@@ -11,6 +11,10 @@ namespace ShoppingMasterApp.Domain.ValueObjects
 
         public Email(string value)
         {
+            // Trim the input to remove leading/trailing whitespaces
+            value = value.Trim();
+
+            // Validate email format
             if (!IsValidEmail(value))
                 throw new ArgumentException("Invalid email format.");
 
@@ -19,6 +23,7 @@ namespace ShoppingMasterApp.Domain.ValueObjects
 
         private bool IsValidEmail(string email)
         {
+            // Use a regular expression to validate the email format
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
     }

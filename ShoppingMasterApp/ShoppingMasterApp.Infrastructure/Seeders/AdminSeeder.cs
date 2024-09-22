@@ -34,7 +34,10 @@ namespace ShoppingMasterApp.Infrastructure.Seeders
                     Email = new Email(adminEmail),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
                     Roles = Roles.Admin,
-                    VerificationCode = "123456" // Buraya doğrulama kodu atayın
+                    EmailVerificationCode = "123456",
+                    SmsVerificationCode ="123456",
+                    PhoneNumber = PhoneNumber.Create("+1", "1234567890") 
+
 
                 };
 

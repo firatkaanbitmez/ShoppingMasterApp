@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Admin;
+using ShoppingMasterApp.Application.CQRS.Commands.Customer;
 using ShoppingMasterApp.Application.CQRS.Queries.Admin;
 using ShoppingMasterApp.Application.Interfaces;
+using ShoppingMasterApp.Domain.Enums;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
@@ -34,6 +36,16 @@ namespace ShoppingMasterApp.API.Controllers
             var token = await _mediator.Send(command);
             return ApiResponse(token, "Login successfully.");
         }
+
+        [AllowAnonymous]
+        [HttpPost("verify")]
+        public async Task<IActionResult> Verify([FromBody] VerifyCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("Verification successful.");
+        }
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAdmin(int id, [FromBody] UpdateAdminCommand command)

@@ -52,15 +52,13 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    // Add controllers and global filters
     services.AddControllers(options =>
     {
-        options.Filters.Add<ValidationFilter>();  // Global validation filter
-        options.Filters.Add<LoggingFilter>();     // Global logging filter
-        options.Filters.Add<ExceptionFilter>();   // Global exception filter
+        //options.Filters.Add<ValidationFilter>();  // Global validation filter
+        //options.Filters.Add<LoggingFilter>();     // Global logging filter
+        //options.Filters.Add<ExceptionFilter>();   // Global exception filter
     });
 
-    // Configure database context with retry policy and error handling
     services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
         sqlOptions =>
@@ -69,12 +67,11 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         })
         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
-    // Add AutoMapper for DTO to entity mappings
+
     services.AddAutoMapper(typeof(AutoMapperProfile));
 
     services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCustomerCommand).Assembly));
 
-    // Add Swagger for API documentation
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(c =>
     {
@@ -155,9 +152,11 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IShippingRepository, ShippingRepository>();
     services.AddScoped<ICustomerRepository, CustomerRepository>();
     services.AddScoped<IAdminRepository, AdminRepository>();
-    services.AddScoped<IEmailService, EmailService>();
 
-    // Unit of Work pattern
+    //services.AddScoped<ISmsVerificationService, SmsVerificationService>();
+    services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+
+    // Unit of Work 
     services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     // Register the JWT token generator
@@ -166,7 +165,7 @@ void RegisterServices(IServiceCollection services)
 
 void ConfigureMiddleware(WebApplication app)
 {
-    // Use Swagger in development mode
+
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
@@ -175,21 +174,15 @@ void ConfigureMiddleware(WebApplication app)
     }
 
     app.UseHttpsRedirection();
-
-    // Enable CORS
     app.UseCors("AllowAllOrigins");
-
-    // Enable JWT authentication
     app.UseAuthentication();
-
     app.UseAuthorization();
 
-    // Add custom middleware for exception handling
-    app.UseMiddleware<RequestResponseLoggingMiddleware>();
-    app.UseMiddleware<ExceptionMiddleware>();
+    // Add custom middleware 
+    //app.UseMiddleware<RequestResponseLoggingMiddleware>();
+    //app.UseMiddleware<ExceptionMiddleware>();
 
-    // Use Serilog for request logging
+  
     app.UseSerilogRequestLogging();
-
     app.MapControllers();
 }

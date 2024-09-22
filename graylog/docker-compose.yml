@@ -29,8 +29,8 @@ services:
     image: "graylog/graylog:4.0"
     container_name: graylog
     environment:
-      - GRAYLOG_PASSWORD_SECRET=1905190519051905Asd. # En az 16 karakterli bir şifre girin
-      - GRAYLOG_ROOT_PASSWORD_SHA2=bdbe03a0c7c15442024cfa9c14000205459104995cba0bd5a168bb57f59d0560
+      - GRAYLOG_PASSWORD_SECRET=123456123456Aaa* # En az 16 karakterli bir şifre girin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=535d87c26d36804fb17de5318f1d838d0b08629c7ccde724ab03119a3f8afd2a
       - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
     networks:
       - graylog

@@ -9,6 +9,7 @@ namespace ShoppingMasterApp.Domain.Interfaces.Repositories
     {
         Task<IEnumerable<Customer>> GetCustomersByRoleAsync(Roles role);
         Task<Customer> GetCustomerByEmailAsync(string email);
+        Task<Customer> GetCustomerByPhoneNumberAsync(string phoneNumber); 
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
 
     }

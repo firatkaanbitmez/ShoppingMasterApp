@@ -9,10 +9,20 @@ namespace ShoppingMasterApp.Domain.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Email Email { get; set; }
+        public PhoneNumber PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
         public Roles Roles { get; set; }
-        public bool IsVerified { get; set; }  
-        public string VerificationCode { get; set; }  
+
+        // Email Verification
+        public bool IsEmailVerified { get; set; }
+        public string EmailVerificationCode { get; set; }
+        public DateTime EmailVerificationExpiryDate { get; set; }
+
+        // SMS Verification
+        public bool IsSmsVerified { get; set; }
+        public string SmsVerificationCode { get; set; }
+        public DateTime SmsVerificationExpiryDate { get; set; }
+
 
         protected BaseUser(Roles role)
         {

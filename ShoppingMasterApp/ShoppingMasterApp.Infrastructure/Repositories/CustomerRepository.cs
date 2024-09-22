@@ -32,5 +32,9 @@ namespace ShoppingMasterApp.Infrastructure.Repositories
         {
             return await _context.Customers.Where(u => u.Roles == role).ToListAsync();
         }
+        public async Task<Customer> GetCustomerByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(u => u.PhoneNumber.Number == phoneNumber);
+        }
     }
 }

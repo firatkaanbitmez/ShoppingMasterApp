@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingMasterApp.Application.CQRS.Commands.Customer;
 using ShoppingMasterApp.Application.CQRS.Queries.Customer;
 using ShoppingMasterApp.Application.Interfaces;
+using ShoppingMasterApp.Domain.Enums;
 using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.API.Controllers
@@ -29,13 +30,12 @@ namespace ShoppingMasterApp.API.Controllers
             return Ok("Kayıt başarılı, lütfen e-postanızı doğrulayın.");
         }
 
-
         [AllowAnonymous]
-        [HttpPost("verify-email")]
-        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailCommand command)
+        [HttpPost("verify")]
+        public async Task<IActionResult> Verify([FromBody] VerifyCommand command)
         {
             await _mediator.Send(command);
-            return Ok("E-posta doğrulandı.");
+            return Ok("Verification successful.");
         }
 
 

@@ -34,15 +34,25 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                 {
                     throw new UnauthorizedAccessException("Invalid credentials.");
                 }
-                // Kullanıcının doğrulanmış olup olmadığını kontrol et
-                if (!customer.IsVerified)
+                            
+
+                // Eğer e-posta doğrulaması gerekiyorsa
+                if (!customer.IsEmailVerified)
                 {
-                    throw new UnauthorizedAccessException("User is not verified. Please verify your account.");
+                    throw new UnauthorizedAccessException("User email is not verified. Please verify your email.");
                 }
-                // Generate JWT token
+
+                // Eğer SMS doğrulaması gerekiyorsa
+                // if (!customer.IsSmsVerified) 
+                // {
+                //     throw new UnauthorizedAccessException("User SMS is not verified. Please verify your phone number.");
+                // }
+
+                // JWT token oluştur
                 var token = _tokenService.GenerateToken(customer);
                 return token;
             }
+
         }
     }
 
