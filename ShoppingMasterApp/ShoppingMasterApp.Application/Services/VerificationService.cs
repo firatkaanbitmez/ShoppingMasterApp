@@ -22,6 +22,9 @@ namespace ShoppingMasterApp.Application.Services
 
         public async Task SendVerificationCodeAsync(BaseUser user, VerificationType verificationType)
         {
+            if (!user.IsActive)
+                throw new InvalidOperationException("Kullanıcı hesabı pasif durumda. Lütfen destek ekibi ile iletişime geçin.");
+
             string verificationCode = GenerateVerificationCode(6); // 6 karakterli alfanumerik kod
             DateTime expiryDate = DateTime.UtcNow.AddMinutes(5); // Kod 5 dakika geçerli
 
@@ -47,6 +50,9 @@ namespace ShoppingMasterApp.Application.Services
 
         public async Task<bool> VerifyCodeAsync(BaseUser user, VerificationType verificationType, string code)
         {
+            if (!user.IsActive)
+                throw new InvalidOperationException("Kullanıcı hesabı pasif durumda. Lütfen destek ekibi ile iletişime geçin.");
+
             if (verificationType == VerificationType.Email)
             {
                 if (user.EmailVerificationExpiryDate < DateTime.UtcNow)

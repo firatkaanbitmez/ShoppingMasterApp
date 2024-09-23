@@ -33,7 +33,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsSmsVerified = table.Column<bool>(type: "bit", nullable: false),
                     SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FailedEmailAttempts = table.Column<int>(type: "int", nullable: false),
+                    FailedSmsAttempts = table.Column<int>(type: "int", nullable: false),
+                    LastEmailAttemptTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastSmsAttemptTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -103,7 +107,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsSmsVerified = table.Column<bool>(type: "bit", nullable: false),
                     SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FailedEmailAttempts = table.Column<int>(type: "int", nullable: false),
+                    FailedSmsAttempts = table.Column<int>(type: "int", nullable: false),
+                    LastEmailAttemptTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastSmsAttemptTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

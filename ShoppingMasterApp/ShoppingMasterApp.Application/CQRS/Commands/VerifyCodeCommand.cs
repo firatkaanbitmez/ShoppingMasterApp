@@ -40,33 +40,8 @@ namespace ShoppingMasterApp.Application.CQRS.Commands
 
             public async Task<Unit> Handle(VerifyCodeCommand request, CancellationToken cancellationToken)
             {
+
                 BaseUser user = await GetUserByIdAsync(request.UserId);
-                if (user == null)
-                    throw new ArgumentException("Kullanıcı bulunamadı.");
-
-                // Kod doğrulandıktan sonra eğer email veya SMS doğrulandıysa güncellemeyi yapalım
-                if (request.VerificationType == VerificationType.Email)
-                {
-                    if (user.EmailVerificationExpiryDate < DateTime.UtcNow)
-                        throw new ArgumentException("Email doğrulama kodu süresi doldu.");
-
-                    if (user.EmailVerificationCode != request.Code)
-                        throw new ArgumentException("Geçersiz email doğrulama kodu.");
-
-                    user.IsEmailVerified = true; // Email doğrulandı
-                }
-                else if (request.VerificationType == VerificationType.Sms)
-                {
-                    if (user.SmsVerificationExpiryDate < DateTime.UtcNow)
-                        throw new ArgumentException("SMS doğrulama kodu süresi doldu.");
-
-                    var isValid = await _smsVerificationService.VerifyCodeAsync(user.PhoneNumber.GetFullNumber(), request.Code);
-                    if (!isValid)
-                        throw new ArgumentException("Geçersiz SMS doğrulama kodu.");
-
-                    user.IsSmsVerified = true; // SMS doğrulandı
-                }
-
                 // Kullanıcıyı güncelle ve veritabanına kaydet
                 if (user is ShoppingMasterApp.Domain.Entities.Customer customer)
                 {
@@ -76,6 +51,62 @@ namespace ShoppingMasterApp.Application.CQRS.Commands
                 {
                     _adminRepository.Update(admin);
                 }
+
+                if (user == null)
+                    throw new ArgumentException("Kullanıcı bulunamadı.");
+
+                if (!user.IsActive)
+                    throw new InvalidOperationException("Kullanıcı hesabı pasif durumda. Lütfen destek ekibi ile iletişime geçin.");
+
+
+                // Kod doğrulandıktan sonra eğer email veya SMS doğrulandıysa güncellemeyi yapalım
+                if (request.VerificationType == VerificationType.Email)
+                {
+                    if (user.EmailVerificationExpiryDate < DateTime.UtcNow)
+                        throw new ArgumentException("Email doğrulama kodu süresi doldu.");
+
+                    if (user.EmailVerificationCode != request.Code)
+                    {
+                        user.FailedEmailAttempts++;
+                        user.CheckAccountLockout();
+                        user.LastEmailAttemptTime = DateTime.UtcNow;
+                        await _unitOfWork.SaveChangesAsync();
+
+                        throw new ArgumentException("Geçersiz email doğrulama kodu.");
+
+                    }
+
+                    user.IsEmailVerified = true; // Email doğrulandı
+                    user.FailedEmailAttempts = 0;
+                    user.LastEmailAttemptTime = null;
+                }
+                else if (request.VerificationType == VerificationType.Sms)
+                {
+
+                    if (user.SmsVerificationExpiryDate < DateTime.UtcNow)
+                        throw new ArgumentException("SMS doğrulama kodu süresi doldu.");
+
+
+                    var isValid = await _smsVerificationService.VerifyCodeAsync(user.PhoneNumber.GetFullNumber(), request.Code);
+                    if (!isValid)
+                    {
+                        user.FailedSmsAttempts++;
+                        user.CheckAccountLockout();
+                        user.LastSmsAttemptTime = DateTime.UtcNow;
+                        await _unitOfWork.SaveChangesAsync();
+
+                        throw new ArgumentException("Geçersiz SMS doğrulama kodu.");
+
+
+                    }
+
+
+                    user.IsSmsVerified = true; // SMS doğrulandı
+                    user.FailedSmsAttempts = 0;
+                    user.LastSmsAttemptTime = null;
+                }
+
+             
 
 
                 await _unitOfWork.SaveChangesAsync();

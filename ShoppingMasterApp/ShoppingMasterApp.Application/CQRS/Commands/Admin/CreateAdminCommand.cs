@@ -50,9 +50,8 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Admin
                     LastName = request.LastName,
                     Email = new Email(request.Email),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                    PhoneNumber = request.PhoneNumber,
-                    IsEmailVerified = false,
-                    IsSmsVerified = false
+                    PhoneNumber = request.PhoneNumber
+         
                 };
 
                 // Add new admin to repository

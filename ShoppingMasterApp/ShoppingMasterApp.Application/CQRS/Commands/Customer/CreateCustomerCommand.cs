@@ -52,9 +52,8 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                     Email = new Email(request.Email),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Address = request.Address,
-                    PhoneNumber = request.PhoneNumber,
-                    IsEmailVerified = false,
-                    IsSmsVerified = false
+                    PhoneNumber = request.PhoneNumber
+                  
                 };
 
                 await _verificationService.SendVerificationCodeAsync(customer, VerificationType.Email);

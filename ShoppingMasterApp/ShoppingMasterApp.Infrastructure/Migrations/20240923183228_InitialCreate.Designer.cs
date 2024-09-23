@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240923145544_InitialCreate")]
+    [Migration("20240923183228_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -42,6 +42,12 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime?>("EmailVerificationExpiryDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FailedEmailAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FailedSmsAttempts")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -60,9 +66,15 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<bool>("IsSmsVerified")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("LastEmailAttemptTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastSmsAttemptTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -208,6 +220,12 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<DateTime?>("EmailVerificationExpiryDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FailedEmailAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FailedSmsAttempts")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -226,9 +244,15 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     b.Property<bool>("IsSmsVerified")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("LastEmailAttemptTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastSmsAttemptTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
