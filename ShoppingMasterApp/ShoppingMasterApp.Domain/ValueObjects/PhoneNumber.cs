@@ -1,38 +1,39 @@
-﻿using System;
-
-namespace ShoppingMasterApp.Domain.ValueObjects
+﻿public class PhoneNumber
 {
-    public class PhoneNumber
+    public string CountryCode { get; private set; }
+    public string Number { get; private set; }
+
+    private PhoneNumber() { }
+
+    public PhoneNumber(string countryCode, string number)
     {
-        public string CountryCode { get; private set; }
-        public string Number { get; private set; }
+        ValidatePhoneNumber(countryCode, number);
 
-        private PhoneNumber() { }  // EF Core için boş constructor
+        CountryCode = countryCode;
+        Number = number;
+    }
 
-        public PhoneNumber(string countryCode, string number)
+    private void ValidatePhoneNumber(string countryCode, string number)
+    {
+        if (string.IsNullOrWhiteSpace(countryCode))
+            throw new ArgumentException("Country Code is required.");
+        if (string.IsNullOrWhiteSpace(number))
+            throw new ArgumentException("Phone Number is required.");
+
+        if (!number.StartsWith("0") && number.Length != 10)
         {
-            ValidatePhoneNumber(countryCode, number);
-
-            CountryCode = countryCode;
-            Number = number;
+            throw new ArgumentException("Phone number must be 10 digits without leading 0.");
         }
+    }
 
-        private void ValidatePhoneNumber(string countryCode, string number)
-        {
-            if (string.IsNullOrWhiteSpace(countryCode))
-                throw new ArgumentException("Country Code is required.");
-            if (string.IsNullOrWhiteSpace(number))
-                throw new ArgumentException("Phone Number is required.");
-        }
+    public string GetFullNumber()
+    {
+        // Telefon numarasını uluslararası formata çevir
+        return $"{CountryCode}{Number}";
+    }
 
-        // Statik fabrika metodu
-        public static PhoneNumber Create(string countryCode, string number)
-        {
-            return new PhoneNumber
-            {
-                CountryCode = countryCode,
-                Number = number
-            };
-        }
+    public static PhoneNumber Create(string countryCode, string number)
+    {
+        return new PhoneNumber(countryCode, number);
     }
 }

@@ -39,7 +39,7 @@ namespace ShoppingMasterApp.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("verify")]
-        public async Task<IActionResult> Verify([FromBody] VerifyCommand command)
+        public async Task<IActionResult> Verify([FromBody] EmailVerifyCommand command)
         {
             await _mediator.Send(command);
             return Ok("Verification successful.");

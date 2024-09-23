@@ -547,7 +547,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("AdminId");
                         });
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                    b.OwnsOne("PhoneNumber", "PhoneNumber", b1 =>
                         {
                             b1.Property<int>("AdminId")
                                 .HasColumnType("int");
@@ -656,7 +656,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("CustomerId");
                         });
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                    b.OwnsOne("PhoneNumber", "PhoneNumber", b1 =>
                         {
                             b1.Property<int>("CustomerId")
                                 .HasColumnType("int");

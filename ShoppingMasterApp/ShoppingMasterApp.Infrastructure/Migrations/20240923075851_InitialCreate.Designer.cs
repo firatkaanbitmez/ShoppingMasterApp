@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240922171819_InitialCreate")]
+    [Migration("20240923075851_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -550,7 +550,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("AdminId");
                         });
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                    b.OwnsOne("PhoneNumber", "PhoneNumber", b1 =>
                         {
                             b1.Property<int>("AdminId")
                                 .HasColumnType("int");
@@ -659,7 +659,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                                 .HasForeignKey("CustomerId");
                         });
 
-                    b.OwnsOne("ShoppingMasterApp.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                    b.OwnsOne("PhoneNumber", "PhoneNumber", b1 =>
                         {
                             b1.Property<int>("CustomerId")
                                 .HasColumnType("int");

@@ -27,15 +27,23 @@ namespace ShoppingMasterApp.API.Controllers
         public async Task<IActionResult> Register([FromBody] CreateCustomerCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Kayıt başarılı, lütfen e-postanızı doğrulayın.");
+            return Ok("Register successful, Please Email and PhoneNumber verify.");
         }
 
         [AllowAnonymous]
-        [HttpPost("verify")]
-        public async Task<IActionResult> Verify([FromBody] VerifyCommand command)
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromBody] EmailVerifyCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Verification successful.");
+            return Ok("Email verification successful.");
+        }
+
+        [AllowAnonymous]
+        [HttpPost("verify-sms")]
+        public async Task<IActionResult> VerifySms([FromBody] SmsVerifyCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("SMS verification successful.");
         }
 
 

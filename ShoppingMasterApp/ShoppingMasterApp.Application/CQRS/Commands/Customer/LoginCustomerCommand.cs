@@ -42,11 +42,11 @@ namespace ShoppingMasterApp.Application.CQRS.Commands.Customer
                     throw new UnauthorizedAccessException("User email is not verified. Please verify your email.");
                 }
 
-                // Eğer SMS doğrulaması gerekiyorsa
-                // if (!customer.IsSmsVerified) 
-                // {
-                //     throw new UnauthorizedAccessException("User SMS is not verified. Please verify your phone number.");
-                // }
+                //Eğer SMS doğrulaması gerekiyorsa
+                 if (!customer.IsSmsVerified)
+                {
+                    throw new UnauthorizedAccessException("User SMS is not verified. Please verify your phone number.");
+                }
 
                 // JWT token oluştur
                 var token = _tokenService.GenerateToken(customer);
