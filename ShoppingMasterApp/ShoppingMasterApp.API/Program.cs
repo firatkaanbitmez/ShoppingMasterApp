@@ -153,8 +153,11 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<ICustomerRepository, CustomerRepository>();
     services.AddScoped<IAdminRepository, AdminRepository>();
 
+    // Verification Services
     services.AddScoped<ISmsVerificationService, SmsVerificationService>();
     services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+    services.AddScoped<IVerificationService, VerificationService>();
+
 
     // Unit of Work 
     services.AddScoped<IUnitOfWork, UnitOfWork>();

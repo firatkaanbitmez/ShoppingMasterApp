@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using SendGrid.Helpers.Mail;
-using SendGrid;
+﻿using ShoppingMasterApp.Application.Interfaces;
 using System;
 using System.Threading.Tasks;
-using ShoppingMasterApp.Application.Interfaces;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using Microsoft.Extensions.Configuration;
 
 namespace ShoppingMasterApp.Application.Services
 {
@@ -24,7 +24,6 @@ namespace ShoppingMasterApp.Application.Services
             var from = new EmailAddress(_fromEmail, "ShoppingMaster App");
             var to = new EmailAddress(toEmail);
 
-            // Hem düz metin hem de HTML içerik gönderiliyor.
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextMessage, htmlMessage);
             var response = await client.SendEmailAsync(msg);
 

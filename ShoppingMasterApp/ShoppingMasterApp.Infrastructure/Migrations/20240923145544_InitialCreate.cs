@@ -17,7 +17,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
@@ -29,11 +29,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Roles = table.Column<int>(type: "int", nullable: false),
                     IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
-                    EmailVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EmailVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsSmsVerified = table.Column<bool>(type: "bit", nullable: false),
-                    SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -87,7 +87,7 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
@@ -99,11 +99,11 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Roles = table.Column<int>(type: "int", nullable: false),
                     IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
-                    EmailVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EmailVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsSmsVerified = table.Column<bool>(type: "bit", nullable: false),
-                    SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SmsVerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SmsVerificationExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

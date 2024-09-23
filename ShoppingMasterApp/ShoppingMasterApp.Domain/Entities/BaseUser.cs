@@ -15,13 +15,13 @@ namespace ShoppingMasterApp.Domain.Entities
 
         // Email Verification
         public bool IsEmailVerified { get; set; }
-        public string EmailVerificationCode { get; set; }
-        public DateTime EmailVerificationExpiryDate { get; set; }
+        public string? EmailVerificationCode { get; set; }
+        public DateTime? EmailVerificationExpiryDate { get; set; }
 
         // SMS Verification
         public bool IsSmsVerified { get; set; }
-        public string SmsVerificationCode { get; set; }
-        public DateTime SmsVerificationExpiryDate { get; set; }
+        public string? SmsVerificationCode { get; set; }
+        public DateTime? SmsVerificationExpiryDate { get; set; }
 
 
         protected BaseUser(Roles role)

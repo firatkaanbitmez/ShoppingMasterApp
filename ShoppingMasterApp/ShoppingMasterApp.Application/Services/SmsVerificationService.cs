@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ShoppingMasterApp.Application.Interfaces;
+using System;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
 using Microsoft.Extensions.Configuration;
-using ShoppingMasterApp.Application.Interfaces;
 
 namespace ShoppingMasterApp.Application.Services
 {
@@ -20,17 +20,14 @@ namespace ShoppingMasterApp.Application.Services
             _serviceSid = configuration["Twilio:ServiceSid"];
         }
 
-        // Özel doğrulama kodu gönderme metodu
         public async Task SendVerificationSmsAsync(string toPhoneNumber, string customCode)
         {
             TwilioClient.Init(_accountSid, _authToken);
 
-            // Telefon numarasını uluslararası formata çevir
             var formattedPhoneNumber = $"+{toPhoneNumber.TrimStart('+')}";
 
-            // Twilio API'yi kullanarak SMS gönderme (customCode parametresini kullanıyoruz)
             var verification = await VerificationResource.CreateAsync(
-                customCode: customCode, // Özel kodu gönder
+                customCode: customCode,
                 channel: "sms",
                 to: formattedPhoneNumber,
                 pathServiceSid: _serviceSid
@@ -42,7 +39,6 @@ namespace ShoppingMasterApp.Application.Services
             }
         }
 
-        // Twilio ile doğrulama kodunu kontrol etme
         public async Task<bool> VerifyCodeAsync(string toPhoneNumber, string code)
         {
             TwilioClient.Init(_accountSid, _authToken);

@@ -12,7 +12,7 @@ using ShoppingMasterApp.Infrastructure.Persistence;
 namespace ShoppingMasterApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240923075851_InitialCreate")]
+    [Migration("20240923145544_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -37,10 +37,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmailVerificationCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EmailVerificationExpiryDate")
+                    b.Property<DateTime?>("EmailVerificationExpiryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
@@ -48,7 +47,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("IdGuid")
-                        .HasColumnType("uniqueidentifier");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -71,10 +72,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SmsVerificationCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SmsVerificationExpiryDate")
+                    b.Property<DateTime?>("SmsVerificationExpiryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -203,10 +203,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmailVerificationCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EmailVerificationExpiryDate")
+                    b.Property<DateTime?>("EmailVerificationExpiryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
@@ -214,7 +213,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("IdGuid")
-                        .HasColumnType("uniqueidentifier");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -237,10 +238,9 @@ namespace ShoppingMasterApp.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SmsVerificationCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SmsVerificationExpiryDate")
+                    b.Property<DateTime?>("SmsVerificationExpiryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")

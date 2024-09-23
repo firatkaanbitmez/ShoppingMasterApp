@@ -26,24 +26,7 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure Customer entity
-            modelBuilder.Entity<Customer>(builder =>
-            {
-                builder.OwnsOne(u => u.Address);
-                builder.OwnsOne(u => u.Email);
-            });
-            modelBuilder.Entity<Admin>(builder =>
-            {
-                builder.OwnsOne(u => u.Email, email =>
-                {
-                    email.Property(e => e.Value).HasColumnName("Email").IsRequired();
-                });
-                builder.OwnsOne(u => u.PhoneNumber, phone =>
-                {
-                    phone.Property(p => p.CountryCode).HasColumnName("Phone_CountryCode").IsRequired();
-                    phone.Property(p => p.Number).HasColumnName("Phone_Number").IsRequired();
-                });
-            });
+            // Customer entity configuration
             modelBuilder.Entity<Customer>(builder =>
             {
                 builder.OwnsOne(u => u.Address, address =>
@@ -63,51 +46,56 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 {
                     email.Property(e => e.Value).HasColumnName("Email").IsRequired();
                 });
+
+                builder.Property(c => c.Id).ValueGeneratedOnAdd();
+                builder.Property(c => c.IdGuid).HasDefaultValueSql("NEWID()");
             });
-            // Configure Product entity
+
+            // Admin entity configuration
+            modelBuilder.Entity<Admin>(builder =>
+            {
+                builder.OwnsOne(u => u.Email, email =>
+                {
+                    email.Property(e => e.Value).HasColumnName("Email").IsRequired();
+                });
+                builder.OwnsOne(u => u.PhoneNumber, phone =>
+                {
+                    phone.Property(p => p.CountryCode).HasColumnName("Phone_CountryCode").IsRequired();
+                    phone.Property(p => p.Number).HasColumnName("Phone_Number").IsRequired();
+                });
+
+                builder.Property(c => c.Id).ValueGeneratedOnAdd();
+                builder.Property(c => c.IdGuid).HasDefaultValueSql("NEWID()");
+            });
+
+            // Product entity configuration
             modelBuilder.Entity<Product>(builder =>
             {
-                // Configure Money as an owned type
                 builder.OwnsOne(p => p.Price, config =>
                 {
                     config.Property(m => m.Amount).HasColumnType("decimal(18,2)").HasColumnName("Price_Amount");
                     config.Property(m => m.Currency).HasColumnName("Price_Currency");
                 });
 
-                // Configure ProductDetails as an owned type
                 builder.OwnsOne(p => p.ProductDetails, config =>
                 {
                     config.Property(pd => pd.Manufacturer).HasColumnName("Manufacturer");
                     config.Property(pd => pd.Sku).HasColumnName("Sku");
                 });
             });
-            modelBuilder.Entity<CartItem>()
-                .Property(c => c.UnitPrice)
-                .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<Discount>()
-                .Property(d => d.Amount)
-                .HasColumnType("decimal(18,2)");
-
-            modelBuilder.Entity<OrderItem>()
-                .Property(o => o.UnitPrice)
-                .HasColumnType("decimal(18,2)");
-
-            modelBuilder.Entity<Shipping>()
-                .Property(s => s.ShippingCost)
-                .HasColumnType("decimal(18,2)");
-
-            // Configure Cart entity
+            // Cart entity configuration
             modelBuilder.Entity<Cart>(builder =>
             {
                 builder.HasKey(c => c.Id);
-                builder.Property(c => c.Id).ValueGeneratedOnAdd(); // Id otomatik olarak oluşturulacak
+                builder.Property(c => c.Id).ValueGeneratedOnAdd();
                 builder.HasMany(c => c.CartItems)
                        .WithOne()
                        .HasForeignKey(ci => ci.CartId)
                        .OnDelete(DeleteBehavior.Cascade);
             });
-            // Configure Order entity with TotalAmount as an owned type
+
+            // Order entity configuration
             modelBuilder.Entity<Order>(builder =>
             {
                 builder.OwnsOne(o => o.TotalAmount, config =>
@@ -121,7 +109,7 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                        .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Configure Payment entity with Amount and PaymentDetails as owned types
+            // Payment entity configuration
             modelBuilder.Entity<Payment>(builder =>
             {
                 builder.OwnsOne(p => p.Amount, config =>
@@ -130,7 +118,6 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                     config.Property(m => m.Currency).HasColumnName("Payment_Currency");
                 });
 
-                // Configure PaymentDetails as owned by Payment
                 builder.OwnsOne(p => p.PaymentDetails, config =>
                 {
                     config.Property(pd => pd.CardType).HasColumnName("Card_Type");
@@ -140,7 +127,7 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 });
             });
 
-            // Configure Shipping entity with ShippingAddress as an owned type
+            // Shipping entity configuration
             modelBuilder.Entity<Shipping>(builder =>
             {
                 builder.OwnsOne(s => s.ShippingAddress, config =>
@@ -154,12 +141,13 @@ namespace ShoppingMasterApp.Infrastructure.Persistence
                 });
             });
 
-            // Do not configure PaymentDetails as an independent entity
-            // Remove the following line: modelBuilder.Entity<PaymentDetails>().HasNoKey();
+            // Additional entities configuration
+            modelBuilder.Entity<CartItem>().Property(c => c.UnitPrice).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Discount>().Property(d => d.Amount).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<OrderItem>().Property(o => o.UnitPrice).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Shipping>().Property(s => s.ShippingCost).HasColumnType("decimal(18,2)");
 
             base.OnModelCreating(modelBuilder);
         }
-
-
     }
 }

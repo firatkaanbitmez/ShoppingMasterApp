@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingMasterApp.Application.CQRS.Commands;
 using ShoppingMasterApp.Application.CQRS.Commands.Customer;
 using ShoppingMasterApp.Application.CQRS.Queries.Customer;
 using ShoppingMasterApp.Application.Interfaces;
@@ -30,20 +31,21 @@ namespace ShoppingMasterApp.API.Controllers
             return Ok("Register successful, Please Email and PhoneNumber verify.");
         }
 
+
         [AllowAnonymous]
-        [HttpPost("verify-email")]
-        public async Task<IActionResult> VerifyEmail([FromBody] EmailVerifyCommand command)
+        [HttpPost("send-verification")]
+        public async Task<IActionResult> SendVerification([FromBody] SendVerificationCodeCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Email verification successful.");
+            return ApiResponse("Verification code sent.");
         }
 
         [AllowAnonymous]
-        [HttpPost("verify-sms")]
-        public async Task<IActionResult> VerifySms([FromBody] SmsVerifyCommand command)
+        [HttpPost("verify-code")]
+        public async Task<IActionResult> VerifyCode([FromBody] VerifyCodeCommand command)
         {
             await _mediator.Send(command);
-            return Ok("SMS verification successful.");
+            return ApiResponse("Verification successful.");
         }
 
 
