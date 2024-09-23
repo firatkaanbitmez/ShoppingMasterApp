@@ -27,9 +27,15 @@ namespace ShoppingMasterApp.Application.Services
 
             string verificationCode = GenerateVerificationCode(6); // 6 karakterli alfanumerik kod
             DateTime expiryDate = DateTime.UtcNow.AddMinutes(5); // Kod 5 dakika geçerli
+            TimeSpan? remainingTime = null;
 
             if (verificationType == VerificationType.Email && !string.IsNullOrEmpty(user.Email.Value))
             {
+                if (user.EmailVerificationExpiryDate > DateTime.UtcNow)
+                {
+                    remainingTime = user.EmailVerificationExpiryDate.Value - DateTime.UtcNow;
+                    throw new ArgumentException($"Yeni email doğrulama kodu talep etmek için lütfen {remainingTime.Value.TotalSeconds:F0} saniye bekleyin.");
+                }
                 user.EmailVerificationCode = verificationCode;
                 user.EmailVerificationExpiryDate = expiryDate;
 
@@ -38,6 +44,11 @@ namespace ShoppingMasterApp.Application.Services
             }
             else if (verificationType == VerificationType.Sms && !string.IsNullOrEmpty(user.PhoneNumber.Number))
             {
+                if (user.SmsVerificationExpiryDate > DateTime.UtcNow)
+                {
+                    remainingTime = user.SmsVerificationExpiryDate.Value - DateTime.UtcNow;
+                    throw new ArgumentException($"Yeni SMS doğrulama kodu talep etmek için lütfen {remainingTime.Value.TotalSeconds:F0} saniye bekleyin.");
+                }
                 user.SmsVerificationCode = verificationCode;
                 user.SmsVerificationExpiryDate = expiryDate;
 
