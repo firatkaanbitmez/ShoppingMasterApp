@@ -1,9 +1,8 @@
-﻿using ShoppingMasterApp.Application.Interfaces;
-using System;
-using System.Threading.Tasks;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Configuration;
+using ShoppingMasterApp.Application.Interfaces;
+using System.Threading.Tasks;
 
 namespace ShoppingMasterApp.Application.Services
 {
@@ -18,19 +17,33 @@ namespace ShoppingMasterApp.Application.Services
             _fromEmail = configuration["SendGrid:FromEmail"];
         }
 
-        public async Task SendVerificationEmailAsync(string toEmail, string subject, string plainTextMessage, string htmlMessage)
+        public async Task SendVerificationEmailUsingTemplateAsync(string toEmail, string templateId, object dynamicData)
         {
             var client = new SendGridClient(_sendGridApiKey);
             var from = new EmailAddress(_fromEmail, "ShoppingMaster App");
             var to = new EmailAddress(toEmail);
 
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextMessage, htmlMessage);
+            var subject = "ShoppingMaster Verification";  // Set the subject explicitly
+
+            var msg = new SendGridMessage
+            {
+                From = from,
+                TemplateId = templateId,
+                Subject = subject  // Forcing the subject here
+            };
+
+            // Add recipient and template data
+            msg.AddTo(to);
+            msg.SetTemplateData(dynamicData);
+
+            // Send the email
             var response = await client.SendEmailAsync(msg);
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Email gönderimi başarısız oldu: {response.StatusCode}");
+                throw new Exception($"Failed to send email: {response.StatusCode}");
             }
         }
+
     }
 }

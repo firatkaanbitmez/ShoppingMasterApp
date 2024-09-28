@@ -4,6 +4,6 @@ namespace ShoppingMasterApp.Application.Interfaces
 {
     public interface IEmailVerificationService
     {
-        Task SendVerificationEmailAsync(string recipient, string subject, string plainTextMessage, string htmlMessage);
+        Task SendVerificationEmailUsingTemplateAsync(string toEmail, string templateId, object dynamicData);
     }
 }
