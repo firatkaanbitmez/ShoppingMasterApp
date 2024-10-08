@@ -1,47 +1,56 @@
-version: '3'
-services:
+version: '3' 
+
+services:  
+
   mongo:
-    image: "mongo:4.2"
-    container_name: mongo
+    image: "mongo:5.0"  # MongoDB'nin Docker'da kullanılacak versiyonu graylog 6 kullanacaksanız enaz 5.0 mongo kullanmanız gerekir.
+    container_name: mongo  
     networks:
-      - graylog
+      - graylog  
+    restart: always  
 
   elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"
-    container_name: elasticsearch
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"  
+    container_name: elasticsearch  
     environment:
-      - http.host=0.0.0.0
-      - transport.host=127.0.0.1
-      - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.type=single-node
+      - http.host=0.0.0.0  # Tüm IP adreslerinden HTTP bağlantılarını kabul et
+      - transport.host=127.0.0.1 
+      - network.host=0.0.0.0  # Elasticsearch ağındaki tüm arabirimlerden erişime izin ver
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"  # Elasticsearch'e daha fazla bellek ayır (Minimum ve Maksimum 1GB)
+      - discovery.type=single-node  # Elasticsearch'ü tek düğüm modunda çalıştır
     ulimits:
       memlock:
-        soft: -1
-        hard: -1
-    mem_limit: 1g
+        soft: -1  # Bellek kilitlenmesi için yumuşak sınır kaldırıldı
+        hard: -1  # Bellek kilitlenmesi için sert sınır kaldırıldı
+    mem_limit: 2g  # Elasticsearch için bellek limiti 2GB
     networks:
-      - graylog
+      - graylog  
     ports:
-      - "9200:9200"
+      - "9200:9200"  # Elasticsearch'ün dışarıya açılacağı port
+    restart: always  
 
   graylog:
-    image: "graylog/graylog:4.0"
-    container_name: graylog
+    image: "graylog/graylog:6.0"  
+    container_name: graylog  
     environment:
-      - GRAYLOG_PASSWORD_SECRET=123456123456Aaa* # En az 16 karakterli bir şifre girin
-      - GRAYLOG_ROOT_PASSWORD_SHA2=535d87c26d36804fb17de5318f1d838d0b08629c7ccde724ab03119a3f8afd2a
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
-    networks:
-      - graylog
+      - GRAYLOG_PASSWORD_SECRET=123456123456Aaa*  # Graylog için güvenlik anahtarı, en az 16 karakter olmalı
+      - GRAYLOG_ROOT_PASSWORD_SHA2=535d87c26d36804fb17de5318f1d838d0b08629c7ccde724ab03119a3f8afd2a  # Graylog için SHA256 formatında şifre
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/  # Graylog web arayüzünün dışarıya açık URI'si
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Graylog'un Elasticsearch ile bağlantısı için doğru host adı
     depends_on:
-      - mongo
-      - elasticsearch
+      - mongo  # MongoDB servisi önce başlamalı
+      - elasticsearch  # Elasticsearch servisi
     ports:
-      - "9000:9000"   # Graylog web arayüzü
-      - "12201:12201/udp" # GELF UDP için kullanılan port
-      - "1514:1514" # TCP veya Syslog için başka portlar
+      - "9000:9000"  # Graylog web arayüzü için dışarıya açılacak port
+      - "12201:12201/udp"  # GELF UDP portu (GELF=Graylog Extended Log Format)
+      - "12201:12201/tcp"  # GELF TCP portu
+      - "1514:1514/tcp"  # Syslog için TCP portu
+      - "1514:1514/udp"  # Syslog udp portu
+
+    networks:
+      - graylog  
+    restart: always  
 
 networks:
   graylog:
-    driver: bridge
+    driver: bridge  # Graylog servisleri arasında köprü bağlantısı oluşturmak için kullanılan ağ sürücüsü

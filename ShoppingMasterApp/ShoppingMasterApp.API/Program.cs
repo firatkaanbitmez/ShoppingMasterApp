@@ -182,7 +182,7 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthorization();
 
     // Add custom middleware 
-    //app.UseMiddleware<RequestResponseLoggingMiddleware>();
+    app.UseMiddleware<RequestResponseLoggingMiddleware>();
     //app.UseMiddleware<ExceptionMiddleware>();
 
   
